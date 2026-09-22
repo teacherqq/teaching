@@ -465,6 +465,8 @@
     <button class="tbtn" id="btnVoice">🗣 语音：开</button>
     <button class="tbtn" id="btnPreview">📋 答案一览</button>
     <button class="tbtn" id="btnFull">⛶ 全屏</button>
+    <button class="tbtn" id="btnRestartTop">🔁 重新开始</button>
+    <button class="tbtn" id="btnHomeTop">🏠 回到主页</button>
     <button class="tbtn primary" id="btnStart">▶ 开始游戏</button>
   </div>
 
@@ -1484,8 +1486,7 @@ function showFinish(){
   Snd.correct(); cheer();
   [0,300,650].forEach(d=>setTimeout(sparkle,d));
 }
-$('#btnFinishRestart').onclick = ()=>{
-  Snd.tick();
+function restartGame(){
   S.used = {};
   S.teams.forEach(t=>t.score=0);
   undoStack = []; finishShown = false;
@@ -1493,13 +1494,21 @@ $('#btnFinishRestart').onclick = ()=>{
   $('#finish').classList.add('hidden');
   renderBoard(); renderScore();
   toast('已重新开始：题目全部恢复，分数归零');
-};
-$('#btnFinishHome').onclick = ()=>{
+}
+function goHomeFromGame(){
   Snd.tick();
   $('#finish').classList.add('hidden');
   finishShown = false;
   backToSetup();
+}
+$('#btnFinishRestart').onclick = ()=>{ Snd.tick(); restartGame(); };
+$('#btnFinishHome').onclick = goHomeFromGame;
+$('#btnRestartTop').onclick = ()=>{
+  if(!confirm('重新开始？所有组分数归零，题目恢复未作答。')) return;
+  Snd.tick(); restartGame();
 };
+$('#btnHomeTop').onclick = goHomeFromGame;
+
 $('#btnCloseCard').onclick = ()=>{ Snd.tick(); closeCard(); };
 $('#flipcard').onclick = ()=>{ flip(); };
 function flip(){
