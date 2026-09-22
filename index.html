@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>教學工具集｜Teaching Tools</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23f4f6f8'/%3E%3Cpath d='M50 24 c-9 0 -18 3 -24 8 v38 c6 -4 15 -6 24 -6 c9 0 18 2 24 6 v-38 c-6 -5 -15 -8 -24 -8 Z' fill='%23eaf2f7' stroke='%23315d7c' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M50 24 v40 M26 70 c6 4 15 6 24 6 c9 0 18 -2 24 -6' stroke='%23b88745' stroke-width='5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#f4f6f8;--panel:#fff;--ink:#17212b;--muted:#74808d;--line:#e3e8ee;
+    --blue:#315d7c;--blue-soft:#eaf2f7;--gold:#b88745;--shadow:0 16px 40px rgba(27,47,64,.07);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:"KaiTi","楷体","STKaiti",serif;font-size:17px;line-height:1.8;
+  }
+  .ui,.eyebrow,.header-note,.tag,.count,.search,.card-en,.card-meta,.footer-note,.empty{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",Arial,sans-serif;
+  }
+  .shell{max-width:1240px;margin:auto;padding:34px 24px 72px}
+
+  /* ---------- header ---------- */
+  header{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:30px 0 28px;border-bottom:1px solid var(--line)}
+  .eyebrow{color:var(--blue);font:700 11px/1.2 Arial;letter-spacing:.2em}
+  .title{margin:10px 0 8px;font-size:clamp(38px,5vw,68px);font-weight:500;letter-spacing:.02em;line-height:1.1}
+  .subtitle{margin:0;color:var(--muted);font-size:18px}
+  .header-note{max-width:280px;color:var(--muted);font-size:13px;line-height:1.7;text-align:right}
+  .header-note b{color:var(--blue);font-weight:700}
+  .header-note i{font-style:normal;color:var(--gold);font-weight:700}
+
+  /* ---------- toolbar ---------- */
+  .toolbar{position:sticky;top:0;z-index:5;display:flex;gap:10px;align-items:center;padding:16px 0;background:rgba(244,246,248,.92);backdrop-filter:blur(12px)}
+  .search{flex:1;min-width:160px;border:1px solid var(--line);border-radius:10px;padding:12px 15px;background:#fff;color:var(--ink);font-size:14px;outline:none}
+  .search:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
+  .count{color:var(--muted);font-size:12px;white-space:nowrap}
+
+  /* ---------- sections ---------- */
+  .section{margin-top:34px}
+  .section-head{display:flex;align-items:baseline;gap:14px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+  .section-head h2{margin:0;font:500 25px Georgia,"Noto Serif TC",serif;color:var(--ink)}
+  .section-head .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);display:inline-block;margin-right:8px;vertical-align:middle}
+  .section-head span{color:var(--muted);font-size:12px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+
+  /* ---------- card ---------- */
+  .card{
+    position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:18px;
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px 24px 20px;
+    box-shadow:var(--shadow);text-decoration:none;color:inherit;overflow:hidden;
+    transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+  }
+  .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--blue-soft);transition:background .22s ease}
+  .card:hover{transform:translateY(-4px);border-color:#c9d8e3;box-shadow:0 22px 48px rgba(27,47,64,.13)}
+  .card:hover::before{background:var(--gold)}
+  .card:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+
+  .card-zh{margin:0;font-size:23px;font-weight:500;line-height:1.45}
+  .card-en{margin:6px 0 0;color:var(--muted);font-size:12px;letter-spacing:.03em;text-transform:uppercase}
+  .card-desc{margin:14px 0 0;color:#3d4a57;font-size:15px;line-height:1.85}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+  .tag{border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:999px;padding:3px 10px;font-size:11.5px;letter-spacing:.02em}
+  .card-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px dashed var(--line);padding-top:14px}
+  .card-meta{color:var(--muted);font-size:12px}
+  .card-go{color:var(--blue);font-size:14px;font-weight:700;white-space:nowrap}
+  .card-go .arrow{display:inline-block;transition:transform .22s ease}
+  .card:hover .card-go .arrow{transform:translateX(4px)}
+
+  .empty{margin:60px 0;text-align:center;color:var(--muted);font-size:15px}
+
+  /* ---------- footer ---------- */
+  footer{margin-top:64px;border-top:1px solid var(--line);padding-top:22px;display:flex;flex-wrap:wrap;gap:10px 26px;justify-content:space-between}
+  .footer-note{color:var(--muted);font-size:12.5px;line-height:1.9}
+  .footer-note code{font-family:ui-monospace,Menlo,monospace;background:#fff;border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--blue);font-size:12px}
+
+  @media (max-width:760px){
+    .shell{padding:22px 16px 56px}
+    header{flex-direction:column;align-items:flex-start;gap:16px}
+    .header-note{text-align:left;max-width:none}
+    .grid{grid-template-columns:1fr}
+    .card{padding:20px 18px 18px}
+    .card-zh{font-size:20px}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header>
+    <div>
+      <div class="eyebrow">TEACHING · 教學工具集</div>
+      <h1 class="title">教學工具集</h1>
+      <p class="subtitle">課堂互動、分組比賽與教學用的網頁工具統一入口<br><span style="font-size:14px">A hub for classroom tools and teaching apps</span></p>
+    </div>
+    <div class="header-note">
+      每個工具各自一個網址：<br>
+      <b>teacherqq.github.io/teaching/</b><i>&lt;工具名&gt;</i>
+    </div>
+  </header>
+
+  <div class="toolbar ui">
+    <input id="q" class="search" type="search" placeholder="搜尋工具標題、簡介或關鍵詞…" autocomplete="off">
+    <span id="count" class="count"></span>
+  </div>
+
+  <main id="sections"></main>
+
+  <footer>
+    <div class="footer-note">
+      新增工具：把 HTML 放到 <code>/&lt;工具名&gt;/index.html</code>，再到本頁 <code>DOCS</code> 陣列登記一筆即可。
+    </div>
+    <div class="footer-note">
+      © <span id="year"></span> teacherqq · GitHub Pages
+    </div>
+  </footer>
+
+</div>
+
+<script>
+/* =========================================================
+   工具清單 —— 新增工具只需在這裡加一筆
+   slug  = 子資料夾名稱（也是網址末端）
+   cat   = 所屬分類（分類順序由 CATS 決定）
+========================================================= */
+const CATS = ['課堂互動 · 分組比賽', '語文學習', '評估與練習'];
+
+const DOCS = [
+  {
+    slug: 'classroom-challenge',
+    cat:  '課堂互動 · 分組比賽',
+    zh:   '課堂挑戰賽',
+    en:   'Classroom Challenge',
+    desc: '分組搶答計分板：按課文難度自訂 100 / 200 / 300 分題板，全屏楷體題卡點一下翻面看答案，加分減分有真人語音鼓勵，支援半分計分、多套題板存檔，題目可從 Excel 直接貼上導入。',
+    tags: ['分組搶答', '計分板', '題卡翻面', '音效語音', '題庫存檔'],
+    date: '2026-09'
+  }
+];
+
+/* =========================================================
+   渲染
+========================================================= */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function card(d){
+  const tags = (d.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join('');
+  return `
+    <a class="card" href="${esc(d.slug)}/">
+      <div>
+        <h3 class="card-zh">${esc(d.zh)}</h3>
+        <p class="card-en">${esc(d.en)}</p>
+        <p class="card-desc">${esc(d.desc)}</p>
+        <div class="tags">${tags}</div>
+      </div>
+      <div class="card-foot">
+        <span class="card-meta">${esc(d.date)} · /${esc(d.slug)}/</span>
+        <span class="card-go">進入 <span class="arrow">→</span></span>
+      </div>
+    </a>`;
+}
+
+function render(list){
+  const box = document.getElementById('sections');
+  const cats = CATS.concat(
+    list.map(d => d.cat).filter(c => !CATS.includes(c))
+  );
+
+  let html = '';
+  cats.forEach(cat => {
+    const rows = list.filter(d => d.cat === cat);
+    if (!rows.length) return;
+    html += `
+      <section class="section">
+        <div class="section-head">
+          <h2><span class="dot"></span>${esc(cat)}</h2>
+          <span>${rows.length} 個工具</span>
+        </div>
+        <div class="grid">${rows.map(card).join('')}</div>
+      </section>`;
+  });
+
+  box.innerHTML = html || '<p class="empty">找不到符合的工具，換個關鍵詞試試。</p>';
+
+  document.getElementById('count').textContent =
+    list.length ? `共 ${list.length} 個工具 · ${cats.filter(c => list.some(d => d.cat === c)).length} 個分類` : '';
+}
+
+function filter(){
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  if (!q) return render(DOCS);
+  render(DOCS.filter(d =>
+    [d.zh, d.en, d.desc, d.cat, (d.tags || []).join(' ')].join(' ').toLowerCase().includes(q)
+  ));
+}
+
+document.getElementById('q').addEventListener('input', filter);
+document.getElementById('year').textContent = new Date().getFullYear();
+render(DOCS);
+</script>
+</body>
+</html>
