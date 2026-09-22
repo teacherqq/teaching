@@ -23,6 +23,15 @@
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
+  html:fullscreen, html:fullscreen body{
+    width:100vw;height:100vh;overflow:hidden;
+  }
+  html:-webkit-full-screen, html:-webkit-full-screen body{
+    width:100vw;height:100vh;overflow:hidden;
+  }
+  html:fullscreen .wrap, html:-webkit-full-screen .wrap{
+    max-width:none;height:100vh;padding:12px 18px 18px;display:flex;flex-direction:column;
+  }
   body{
     font-family:var(--sans);
     color:var(--ink);
@@ -321,6 +330,19 @@
   .fliphint b{color:var(--navy);}
 
   .awards{flex:none;margin-top:14px;}
+  /* 全屏时游戏页占满整个屏幕 */
+  html:fullscreen #viewGame, html:-webkit-full-screen #viewGame{
+    display:flex;flex-direction:column;flex:1;min-height:0;gap:10px;
+  }
+  html:fullscreen .scorebar, html:-webkit-full-screen .scorebar{flex:none;}
+  html:fullscreen .board, html:-webkit-full-screen .board{
+    flex:1;min-height:0;display:flex;flex-direction:column;
+  }
+  html:fullscreen .boardgrid, html:-webkit-full-screen .boardgrid{
+    flex:1;min-height:0;grid-auto-rows:1fr;
+  }
+  html:fullscreen .awards, html:-webkit-full-screen .awards{flex:none;margin-top:0;}
+  html:fullscreen .boardfoot, html:-webkit-full-screen .boardfoot{margin-top:6px;}
   .awards .ahead{
     font-size:.82rem;font-weight:800;color:var(--ink2);margin-bottom:9px;text-align:center;letter-spacing:.5px;
   }
@@ -1665,11 +1687,43 @@ $('#panel').onclick = e=>{ if(e.target.id==='panel') $('#panel').classList.add('
 $('#btnPrintList').onclick = ()=>{ window.print(); };
 
 /* ---------------- 全屏 ---------------- */
+function fullScreenSupported(){
+  return !!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen || document.documentElement.msRequestFullscreen);
+}
+function updateFullBtn(){
+  const f = !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+  $('#btnFull').innerHTML = f ? '⛶ 退出全屏' : '⛶ 全屏';
+}
+async function enterFullScreen(){
+  const de = document.documentElement;
+  try{
+    if(de.requestFullscreen) await de.requestFullscreen();
+    else if(de.webkitRequestFullscreen) await de.webkitRequestFullscreen();
+    else if(de.msRequestFullscreen) de.msRequestFullscreen();
+    else throw new Error('not supported');
+  }catch(err){
+    // iPad / 某些浏览器需要用户手势或完全不支持
+    toast('全屏需要浏览器允许，请按 F11 或双指放大网页');
+  }
+}
+async function exitFullScreen(){
+  try{
+    if(document.exitFullscreen) await document.exitFullscreen();
+    else if(document.webkitExitFullscreen) await document.webkitExitFullscreen();
+    else if(document.msExitFullscreen) document.msExitFullscreen();
+  }catch(e){}
+}
 $('#btnFull').onclick = ()=>{
   Snd.tick();
-  if(!document.fullscreenElement){ (document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen||function(){}).call(document.documentElement); }
-  else { (document.exitFullscreen||document.webkitExitFullscreen||function(){}).call(document); }
+  const f = !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+  if(f) exitFullScreen();
+  else enterFullScreen();
 };
+function onFullChange(){ updateFullBtn(); }
+document.addEventListener('fullscreenchange', onFullChange);
+document.addEventListener('webkitfullscreenchange', onFullChange);
+document.addEventListener('msfullscreenchange', onFullChange);
+updateFullBtn();
 
 /* ---------------- 导入导出 ---------------- */
 $('#btnExport').onclick = ()=>{
