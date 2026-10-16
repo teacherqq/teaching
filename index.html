@@ -65,6 +65,8 @@
   .card-meta{color:var(--muted);font-size:12px}
   .card-go{color:var(--blue);font-size:14px;font-weight:700;white-space:nowrap}
   .card-go .arrow{display:inline-block;transition:transform .22s ease}
+  .card-ext{border-style:dashed;background:var(--bg)}
+  .card-ext .card-go{color:var(--muted);font-weight:500}
   .card:hover .card-go .arrow{transform:translateX(4px)}
 
   .empty{margin:60px 0;text-align:center;color:var(--muted);font-size:15px}
@@ -136,7 +138,53 @@ const DOCS = [
     date: '2026-09'
   },
   {
-    slug: 'bhl-literature',
+    slug: 'y9b3u2-choice-communication',
+    cat:  '語文學習',
+    zh:   'Y9B3 Unit 2 選擇與溝通',
+    en:   'Y9 Band 3 Unit 2 · Choice & Communication',
+    desc: '四課：《給媽媽的一封信》《日記一篇》《抉擇》《給表哥的電子郵件》。拓展詞＋重點詞（田字格筆畫動畫）＋成語／句式知識，另有選詞填空、成語選詞填空、詞義選擇、句式練習與詞卡，繁簡切換＋植物積分系統。',
+    tags: ['Unit 2', '繁簡切換', '田字格筆畫', '成語句式', '積分系統', '詞卡'],
+    date: '2026-10'
+  },
+  {
+    slug: 'y9-chinese-unit3',
+    cat:  '語文學習',
+    zh:   'Y9 Unit 3 詞語學習網站',
+    en:   'Y9 Unit 3 · Chinese Vocabulary',
+    desc: 'Y9 中文詞語學習：田字格筆畫動畫配神經語音朗讀，選詞填空與重點詞練習，適合課堂與課後自修複習。',
+    tags: ['Unit 3', '田字格筆畫', '神經語音', '選詞填空'],
+    date: '2026-10'
+  },
+  {
+    slug: 'y9gcsb3',
+    cat:  '評估與練習',
+    zh:   'Y9 GCS Band 3 備課資源',
+    en:   'Y9 GCS Band 3 · Teaching Materials',
+    desc: 'Y9 GCS Band 3 課程備課頁面與 lesson1 教學資源，供課堂講解與學生練習使用。',
+    tags: ['GCS', 'Band 3', '備課', 'Lesson 1'],
+    date: '2026-08'
+  },
+  {
+    slug: 'ibdp-bhl-resources',
+    cat:  '文學分析 · 口試',
+    zh:   'IBDP / BHL 教材資源',
+    en:   'IBDP / BHL Resources',
+    desc: 'IBDP 與 BHL 課程教材資源：主題探討、寫作框架與課堂可用材料，配合 BHL 文學分析與口試工作站使用。',
+    tags: ['IBDP', 'BHL', '教材', '主題探討'],
+    date: '2026-07'
+  },
+  {
+    slug: 'y9gcs',
+    cat:  '評估與練習',
+    zh:   'Y9 GCS 課程專區',
+    en:   'Y9 GCS · Course Hub',
+    desc: 'Y9 GCS 課程專區（待建），預留作為 Y9 GCS 各單元課程資源的匯集入口。',
+    tags: ['Y9 GCS', '課程', '待建'],
+    date: '2026-08'
+  },
+  {
+    slug: '',
+    abs:   'https://teacherqq.github.io/working/bhl-literature/',
     cat:  '文學分析 · 口試',
     zh:   'BHL 文學分析與口試工作站',
     en:   'BHL Literary Analysis & Individual Oral Hub',
@@ -153,8 +201,11 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':
 
 function card(d){
   const tags = (d.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join('');
+  const href   = d.abs || `${d.slug}/`;
+  const meta   = d.abs ? `${esc(d.date)} · 工作文檔集` : `${esc(d.date)} · /${esc(d.slug)}/`;
+  const extCls = d.abs ? ' card-ext' : '';
   return `
-    <a class="card" href="${esc(d.slug)}/">
+    <a class="card${extCls}" href="${esc(href)}"${d.abs ? ' target="_blank" rel="noopener"' : ''}>
       <div>
         <h3 class="card-zh">${esc(d.zh)}</h3>
         <p class="card-en">${esc(d.en)}</p>
@@ -162,7 +213,7 @@ function card(d){
         <div class="tags">${tags}</div>
       </div>
       <div class="card-foot">
-        <span class="card-meta">${esc(d.date)} · /${esc(d.slug)}/</span>
+        <span class="card-meta">${meta}</span>
         <span class="card-go">進入 <span class="arrow">→</span></span>
       </div>
     </a>`;
