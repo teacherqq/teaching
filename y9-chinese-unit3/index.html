@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23dc2626'/><path d='M50 18 L50 82 M18 50 L82 50' stroke='%23fff' stroke-width='6' stroke-dasharray='10 8'/><text x='50' y='66' font-size='48' text-anchor='middle' fill='%23fff' font-family='serif' font-weight='bold'>田</text></svg>">
+<title>Y9 Unit 3 詞語學習 · 中三中文</title>
+<style>
+  :root{
+    --ink:#1e293b; --ink2:#475569; --paper:#f4f7fb; --card:#ffffff;
+    --l1:#e11d48; --l2:#0d9488; --l3:#7c3aed; --l4:#d97706;
+    --l1-bg:#fff1f2; --l2-bg:#f0fdfa; --l3-bg:#f5f3ff; --l4-bg:#fffbeb;
+    --ok:#16a34a; --ok-bg:#dcfce7; --bad:#dc2626; --bad-bg:#fee2e2;
+    --tile:124px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Kaiti TC","Kaiti SC","STKaiti","BiauKai","DFKai-SB","KaiTi","楷體","標楷體","PingFang TC","Microsoft JhengHei",serif;
+    background:var(--paper); color:var(--ink); line-height:1.6;
+  }
+  /* ---------- NAV ---------- */
+  nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:2px solid #e2e8f0}
+  .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:10px 20px;flex-wrap:wrap}
+  .logo{font-size:1.35rem;font-weight:800;white-space:nowrap}
+  .logo .b1{color:var(--l1)} .logo .b2{color:var(--l2)}
+  .nav-links{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+  .nav-links a{display:block;padding:7px 14px;border-radius:999px;text-decoration:none;color:var(--ink2);font-weight:600;font-size:.95rem;transition:.15s}
+  .nav-links a:hover{background:#eef2f7;color:var(--ink)}
+  /* ---------- HERO ---------- */
+  .hero{max-width:1100px;margin:26px auto 10px;padding:0 20px}
+  .hero-card{background:linear-gradient(135deg,#fff 60%,#fdf2f8);border:2px solid #fbcfe8;border-radius:24px;padding:30px 34px}
+  .hero h1{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;letter-spacing:.05em}
+  .hero h1 small{display:block;font-size:1rem;font-weight:600;color:var(--ink2);letter-spacing:.12em;margin-top:6px}
+  .lesson-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:22px}
+  .lesson-card{border-radius:16px;padding:16px 18px;border:2px solid;cursor:pointer;transition:transform .15s}
+  .lesson-card:hover{transform:translateY(-3px)}
+  .lesson-card .no{font-size:.85rem;font-weight:700;opacity:.75}
+  .lesson-card .tt{font-size:1.25rem;font-weight:800;margin:2px 0 6px}
+  .lesson-card .ct{font-size:.88rem;color:var(--ink2)}
+  .lc1{background:var(--l1-bg);border-color:#fecdd3} .lc1 .tt{color:var(--l1)}
+  .lc2{background:var(--l2-bg);border-color:#99f6e4} .lc2 .tt{color:var(--l2)}
+  .lc3{background:var(--l3-bg);border-color:#ddd6fe} .lc3 .tt{color:var(--l3)}
+  .lc4{background:var(--l4-bg);border-color:#fde68a} .lc4 .tt{color:var(--l4)}
+  /* ---------- SECTIONS ---------- */
+  section{max-width:1100px;margin:38px auto;padding:0 20px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;flex-wrap:wrap}
+  .sec-head h2{font-size:1.75rem;font-weight:900}
+  .sec-head .en{color:#94a3b8;font-weight:600}
+  .sec-desc{color:var(--ink2);margin-bottom:18px}
+  .lesson-block{border:2px solid #e2e8f0;border-radius:20px;padding:20px 22px;margin-bottom:20px;background:var(--card)}
+  .lesson-block.l1{border-top:6px solid var(--l1)} .lesson-block.l2{border-top:6px solid var(--l2)}
+  .lesson-block.l3{border-top:6px solid var(--l3)} .lesson-block.l4{border-top:6px solid var(--l4)}
+  .lb-title{font-size:1.2rem;font-weight:800;margin-bottom:14px}
+  .lb-title .chip{display:inline-block;font-size:.8rem;color:#fff;border-radius:999px;padding:2px 12px;margin-left:8px;vertical-align:middle}
+  .l1 .lb-title .chip{background:var(--l1)} .l2 .lb-title .chip{background:var(--l2)}
+  .l3 .lb-title .chip{background:var(--l3)} .l4 .lb-title .chip{background:var(--l4)}
+  /* read words */
+  .word-grid{display:flex;flex-wrap:wrap;gap:12px}
+  .rw-card{background:#fff;border:2px solid #e2e8f0;border-radius:14px;padding:12px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:.15s;user-select:none}
+  .rw-card:hover{border-color:#94a3b8;transform:translateY(-2px)}
+  .rw-card .w{font-size:1.7rem;font-weight:700}
+  .rw-card .mid{display:flex;flex-direction:column;line-height:1.35}
+  .rw-card .py{font-size:.85rem;color:var(--ink2)}
+  .en-gloss{font-size:.75rem;color:#94a3b8;font-weight:600;letter-spacing:.02em}
+  .rw-card .sp{font-size:1.2rem;opacity:.55}
+  .rw-card.speaking{border-color:var(--l2);background:var(--l2-bg)}
+  /* write words */
+  .write-grid{display:flex;flex-wrap:wrap;gap:26px 34px}
+  .word-block{display:flex;flex-direction:column;gap:8px}
+  .word-block .top{display:flex;align-items:center;gap:8px}
+  .word-block .py{font-size:.95rem;color:var(--ink2);font-weight:600}
+  .word-block .sp{font-size:1rem;background:none;border:none;cursor:pointer;opacity:.55}
+  .char-row{display:flex;flex-wrap:wrap;gap:14px}
+  .char-tile{display:flex;align-items:center;gap:8px}
+  .tzg{position:relative;width:var(--tile);height:var(--tile);background:#fff;border:3px solid #334155;border-radius:10px;flex:none}
+  .tzg .grid{position:absolute;inset:0;pointer-events:none}
+  .tzg .grid::before{content:"";position:absolute;left:50%;top:2px;bottom:2px;border-left:2px dashed #f59e0b;opacity:.65}
+  .tzg .grid::after{content:"";position:absolute;top:50%;left:2px;right:2px;border-top:2px dashed #f59e0b;opacity:.65}
+  .tzg .hw{position:absolute;inset:0;cursor:pointer}
+  .tzg .fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:calc(var(--tile)*.62);font-weight:700}
+  .stroke-btn{width:40px;height:40px;border-radius:50%;border:none;color:#fff;font-size:1.05rem;font-weight:800;cursor:pointer;flex:none;box-shadow:0 2px 6px rgba(0,0,0,.18);transition:transform .12s}
+  .stroke-btn:hover{transform:scale(1.12)}
+  .stroke-btn:active{transform:scale(.95)}
+  .t1 .stroke-btn{background:var(--l1)} .t2 .stroke-btn{background:var(--l2)}
+  .t3 .stroke-btn{background:var(--l3)} .t4 .stroke-btn{background:var(--l4)}
+  .stroke-btn small{display:block;font-size:.5rem;font-weight:600}
+  /* knowledge */
+  .kn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+  .kn-card{background:var(--card);border:2px solid #e2e8f0;border-radius:18px;padding:20px 22px}
+  .kn-card h3{font-size:1.1rem;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .kn-card h3 .tag{font-size:.72rem;color:#fff;background:#64748b;border-radius:999px;padding:2px 10px;font-weight:600}
+  .fx-row{display:flex;align-items:center;gap:16px;padding:12px 4px;border-bottom:1px dashed #e2e8f0;flex-wrap:wrap}
+  .fx-row:last-child{border-bottom:none}
+  .fx-pair{display:flex;gap:10px}
+  .fx-char{width:64px;height:64px;border:2.5px solid #334155;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:2.4rem;font-weight:700;position:relative}
+  .fx-char .p{position:absolute;bottom:2px;right:4px;font-size:.5rem;color:var(--ink2)}
+  .fx-use{font-size:.95rem;color:var(--ink2)}
+  .fx-use b{color:var(--ink)}
+  .dy-char{font-size:2.2rem;font-weight:800;width:64px;text-align:center}
+  .dy-read{font-size:1.05rem;font-weight:700;background:#f1f5f9;border-radius:10px;padding:6px 12px}
+  .dy-read .ex{display:block;font-size:.85rem;color:var(--ink2);font-weight:500}
+  .verb-chip{display:inline-block;background:#fef3c7;border:2px solid #fde68a;color:#92400e;border-radius:999px;padding:6px 18px;font-size:1.15rem;font-weight:700;margin:4px}
+  .bs-char{font-size:2.6rem;font-weight:800;color:#b45309}
+  /* patterns */
+  .pat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+  .pat-card{border-radius:18px;padding:20px 22px;border:2px solid}
+  .pat-card .pat{font-size:1.4rem;font-weight:900;letter-spacing:.03em}
+  .pat-card ul{margin:10px 0 0 1.2em}
+  .pat-card li{margin:4px 0;color:var(--ink2)}
+  .pat-card li b{color:var(--ink)}
+  .p1{background:var(--l1-bg);border-color:#fecdd3} .p1 .pat{color:var(--l1)}
+  .p2{background:var(--l2-bg);border-color:#99f6e4} .p2 .pat{color:var(--l2)}
+  .p3{background:var(--l3-bg);border-color:#ddd6fe} .p3 .pat{color:var(--l3)}
+  .p4{background:var(--l4-bg);border-color:#fde68a} .p4 .pat{color:var(--l4)}
+  /* practice */
+  #practice .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+  .lesson-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;padding-bottom:14px;border-bottom:2px dashed #e2e8f0}
+  .lsel{border:2px solid #e2e8f0;background:#fff;border-radius:999px;padding:8px 18px;font-size:.98rem;font-weight:700;cursor:pointer;color:var(--ink2);transition:.15s}
+  .lsel:hover{border-color:#94a3b8}
+  .lsel.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .tab-btn{border:2px solid #e2e8f0;background:#fff;border-radius:999px;padding:9px 20px;font-size:1rem;font-weight:700;cursor:pointer;color:var(--ink2);transition:.15s}
+  .tab-btn.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .tab-btn small{display:block;font-size:.68rem;color:#94a3b8;font-weight:600}
+  .tab-btn.active small{color:#cbd5e1}
+  .panel{display:none;background:var(--card);border:2px solid #e2e8f0;border-radius:20px;padding:24px 26px}
+  .panel.active{display:block}
+  .bank{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;padding:14px;background:#f8fafc;border-radius:14px;border:2px dashed #cbd5e1}
+  .bank .lbl{width:100%;font-size:.9rem;font-weight:700;color:var(--ink2)}
+  .chip-w{border:2px solid var(--l2);background:#fff;color:var(--l2);border-radius:999px;padding:7px 18px;font-size:1.15rem;font-weight:700;cursor:pointer;transition:.12s}
+  .chip-w:hover{transform:translateY(-2px)}
+  .chip-w.sel{background:var(--l2);color:#fff;box-shadow:0 4px 10px rgba(13,148,136,.35)}
+  .chip-w.used{visibility:hidden}
+  .q-item{padding:14px 0;border-bottom:1px dashed #e2e8f0;font-size:1.25rem}
+  .q-item:last-of-type{border-bottom:none}
+  .blank{display:inline-block;min-width:6em;text-align:center;border-bottom:3px solid #94a3b8;margin:0 4px;padding:0 8px;color:var(--l2);font-weight:800;cursor:pointer;border-radius:6px}
+  .blank:hover{background:#f1f5f9}
+  .blank.ok{color:var(--ok);border-bottom-color:var(--ok);background:var(--ok-bg)}
+  .blank.bad{color:var(--bad);border-bottom-color:var(--bad);background:var(--bad-bg)}
+  .nav-links a small{font-size:.66rem;color:#94a3b8;font-weight:600;margin-left:4px;letter-spacing:.03em}
+  .pat-card .pat-en{font-size:.85rem;color:var(--ink2);font-weight:700;margin-top:2px}
+  .pat-card li .li-en{display:block;font-size:.78rem;color:#94a3b8}
+  .q-en{display:block;font-size:.85rem;color:#94a3b8;margin-top:2px}
+  .q-line{font-size:1.25rem}
+  .opt-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+  .opt{border:2px solid #e2e8f0;background:#fff;border-radius:12px;padding:8px 22px;font-size:1.15rem;font-weight:700;cursor:pointer;transition:.12s}
+  .opt:hover{border-color:#94a3b8;transform:translateY(-2px)}
+  .opt.ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+  .opt.bad{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+  .opt:disabled{cursor:default;opacity:.85}
+  .fb{margin-top:8px;font-size:.95rem;font-weight:600;display:none}
+  .fb.show{display:block}
+  .fb.ok{color:var(--ok)} .fb.bad{color:var(--bad)}
+  .p-actions{display:flex;gap:12px;align-items:center;margin-top:18px;flex-wrap:wrap}
+  .btn-main{border:none;background:var(--ink);color:#fff;border-radius:12px;padding:11px 26px;font-size:1.05rem;font-weight:700;cursor:pointer;transition:.15s}
+  .btn-main:hover{transform:translateY(-2px)}
+  .btn-ghost{border:2px solid #cbd5e1;background:#fff;border-radius:12px;padding:10px 22px;font-size:1rem;font-weight:700;cursor:pointer;color:var(--ink2)}
+  .score{font-size:1.1rem;font-weight:800;margin-left:auto}
+  .score.ok{color:var(--ok)} .score.bad{color:var(--bad)}
+  /* fullscreen overlay */
+  #fsOverlay{position:fixed;inset:0;z-index:1000;background:linear-gradient(160deg,#0f172a,#1e293b);display:none;flex-direction:column;color:#fff}
+  #fsOverlay.open{display:flex}
+  .fs-head{display:flex;align-items:center;justify-content:space-between;padding:16px 26px;gap:14px;flex-wrap:wrap}
+  .fs-info{font-size:1.3rem;font-weight:800}
+  .fs-info .sub{font-size:1rem;font-weight:600;color:#94a3b8;margin-left:12px}
+  .fs-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:0 20px 20px;min-height:0}
+  .fs-stage{display:flex;align-items:center;gap:26px;flex-wrap:wrap;justify-content:center}
+  .fs-tzg{--tile:min(62vmin,560px);width:min(62vmin,560px);height:min(62vmin,560px);border-width:5px;border-radius:18px;background:#fff;position:relative}
+  .fs-tzg .grid::before,.fs-tzg .grid::after{border-width:3px;opacity:.55}
+  .fs-nav{display:flex;flex-direction:column;gap:12px}
+  .fs-nav button{width:64px;height:64px;border-radius:50%;border:none;background:rgba(255,255,255,.14);color:#fff;font-size:1.5rem;cursor:pointer;transition:.15s}
+  .fs-nav button:hover{background:rgba(255,255,255,.3)}
+  .fs-nav button:disabled{opacity:.25;cursor:default}
+  .fs-meta{font-size:1.35rem;font-weight:800;letter-spacing:.05em;min-height:1.8em}
+  .fs-meta .note{font-size:1rem;color:#94a3b8;font-weight:600;margin-left:10px}
+  .fs-controls{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:0 20px 26px}
+  .fbtn{border:2px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;border-radius:14px;padding:12px 24px;font-size:1.05rem;font-weight:700;cursor:pointer;transition:.15s}
+  .fbtn:hover{background:rgba(255,255,255,.25)}
+  .fbtn.primary{background:#0d9488;border-color:#0d9488}
+  .fbtn.primary:hover{background:#14b8a6}
+  .fbtn.warn{background:#d97706;border-color:#d97706}
+  .fbtn.warn:hover{background:#f59e0b}
+  .fbtn small{font-size:.68rem;font-weight:600;opacity:.75;margin-left:2px}
+  .fbtn.on{background:#0d9488;border-color:#0d9488}
+  footer{max-width:1100px;margin:40px auto 30px;padding:0 20px;color:#94a3b8;font-size:.9rem;text-align:center}
+  @media (max-width:640px){
+    :root{--tile:96px}
+    .stroke-btn{width:34px;height:34px;font-size:.9rem}
+    .fs-tzg{--tile:min(80vmin,560px);width:min(80vmin,560px);height:min(80vmin,560px)}
+  }
+  /* ---- 🃏 練習詞卡 flashcards ---- */
+  .fc-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+  .fc-mode{display:flex;border:2px solid #e2e8f0;border-radius:999px;overflow:hidden;background:#fff}
+  .fc-mode button{border:none;background:#fff;padding:9px 16px;font-weight:700;font-size:.95rem;cursor:pointer;color:var(--ink2);font-family:inherit;transition:.15s}
+  .fc-mode button+button{border-left:1px solid #e2e8f0}
+  .fc-mode button small{display:block;font-size:.62rem;color:#94a3b8;font-weight:600}
+  .fc-mode button.active{background:var(--ink);color:#fff}
+  .fc-mode button.active small{color:#cbd5e1}
+  .fc-tool{border:2px solid #e2e8f0;background:#fff;border-radius:999px;padding:8px 16px;font-size:.92rem;font-weight:700;cursor:pointer;color:var(--ink2);font-family:inherit;transition:.15s}
+  .fc-tool small{display:block;font-size:.62rem;color:#94a3b8;font-weight:600}
+  .fc-tool:hover{border-color:#94a3b8}
+  .fc-tool.on{background:var(--l2);border-color:var(--l2);color:#fff}
+  .fc-lbar{display:flex;gap:6px;flex-wrap:wrap}
+  .fc-lbar .lsel{padding:8px 14px;font-size:.9rem}
+  .fc-stage{perspective:1400px;max-width:640px;margin:0 auto}
+  .fc-card{position:relative;width:100%;height:340px;cursor:pointer;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,.1,.2,1)}
+  .fc-card.flipped{transform:rotateY(180deg)}
+  .fc-face{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:26px;border:3px solid #e2e8f0;background:#fff;box-shadow:0 12px 30px rgba(15,23,42,.09);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:30px;text-align:center}
+  .fc-face.back{transform:rotateY(180deg);border-color:var(--l2)}
+  .fc-lbl{position:absolute;top:16px;left:20px;font-size:.78rem;font-weight:800;color:#94a3b8;letter-spacing:.05em}
+  .fc-word{font-size:3.8rem;font-weight:900;line-height:1.25}
+  .fc-tip{color:#94a3b8;font-weight:700;font-size:.88rem}
+  .fc-py{font-size:2.2rem;font-weight:800;color:var(--l2)}
+  .fc-en{font-size:1.55rem;font-weight:700;color:var(--ink)}
+  .fc-sent{font-size:1.4rem;line-height:2;font-weight:600;max-width:100%}
+  .fc-sent .gap{color:#fff;background:var(--l2);border-radius:8px;padding:2px 10px;margin:0 3px;font-weight:900;cursor:pointer;transition:.2s}
+  .fc-sent .gap.show{background:var(--ok)}
+  .fc-note{font-size:.85rem;color:#94a3b8;font-weight:600}
+  .fc-controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+  .fc-btn{border:2px solid #e2e8f0;background:#fff;color:var(--ink2);border-radius:14px;padding:11px 20px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+  .fc-btn:hover{transform:translateY(-2px);border-color:#94a3b8}
+  .fc-btn small{font-size:.66rem;color:#94a3b8;font-weight:600;margin-left:3px}
+  .fc-btn.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+  .fc-btn.ok small{color:#e7f9f0}
+  .fc-btn.ok:hover{transform:translateY(-2px)}
+  .fc-btn.again{background:#d97706;border-color:#d97706;color:#fff}
+  .fc-btn.again small{color:#fdf0dd}
+  .fc-prog{max-width:640px;margin:20px auto 0;display:flex;flex-direction:column;gap:8px}
+  .fc-count{text-align:center;font-weight:800;color:var(--ink2);font-size:.95rem}
+  .fc-bar{height:10px;border-radius:999px;background:#e2e8f0;overflow:hidden}
+  .fc-bar>div{height:100%;width:0;background:var(--ok);border-radius:999px;transition:.4s}
+  .fc-empty{padding:46px 30px;text-align:center;font-size:1.3rem;font-weight:800;color:var(--ink2);border:3px dashed #cbd5e1;border-radius:26px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">📕 <span class="b1">Y9 Unit 3</span> · <span class="b2">詞語學習</span></div>
+    <div class="nav-links">
+      <a href="#overview">總覽<small>Home</small></a>
+      <a href="#read">拓展詞語<small>Words</small></a>
+      <a href="#write">重點詞語<small>Word Bank</small></a>
+      <a href="#knowledge">成語精選<small>Idioms</small></a>
+      <a href="#patterns">句式<small>Patterns</small></a>
+      <a href="#flash">練習詞卡<small>Flashcards</small></a>
+      <a href="#practice">練習題<small>Practice</small></a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="overview">
+  <div class="hero-card">
+    <h1>Y9 Unit 3 詞語學習<small>Year 9 Chinese · Unit 3 Word Bank &amp; Practice · 中三中文 單元三 ·《給媽媽的一封信》《日記一篇》《抉擇》《給表哥的電子郵件》</small></h1>
+    <div class="lesson-cards" id="lessonCards"></div>
+  </div>
+</header>
+
+<main>
+  <section id="read">
+    <div class="sec-head"><h2>🗣️ 拓展詞語</h2><span class="en">Extension Words · 字詞 Words</span></div>
+    <p class="sec-desc">小冊子四課詞語表中的非星號詞語。點擊詞語卡可以聽讀音。<span class="en-gloss">Extension words from the booklet's vocabulary tables. Tap a word card to hear it read aloud.</span></p>
+    <div id="readBlocks"></div>
+  </section>
+
+  <section id="write">
+    <div class="sec-head"><h2>✏️ 重點詞語（詞語銀行）</h2><span class="en">Word Bank · 田字格 Tian Zi Ge Grid</span></div>
+    <p class="sec-desc">Word Bank 39 個星號詞語。每個字都放在田字格中。點擊字 → 在格內示範筆畫動畫；點擊字旁邊的彩色「筆」按鈕 → <b>全屏展示筆畫順序</b>（可放慢、可逐字翻頁，還有筆畫小測驗）。<span class="en-gloss">The 39 starred Word Bank words. Every character sits in a Tian Zi Ge grid. Tap a character to see the stroke animation in its grid; tap the coloured「筆」button beside it for a <b>fullscreen stroke-order demo</b> (slow mode, word-by-word navigation, and a stroke quiz).</span></p>
+    <div id="writeBlocks"></div>
+  </section>
+
+  <section id="knowledge">
+    <div class="sec-head"><h2>🧠 成語精選</h2><span class="en">Key Idioms · 點擊可聽讀音 Tap to listen</span></div>
+    <div class="kn-grid">
+      <div class="kn-card">
+        <h3>📗 第一、二課 Idioms 1–2 <span class="tag">點擊聽讀音 · tap to listen</span></h3>
+        <div class="fx-row"><div class="dy-char" style="width:auto;padding:0 6px">天南地北</div><div class="fx-use"><b>tiān nán dì běi</b> — all over the place; chatting about anything and everything<br><span class="en-gloss">老朋友天南地北地聊了整個晚上。Old friends chatted about everything under the sun all night.</span></div></div>
+        <div class="fx-row"><div class="dy-char" style="width:auto;padding:0 6px">行行出狀元</div><div class="fx-use"><b>háng háng chū zhuàng yuán</b> — there is a leader in every industry<br><span class="en-gloss">只要肯努力，行行出狀元。Work hard and every trade has its master.</span></div></div>
+        <div class="fx-row"><div class="dy-char" style="width:auto;padding:0 6px">有朝一日</div><div class="fx-use"><b>yǒu zhāo yī rì</b> — someday, one day<br><span class="en-gloss">只要堅持夢想，有朝一日你一定會成功。Keep chasing your dream and you will succeed one day.</span></div></div>
+        <div class="fx-row"><div class="dy-char" style="width:auto;padding:0 6px">暢所欲言</div><div class="fx-use"><b>chàng suǒ yù yán</b> — to speak freely, without holding back<br><span class="en-gloss">這裏氣氛輕鬆，大家可以暢所欲言。The atmosphere is relaxed — everyone can speak freely.</span></div></div>
+        <div class="fx-row"><div class="dy-char" style="width:auto;padding:0 6px">深思熟慮</div><div class="fx-use"><b>shēn sī shú lǜ</b> — careful deliberation; think it through<br><span class="en-gloss">經過深思熟慮，他終於決定辭職創業。After careful deliberation he decided to start his own business.</span></div></div>
+      </div>
+      <div class="kn-card">
+        <h3>📘 第三課 Idioms 3 <span class="tag">點擊聽讀音 · tap to listen</span></h3>
+        <div class="fx-row"><div class="dy-char" style="width:auto;padding:0 6px">興致勃勃</div><div class="fx-use"><b>xìng zhì bó bó</b> — bubbling over with enthusiasm<br><span class="en-gloss">同學們興致勃勃地討論這次旅行的計劃。The students discussed the trip plan with great enthusiasm.</span></div></div>
+        <div class="fx-row"><div class="dy-char" style="width:auto;padding:0 6px">夢寐以求</div><div class="fx-use"><b>mèng mèi yǐ qiú</b> — something you long for even in your dreams<br><span class="en-gloss">這份工作是他夢寐以求的機會。This job is the opportunity he has always dreamed of.</span></div></div>
+        <div class="fx-row"><div class="dy-char" style="width:auto;padding:0 6px">左右為難</div><div class="fx-use"><b>zuǒ yòu wéi nán</b> — hard to choose; caught in the middle<br><span class="en-gloss">一邊是朋友，一邊是家人，讓他左右為難。Friends on one side, family on the other — he's in a dilemma.</span></div></div>
+        <div class="fx-row"><div class="dy-char" style="width:auto;padding:0 6px">兩全其美</div><div class="fx-use"><b>liǎng quán qí měi</b> — the best of both worlds<br><span class="en-gloss">這樣做既能省錢又能省時間，真是兩全其美。It saves both money and time — the best of both worlds.</span></div></div>
+        <div class="fx-row"><div class="dy-char" style="width:auto;padding:0 6px">舉棋不定</div><div class="fx-use"><b>jǔ qí bú dìng</b> — hesitant; in two minds (like a chess player)<br><span class="en-gloss">面對兩個選擇，他一直舉棋不定。Faced with two options, he kept hesitating.</span></div></div>
+      </div>
+      <div class="kn-card">
+        <h3>📙 拓展成語 More Idioms <span class="tag">小冊子詞語表 · from the booklet</span></h3>
+        <div class="fx-row"><div class="dy-char" style="width:auto;padding:0 6px">無所適從</div><div class="fx-use"><b>wú suǒ shì cóng</b> — not knowing what to do or whom to follow<br><span class="en-gloss">爸爸要我洗車，媽媽叫我擦窗戶，弄得我無所適從。Dad wants one thing, Mum another — I don't know which to do.</span></div></div>
+        <div class="fx-row"><div class="dy-char" style="width:auto;padding:0 6px">一籌莫展</div><div class="fx-use"><b>yì chóu mò zhǎn</b> — can find no way out; at a complete loss<br><span class="en-gloss">面對這個難題，大家都一籌莫展。Faced with this problem, everyone was at a loss.</span></div></div>
+        <div class="fx-row"><div class="dy-char" style="width:auto;padding:0 6px">先公而後私</div><div class="fx-use"><b>xiān gōng ér hòu sī</b> — put public benefit before personal gain<br><span class="en-gloss">他做事一向先公而後私。He always puts the public good before himself.</span></div></div>
+        <div class="fx-row"><div class="dy-char" style="width:auto;padding:0 6px">有商有量</div><div class="fx-use"><b>yǒu shāng yǒu liàng</b> — to discuss things and decide together<br><span class="en-gloss">遇到分歧時，一家人應該有商有量。When opinions differ, a family should discuss it together.</span></div></div>
+        <div class="fx-row"><div class="dy-char" style="width:auto;padding:0 6px">模棱兩可</div><div class="fx-use"><b>mó léng liǎng kě</b> — ambiguous; not giving a clear answer<br><span class="en-gloss">他的回答模棱兩可，讓人猜不透。His answer was ambiguous — nobody could tell what he really thought.</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="patterns">
+    <div class="sec-head"><h2>💬 句式仿寫</h2><span class="en">Sentence Patterns — 仿照例句寫一寫 Write your own</span></div>
+    <div class="pat-grid">
+      <div class="pat-card p1"><div class="pat">為了 …… ，……。</div><div class="pat-en">in order to (purpose) — 為了 + 目的</div><ul><li><b>為了</b>忘記學習上的煩惱，我每天都花不少時間在網上玩遊戲、聊天。<span class="li-en">In order to forget my study worries, I spend a lot of time playing games and chatting online every day.</span></li><li><b>為了</b>達到他的目標，小明不管風吹雨打，每天都跑1000米。<span class="li-en">To reach his goal, Xiao Ming runs 1000 metres every day, whatever the weather.</span></li></ul></div>
+      <div class="pat-card p1"><div class="pat">…… 越來越 ……</div><div class="pat-en">more and more (increasing degree)</div><ul><li>我發現我<b>越來越</b>喜歡中文了。<span class="li-en">I find that I like Chinese more and more.</span></li><li>自從上中學後，我的煩惱<b>越來越</b>多。<span class="li-en">Since starting secondary school, my worries have grown more and more.</span></li></ul></div>
+      <div class="pat-card p2"><div class="pat">…… 比 …… + 形容詞</div><div class="pat-en">comparing: A is more … than B</div><ul><li>我們現在要學習的科目<b>比</b>以前多了。<span class="li-en">We now study more subjects than before.</span></li><li>他的中文說得<b>比</b>以前好了。<span class="li-en">His Chinese is better than before.</span></li></ul></div>
+      <div class="pat-card p2"><div class="pat">自從 …… ，……。</div><div class="pat-en">since (a point in time) — 自從 + 時間點</div><ul><li><b>自從</b>上中學後，我的煩惱多了不少。<span class="li-en">Since starting secondary school, I've had quite a few more worries.</span></li><li><b>自從</b>失業後，我一直沒有找到工作。<span class="li-en">Since losing my job, I still haven't found work.</span></li></ul></div>
+      <div class="pat-card p3"><div class="pat">由於 …… ，……。</div><div class="pat-en">because of (reason) — 由於 + 原因</div><ul><li><b>由於</b>老師的教學進度很快，很多東西我都聽不懂。<span class="li-en">Because the teacher goes very fast, I can't understand many things.</span></li><li><b>由於</b>缺乏溝通，兩兄弟的感情漸漸疏遠。<span class="li-en">Due to a lack of communication, the two brothers have gradually grown apart.</span></li></ul></div>
+      <div class="pat-card p4"><div class="pat">…… 。此外，還 ……。</div><div class="pat-en">besides; in addition — 引出另一點</div><ul><li>上了中學後，要學習的科目比以前多了。<b>此外</b>，還有很多功課要做。<span class="li-en">At secondary school there are more subjects than before. In addition, there is a lot of homework.</span></li><li>我每星期要上中文課。<b>此外</b>，還要完成詞語練習。<span class="li-en">I have Chinese lessons every week. Besides that, I also have to finish vocabulary exercises.</span></li></ul></div>
+    </div>
+  </section>
+
+  <section id="flash">
+    <div class="sec-head"><h2>🃏 練習詞卡</h2><span class="en">Flashcards · 翻卡自測 Flip &amp; self-test</span></div>
+    <p class="sec-desc">正面看詞語，想一想讀音、意思和用法，然後<b>點擊卡片翻面</b>核對。可以選擇反面顯示<b>拼音</b>、<b>英文</b>或<b>填空例句</b>。<span class="en-gloss">Look at the word, think of its reading, meaning and usage, then tap the card to flip and check. Choose what the back shows: pinyin, English, or a fill-in-the-blank example sentence.</span></p>
+    <div class="fc-toolbar">
+      <div class="fc-mode" id="fcMode">
+        <button data-m="py">拼音<small>Pinyin</small></button>
+        <button data-m="en">英文<small>English</small></button>
+        <button data-m="sent" class="active">填空例句<small>Fill in the blank</small></button>
+      </div>
+      <div class="fc-lbar" id="fcLessons"></div>
+      <button class="fc-tool" id="fcShuffle">🔀 隨機<small>Shuffle</small></button>
+      <button class="fc-tool" id="fcUnknown">只練未認識<small>Unknown only</small></button>
+      <button class="fc-tool" id="fcReset">↩ 重置進度<small>Reset</small></button>
+    </div>
+    <div class="fc-stage" id="fcStage">
+      <div class="fc-card" id="fcCard">
+        <div class="fc-face front" id="fcFront"></div>
+        <div class="fc-face back" id="fcBack"></div>
+      </div>
+    </div>
+    <div class="fc-controls">
+      <button class="fc-btn" id="fcPrev">◀ 上一個<small>Prev</small></button>
+      <button class="fc-btn" id="fcSpeak">🔊 讀一讀<small>Read</small></button>
+      <button class="fc-btn ok" id="fcKnow">✅ 認識了<small>Got it</small></button>
+      <button class="fc-btn again" id="fcAgain">🔁 再練習<small>Again</small></button>
+      <button class="fc-btn" id="fcNext">下一個 ▶<small>Next</small></button>
+    </div>
+    <div class="fc-prog">
+      <div class="fc-count" id="fcCount"></div>
+      <div class="fc-bar"><div id="fcBarFill"></div></div>
+    </div>
+  </section>
+
+  <section id="practice">
+    <div class="sec-head"><h2>🎯 練習題</h2><span class="en">Practice</span></div>
+    <p class="sec-desc">三種互動練習：選詞填空（按課）、詞義選擇、句式練習，做完可以看看分數！<span class="en-gloss">Three interactive exercises — fill in the blanks by lesson, match the meanings, and practise sentence patterns. Check your score when you're done!</span></p>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="fill">① 選詞填空<small>Fill in the blanks</small></button>
+      <button class="tab-btn" data-tab="mean">② 詞義選擇<small>Word meanings</small></button>
+      <button class="tab-btn" data-tab="pat">③ 句式練習<small>Sentence patterns</small></button>
+    </div>
+    <div class="panel active" id="panel-fill"></div>
+    <div class="panel" id="panel-mean"></div>
+    <div class="panel" id="panel-pat"></div>
+  </section>
+</main>
+
+<footer>Y9 Unit 3 詞語學習 · Year 9 Chinese Unit 3 · Word Bank &amp; Practice ·《給媽媽的一封信》《日記一篇》《抉擇》《給表哥的電子郵件》· 筆畫動畫 Strokes by Hanzi Writer</footer>
+
+<!-- fullscreen stroke overlay -->
+<div id="fsOverlay" role="dialog" aria-label="筆畫全屏展示 Fullscreen stroke demo">
+  <div class="fs-head">
+    <div class="fs-info"><span id="fsWord"></span><span class="sub" id="fsPos"></span></div>
+    <button class="fbtn" id="fsSpeak">🔊 讀一讀 <small>Read</small></button>
+    <button class="fbtn" id="fsClose">✕ 關閉 <small>Close</small></button>
+  </div>
+  <div class="fs-body">
+    <div class="fs-meta" id="fsMeta"></div>
+    <div class="fs-stage">
+      <div class="fs-nav">
+        <button id="fsPrev" title="上一個字 Previous character">⬆</button>
+        <button id="fsNext" title="下一個字 Next character">⬇</button>
+      </div>
+      <div class="tzg fs-tzg"><div class="grid"></div><div id="fsWriterHost"></div></div>
+      <div class="fs-nav">
+        <button id="fsPrevW" title="上一個詞 Previous word">⬅</button>
+        <button id="fsNextW" title="下一個詞 Next word">➡</button>
+      </div>
+    </div>
+  </div>
+  <div class="fs-controls">
+    <button class="fbtn primary" id="fsPlay">▶ 動畫示範 <small>Animate</small></button>
+    <button class="fbtn warn" id="fsQuiz">✍ 筆畫小測驗 <small>Quiz</small></button>
+    <button class="fbtn" id="fsShow">👁 顯示整個字 <small>Show</small></button>
+    <span style="align-self:center;color:#94a3b8;font-weight:700">速度 Speed：</span>
+    <button class="fbtn spd" data-spd="0.55">🐢 慢</button>
+    <button class="fbtn spd on" data-spd="1">▶ 正常</button>
+    <button class="fbtn spd" data-spd="2">🐇 快</button>
+  </div>
+</div>
+
+<script src="hanzi-writer.min.js"></script>
+<script src="char-data.js"></script>
+<script>
+/* ==================== DATA ==================== */
+const LESSONS = [
+  {
+    no: 1, title: "給媽媽的一封信", cls: "l1", color: "var(--l1)",
+    read: [["騙","piàn","to deceive"],["交流","jiāo liú","to exchange"],["真實","zhēn shí","real, true"],["最優","zuì yōu","optimal, best"],["虛擬","xū nǐ","virtual"],["可靠","kě kào","reliable"],["傳統","chuán tǒng","traditional"],["方式","fāng shì","way, method"]],
+    write: [["溝通","gōu tōng","communication"],["擔心","dān xīn","to worry"],["限制","xiàn zhì","limit, restriction"],["選擇","xuǎn zé","choice, to choose"],["天南地北","tiān nán dì běi","all over the place"],["聯繫","lián xì","contact, connect"],["疏遠","shū yuǎn","distant, estranged"],["人際關係","rén jì guān xì","interpersonal relationship"],["和諧","hé xié","harmonious"]]
+  },
+  {
+    no: 2, title: "日記一篇", cls: "l2", color: "var(--l2)",
+    read: [["升學","shēng xué","to pursue further education"],["安排","ān pái","arrangement"],["天分","tiān fèn","talent"],["有商有量","yǒu shāng yǒu liàng","to discuss and decide together"],["無禮","wú lǐ","rude"]],
+    write: [["開明","kāi míng","open-minded"],["聆聽","líng tīng","to listen attentively"],["行行出狀元","háng háng chū zhuàng yuán","there is a leader in every industry"],["有朝一日","yǒu zhāo yī rì","someday"],["被動","bèi dòng","passive"],["暢所欲言","chàng suǒ yù yán","to speak freely"],["靈活","líng huó","flexible"],["思維方式","sī wéi fāng shì","way of thinking"],["深思熟慮","shēn sī shú lǜ","careful deliberation"],["衝動","chōng dòng","impulse, impulsive"]]
+  },
+  {
+    no: 3, title: "抉擇", cls: "l3", color: "var(--l3)",
+    read: [["抉擇","jué zé","to make a choice"],["後悔","hòu huǐ","to regret"],["不湊巧","bú còu qiǎo","not coincidentally"],["人生規劃","rén shēng guī huà","life planning"],["兩難困境","liǎng nán kùn jìng","dilemma"],["先公而後私","xiān gōng ér hòu sī","public benefit first"],["忌諱","jì huì","taboo"],["模棱兩可","mó léng liǎng kě","ambiguous"],["一籌莫展","yì chóu mò zhǎn","can find no way out"],["在乎","zài hu","to care about"],["嚮往","xiàng wǎng","to yearn for"],["分析","fēn xī","to analyse"],["訪問","fǎng wèn","to interview"]],
+    write: [["面臨","miàn lín","to be faced with"],["運用","yùn yòng","to utilise"],["智慧","zhì huì","wisdom"],["冷靜","lěng jìng","calm"],["興致勃勃","xìng zhì bó bó","full of enthusiasm"],["夢寐以求","mèng mèi yǐ qiú","to earnestly long for"],["左右為難","zuǒ yòu wéi nán","in a difficult position"],["矛盾","máo dùn","conflict, contradiction"],["崇拜","chóng bài","to adore"],["兩全其美","liǎng quán qí měi","best of both worlds"],["利弊得失","lì bì dé shī","pros and cons"],["舉棋不定","jǔ qí bú dìng","to hesitate"]]
+  },
+  {
+    no: 4, title: "給表哥的電子郵件", cls: "l4", color: "var(--l4)",
+    read: [["自從","zì cóng","since"],["自責","zì zé","to blame oneself"],["失望","shī wàng","disappointed"],["足夠","zú gòu","enough"],["及格","jí gé","to pass"],["達到","dá dào","to reach"],["要求","yāo qiú","requirement, demand"]],
+    write: [["煩惱","fán nǎo","worries, to be worried"],["無所適從","wú suǒ shì cóng","not know what to do"],["溫習","wēn xí","to review"],["寂寞","jì mò","lonely"],["面對","miàn duì","to face"],["現實","xiàn shí","reality"],["衝突","chōng tū","conflict"],["解決","jiě jué","to solve"]]
+  }
+];
+
+/* flattened write-word sequence for fullscreen navigation */
+const FLAT = [];
+LESSONS.forEach((L, li) => L.write.forEach((w, wi) => FLAT.push({ li, wi, word: w[0], py: w[1], chars: [...w[0]] })));
+
+/* ==================== SPEECH (neural MP3 first, system TTS fallback) ==================== */
+let voices = [];
+function loadVoices(){ voices = speechSynthesis.getVoices(); }
+loadVoices(); speechSynthesis.onvoiceschanged = loadVoices;
+let curAudio = null;
+function speak(text, btn){
+  markSpeaking(btn, true);
+  const stopAll = ()=>{
+    if(curAudio){ curAudio.pause(); curAudio = null; }
+    if("speechSynthesis" in window) speechSynthesis.cancel();
+  };
+  stopAll();
+  const done = ()=>markSpeaking(btn, false);
+  /* 1) local neural voice (pre-generated MP3) */
+  const a = new Audio("audio/" + text + ".mp3");
+  a.onended = done; a.onerror = ()=>{
+    /* 2) fallback: system speech synthesis */
+    if(!("speechSynthesis" in window)){ done(); return; }
+    const v = voices.find(v=>/^zh[-_]CN/i.test(v.lang)) || voices.find(v=>/Chinese/i.test(v.name)) || voices.find(v=>/^zh[-_]Hans/i.test(v.lang)) || voices.find(v=>/^zh/i.test(v.lang));
+    const u = new SpeechSynthesisUtterance(text);
+    if(v) u.voice = v;
+    u.lang = v ? v.lang : "zh-CN"; u.rate = 0.85;
+    u.onend = done; u.onerror = done;
+    speechSynthesis.speak(u);
+  };
+  curAudio = a;
+  a.play().catch(()=>done());
+}
+function markSpeaking(btn, on){
+  if(!btn) return;
+  document.querySelectorAll(".rw-card.speaking").forEach(e=>e.classList.remove("speaking"));
+  if(on) btn.classList.add("speaking"); else btn.classList.remove("speaking");
+}
+
+/* ==================== HERO CARDS ==================== */
+document.getElementById("lessonCards").innerHTML = LESSONS.map((L,i)=>`
+  <div class="lesson-card lc${L.no}" onclick="document.getElementById('${i===0?"read":"write"}').scrollIntoView()">
+    <div class="no">第 ${L.no} 課</div>
+    <div class="tt">《${L.title}》</div>
+    <div class="ct">拓展 ${L.read.length} 個 · 重點 ${L.write.length} 個詞語<br><span class="en-gloss">Extension ${L.read.length} · Key words ${L.write.length}</span></div>
+  </div>`).join("");
+
+/* ==================== READ SECTION ==================== */
+document.getElementById("readBlocks").innerHTML = LESSONS.map(L=>`
+  <div class="lesson-block ${L.cls}">
+    <div class="lb-title">第 ${L.no} 課《${L.title}》<span class="chip">拓展 ${L.read.length} 個</span></div>
+    <div class="word-grid">
+      ${L.read.map(r=>`<div class="rw-card" onclick="speak('${r[0]}', this)"><span class="w">${r[0]}</span><span class="mid"><span class="py">${r[1]}</span><span class="en-gloss">${r[2]}</span></span><span class="sp">🔊</span></div>`).join("")}
+    </div>
+  </div>`).join("");
+
+/* ==================== WRITE SECTION (田字格) ==================== */
+const HW_OPTS = {
+  width: null, height: null, padding: 4,
+  strokeColor: "#0f172a", outlineColor: "#cbd5e1", radicalColor: "#ea580c",
+  showOutline: true, showCharacter: true,
+  charDataLoader: (ch, done) => done(window.CHAR_DATA[ch] || null),
+  strokeAnimationSpeed: 1, delayBetweenStrokes: 260
+};
+const tileWriters = {};
+
+document.getElementById("writeBlocks").innerHTML = LESSONS.map((L, li)=>`
+  <div class="lesson-block ${L.cls}">
+    <div class="lb-title">第 ${L.no} 課《${L.title}》<span class="chip">重點 ${L.write.length} 個</span></div>
+    <div class="write-grid">
+      ${L.write.map((w, wi)=>`
+        <div class="word-block t${L.no}">
+          <div class="top"><span class="py">${w[1]}</span><span class="en-gloss">${w[2]}</span><button class="sp" title="讀一讀 Read aloud" onclick="speak('${w[0]}')">🔊</button></div>
+          <div class="char-row">
+            ${[...w[0]].map((ch, ci)=>`
+              <div class="char-tile">
+                <div class="tzg" id="tzg-${li}-${wi}-${ci}"><div class="grid"></div></div>
+                <button class="stroke-btn" title="全屏展示「${ch}」的筆畫" onclick="openFS(${li},${wi},${ci})">筆</button>
+              </div>`).join("")}
+          </div>
+        </div>`).join("")}
+    </div>
+  </div>`).join("");
+
+/* create writers after DOM ready (deferred to let layout paint first) */
+function initTileWriters(){
+  const size = document.querySelector(".tzg") ? document.querySelector(".tzg").clientWidth : 124;
+  LESSONS.forEach((L, li)=>L.write.forEach((w, wi)=>[...w[0]].forEach((ch, ci)=>{
+    const host = document.getElementById(`tzg-${li}-${wi}-${ci}`);
+    if(!host) return;
+    if(window.CHAR_DATA[ch]){
+      const wr = HanziWriter.create(host, ch, Object.assign({}, HW_OPTS, {width:size, height:size}));
+      tileWriters[`${li}-${wi}-${ci}`] = wr;
+      host.onclick = ()=>{ wr.hideCharacter(); wr.animateCharacter({strokeAnimationSpeed:.75, delayBetweenStrokes:420}); };
+    } else {
+      const d = document.createElement("div"); d.className="fallback"; d.textContent=ch; host.appendChild(d);
+    }
+  })));
+}
+window.addEventListener("load", ()=>setTimeout(initTileWriters, 60));
+
+/* ==================== FULLSCREEN STROKE PLAYER ==================== */
+const fsOverlay = document.getElementById("fsOverlay");
+let FS = { f:-1, c:0, writer:null, speed:1 };
+
+function fsSize(){ const t = document.querySelector(".fs-tzg"); return t ? t.clientWidth : 480; }
+function fsWriterOpts(){ return {
+  width: fsSize(), height: fsSize(), padding: 10,
+  strokeColor: "#0f172a", outlineColor: "#cbd5e1", radicalColor: "#ea580c",
+  showOutline: true, showCharacter: false,
+  charDataLoader: (ch, done) => done(window.CHAR_DATA[ch] || null),
+  strokeAnimationSpeed: FS.speed, delayBetweenStrokes: 420*FS.speed, highlightOnComplete: true
+};}
+
+function setFsMeta(html){ document.getElementById("fsMeta").innerHTML = html; }
+
+function fsRender(){
+  const item = FLAT[FS.f];
+  document.getElementById("fsWord").textContent = item.word;
+  document.getElementById("fsPos").textContent = `第 ${item.li+1} 課 Lesson ${item.li+1} · ${item.py} · ${item.chars[FS.c]} 第 ${FS.c+1}/${item.chars.length} 個字`;
+  document.getElementById("fsPrev").disabled = (FS.f===0 && FS.c===0);
+  document.getElementById("fsNext").disabled = (FS.f===FLAT.length-1 && FS.c===item.chars.length-1);
+  document.getElementById("fsPrevW").disabled = FS.f===0;
+  document.getElementById("fsNextW").disabled = FS.f===FLAT.length-1;
+  const ch = item.chars[FS.c];
+  const host = document.getElementById("fsWriterHost");
+  host.innerHTML = "";
+  const n = window.CHAR_DATA[ch] ? window.CHAR_DATA[ch].strokes.length : "?";
+  setFsMeta(`「${ch}」 共 ${n} 畫 · ${n} strokes <span class="note">跟着動畫，用手指寫一寫 · trace along with your finger</span>`);
+  if(window.CHAR_DATA[ch]){
+    FS.writer = HanziWriter.create(host, ch, fsWriterOpts());
+    FS.writer.hideCharacter();
+    FS.writer.animateCharacter();
+  } else {
+    const d = document.createElement("div"); d.className="fallback"; d.style.fontSize="18rem"; d.textContent=ch; host.appendChild(d);
+  }
+}
+
+function openFS(li, wi, ci){
+  const idx = FLAT.findIndex(f=>f.li===li && f.wi===wi);
+  FS.f = idx; FS.c = ci;
+  fsOverlay.classList.add("open");
+  document.body.style.overflow = "hidden";
+  if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{});
+  fsRender();
+}
+function closeFS(){
+  fsOverlay.classList.remove("open");
+  document.body.style.overflow = "";
+  if(document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+}
+document.getElementById("fsClose").onclick = closeFS;
+document.addEventListener("keydown", e=>{
+  if(!fsOverlay.classList.contains("open")) return;
+  if(e.key==="Escape") closeFS();
+  if(e.key==="ArrowDown"||e.key==="ArrowRight") step(1,0);
+  if(e.key==="ArrowUp"||e.key==="ArrowLeft") step(-1,0);
+});
+function step(dc, dw){
+  if(dw!==0){ FS.f = Math.min(FLAT.length-1, Math.max(0, FS.f+dw)); FS.c = 0; fsRender(); return; }
+  const item = FLAT[FS.f];
+  let c = FS.c + dc;
+  if(c < 0){ if(FS.f>0){ FS.f--; FS.c = FLAT[FS.f].chars.length-1; } else FS.c = 0; }
+  else if(c >= item.chars.length){ if(FS.f<FLAT.length-1){ FS.f++; FS.c=0; } }
+  else FS.c = c;
+  fsRender();
+}
+document.getElementById("fsPrev").onclick = ()=>step(-1,0);
+document.getElementById("fsNext").onclick = ()=>step(1,0);
+document.getElementById("fsPrevW").onclick = ()=>step(0,-1);
+document.getElementById("fsNextW").onclick = ()=>step(0,1);
+document.getElementById("fsPlay").onclick = ()=>{
+  if(!FS.writer) return;
+  setFsMeta(`「${FLAT[FS.f].chars[FS.c]}」 看清楚筆畫順序 Watch the stroke order carefully ✍️`);
+  FS.writer.hideCharacter(); FS.writer.showOutline();
+  FS.writer.animateCharacter({strokeAnimationSpeed:FS.speed, delayBetweenStrokes:420*FS.speed});
+};
+document.getElementById("fsShow").onclick = ()=>{
+  if(!FS.writer) return;
+  FS.writer.showOutline(); FS.writer.showCharacter();
+  const ch = FLAT[FS.f].chars[FS.c];
+  setFsMeta(`「${ch}」 共 ${window.CHAR_DATA[ch].strokes.length} 畫 · ${window.CHAR_DATA[ch].strokes.length} strokes`);
+};
+document.getElementById("fsQuiz").onclick = ()=>{
+  if(!FS.writer) return;
+  const ch = FLAT[FS.f].chars[FS.c];
+  const total = window.CHAR_DATA[ch].strokes.length;
+  setFsMeta(`✍ 小測驗 Quiz：按順序寫「${ch}」 <span class="note">在字上按筆畫順序拖動 · drag along the strokes in order</span>`);
+  FS.writer.hideCharacter(); FS.writer.showOutline();
+  FS.writer.quiz({
+    showHintAfterMisses: 2,
+    leniency: 1.2,
+    onCorrectStroke: s=>setFsMeta(`✍ 第 ${s.strokeNum+1} / ${total} 畫 ✔ 繼續！Keep going!`),
+    onMistake: s=>setFsMeta(`❌ 第 ${s.strokeNum+1} 畫不對，再試一次 Not quite — try again`),
+    onComplete: sum=>setFsMeta(sum.totalMistakes===0 ? "🎉 全部正確，太棒了！Perfect!" : `🎉 完成！共錯了 ${sum.totalMistakes} 筆，再試一次？Done with ${sum.totalMistakes} mistakes — try again?`)
+  });
+};
+document.getElementById("fsSpeak").onclick = ()=>speak(FLAT[FS.f].word);
+document.querySelectorAll(".spd").forEach(b=>b.onclick = ()=>{
+  document.querySelectorAll(".spd").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on"); FS.speed = parseFloat(b.dataset.spd);
+});
+window.addEventListener("resize", ()=>{ /* keep current writer; size fixed at creation is acceptable */ });
+
+/* ==================== PRACTICE ==================== */
+/* ---- tabs ---- */
+document.querySelectorAll(".tab-btn").forEach(b=>b.onclick = ()=>{
+  document.querySelectorAll(".tab-btn").forEach(x=>x.classList.remove("active"));
+  document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  document.getElementById("panel-"+b.dataset.tab).classList.add("active");
+});
+
+/* ---- 1. 選詞填空（按課，取自小冊子） ---- */
+const FILL_BY_LESSON = {
+  1: [
+    ["這個會議的人數是有", "的，不能超過50人。", "限制", "The number of people at this meeting is limited to no more than 50."],
+    ["這本小說寫得太", "了，我都以為是真事。", "真實", "This novel is written so realistically that I thought it was a true story."],
+    ["媽媽見我深夜還未回家，十分", "我的安全。", "擔心", "Seeing me still out late at night, Mum was very worried about my safety."],
+    ["在", "世界中，人與人的交往變得真假難分。", "虛擬", "In the virtual world, relationships between people become hard to tell true from false."],
+    ["他為人誠實，是一位", "的朋友。", "可靠", "He is honest — a reliable friend."],
+    ["老朋友聚在一起，", "地聊了整個晚上。", "天南地北", "Old friends got together and chatted about everything under the sun all night."],
+    ["即使分隔兩地，我們仍靠電話保持", "。", "聯繫", "Even though we live far apart, we still keep in touch by phone."],
+    ["長期缺乏溝通，兩兄弟的感情漸漸", "。", "疏遠", "Lacking communication for so long, the two brothers have gradually grown apart."],
+    ["處理好", "，工作起來自然事半功倍。", "人際關係", "Handle interpersonal relationships well and work becomes twice as effective."],
+    ["一家人互相體諒，家庭氣氛自然", "。", "和諧", "When family members understand each other, the atmosphere at home is naturally harmonious."],
+    ["他為了逃避責任，竟然", "了所有人。", "騙", "To avoid responsibility, he actually deceived everyone."],
+    ["兩地學生透過網上平台", "學習心得。", "交流", "Students from the two places exchange study tips through an online platform."],
+    ["面對眾多", "，他猶豫了很久才作決定。", "選擇", "Faced with so many choices, he hesitated for a long time before deciding."],
+    ["我們要在最短時間內找出", "的解決方案。", "最優", "We need to find the optimal solution in the shortest time."],
+    ["寫信是一種", "的溝通方式。", "傳統", "Writing letters is a traditional way of communicating."],
+    ["良好的", "能減少誤會，讓彼此關係更融洽。", "溝通", "Good communication reduces misunderstandings and makes relationships more harmonious."],
+    ["面對面交談是一種很好的溝通", "。", "方式", "Talking face to face is a very good way of communicating."]
+  ],
+  2: [
+    ["我的父母很", "，從不干涉我選擇的職業。", "開明", "My parents are very open-minded and never interfere with my career choice."],
+    ["我們要用心", "別人的意見，才能互相理解。", "聆聽", "We must listen attentively to others' opinions in order to understand each other."],
+    ["只要肯努力，", "，不必人人都去讀大學。", "行行出狀元", "As long as you work hard, there's a master in every trade — not everyone has to go to university."],
+    ["只要堅持夢想，", "你一定會成功。", "有朝一日", "Keep chasing your dream and one day you will surely succeed."],
+    ["他做事太", "，總要別人催促才肯行動。", "被動", "He is too passive — he always needs others to push him into action."],
+    ["這裏氣氛輕鬆，大家可以", "，不必顧慮。", "暢所欲言", "The atmosphere here is relaxed — everyone can speak freely without worry."],
+    ["處理突發事件時，必須", "應變，不能死守規矩。", "靈活", "When handling emergencies, you must respond flexibly and not rigidly stick to the rules."],
+    ["東西方文化的", "不同，值得我們比較研究。", "思維方式", "Eastern and Western cultures have different ways of thinking, worth comparing."],
+    ["經過", "，他終於決定辭職創業。", "深思熟慮", "After careful deliberation, he finally decided to quit his job and start a business."],
+    ["購物時不要太", "，免得事後後悔。", "衝動", "Don't be too impulsive when shopping, or you'll regret it later."]
+  ],
+  3: [
+    ["在老師的帶領下，學生們", "地參觀了博物館。", "興致勃勃", "Led by their teacher, the students visited the museum full of enthusiasm."],
+    ["因為沒有錢，而孩子的學費必須馬上交了，父母", "，不知道該怎麼辦。", "一籌莫展", "With no money and school fees due at once, the parents were at a complete loss."],
+    ["又想要玩，又想要好成績，哪兒有這麼", "的事情？", "兩全其美", "Want to play and also get good grades — how could anything be the best of both worlds?"],
+    ["到底是玩遊戲，還是去看電視，真是讓人", "。", "左右為難", "Games or TV — it really puts you in a dilemma."],
+    ["下象棋的時候，爸爸總是", "，不知道該往哪兒走。", "舉棋不定", "When playing Chinese chess, Dad is always hesitant, not knowing which piece to move."],
+    ["那是我", "的生活，我最想要的生活。", "夢寐以求", "That is the life I long for in my dreams — the life I want most."],
+    ["我非常", "的地方是非洲，我想去那裏看野生動物。", "嚮往", "The place I yearn to visit most is Africa, to see the wild animals."],
+    ["在學校裏，我最", "的是我的考試成績。", "在乎", "At school, what I care about most is my exam results."],
+    ["我最", "的籃球明星是科比。", "崇拜", "The basketball star I admire most is Kobe."],
+    ["今天電視臺", "了我最崇拜的明星，我開心極了。", "訪問", "The TV station interviewed the star I admire most today — I was so happy."],
+    ["這是他人生中最大的一個", "。", "抉擇", "This is the biggest choice of his life."],
+    ["公司正面", "倒閉的危險。", "面臨", "The company is facing the danger of going bankrupt."],
+    ["遇到危險時，你一定要保持", "。", "冷靜", "When in danger, you must stay calm."],
+    ["他憑著", "和努力，終於成功了。", "智慧", "With wisdom and hard work, he finally succeeded."],
+    ["做決定前要認真", "情況。", "分析", "Analyse the situation carefully before making a decision."],
+    ["我對自己說過的話感到很", "。", "後悔", "I deeply regret what I said."]
+  ],
+  4: [
+    ["", "失業後，我一直沒有找到工作。", "自從", "Since losing my job, I still haven't found work."],
+    ["不要", "了，這不是你的錯。", "自責", "Stop blaming yourself — it's not your fault."],
+    ["爸爸媽媽出差了，我一個人在家裏很", "。", "寂寞", "Mum and Dad are away on business; I feel so lonely at home alone."],
+    ["自從上中學後，我的", "突然多了不少。", "煩惱", "Since starting secondary school, my worries have suddenly increased."],
+    ["學生不僅上課應該認真聽講，下課後也應該", "功課。", "溫習", "Students should not only listen carefully in class but also revise after class."],
+    ["爸爸要我洗車，媽媽叫我擦窗戶，弄得我", "。", "無所適從", "Dad wants me to wash the car, Mum wants me to clean the windows — I don't know which to do."],
+    ["這麼簡單的事你都做不好，太讓我", "了！", "失望", "You can't even do such a simple thing — I'm so disappointed!"],
+    ["我和弟弟總是因為小事發生", "，但之後我們會互相道歉。", "衝突", "My brother and I always have conflicts over small things, but we apologise afterwards."],
+    ["明天有中文評估，但是我沒有", "的時間準備。", "足夠", "There's a Chinese assessment tomorrow but I don't have enough time to prepare."],
+    ["從小，父母就對我的", "很高，我覺得很累。", "要求", "Since I was small, my parents' expectations of me have been very high — it's tiring."],
+    ["如果遇到困難，我們就應該勇敢地", "它。", "面對", "When we meet difficulties, we should face them bravely."],
+    ["如果遇到困難，我們就應該想辦法", "它。", "解決", "When we meet difficulties, we should find ways to solve them."],
+    ["為了", "他的目標，小明不管風吹雨打，每天都跑1000米。", "達到", "To reach his goal, Xiao Ming runs 1000 metres every day whatever the weather."],
+    ["這次評估太難了，我可能不", "了。", "及格", "This assessment was so hard that I might not pass."]
+  ]
+};
+const FILL_TITLES = {1:"第一課《給媽媽的一封信》", 2:"第二課《日記一篇》", 3:"第三課《抉擇》", 4:"第四課《給表哥的電子郵件》"};
+let curFillLesson = 1;
+let fillState = { sel:null, filled:{} };
+function renderFill(){
+  const FILL = FILL_BY_LESSON[curFillLesson];
+  fillState = { sel:null, filled:{} };
+  const bank = FILL.map(f=>f[2]).sort(()=>Math.random()-.5);
+  const panel = document.getElementById("panel-fill");
+  panel.innerHTML = `
+    <div class="lesson-tabs">${[1,2,3,4].map(n=>`<button class="lsel${n===curFillLesson?" on":""}" data-l="${n}">${FILL_TITLES[n]}</button>`).join("")}</div>
+    <div class="bank" id="fillBank"><span class="lbl">📚 詞語庫（先點詞語，再點句子中的橫線） <span class="en-gloss">Word bank — tap a word first, then tap a blank in the sentence</span></span>
+      ${bank.map(w=>`<button class="chip-w" data-w="${w}">${w}</button>`).join("")}
+    </div>
+    ${FILL.map((f,i)=>`<div class="q-item">${i+1}. ${f[0]}<span class="blank" data-i="${i}">＿＿＿＿</span>${f[1]}<span class="q-en">${f[3]}</span></div>`).join("")}
+    <div class="p-actions">
+      <button class="btn-main" id="fillCheck">✅ 檢查答案 <small>Check</small></button>
+      <button class="btn-ghost" id="fillReset">🔄 重新開始 <small>Restart</small></button>
+      <span class="score" id="fillScore"></span>
+    </div>`;
+  panel.querySelectorAll(".lsel").forEach(b=>b.onclick = ()=>{ curFillLesson = +b.dataset.l; renderFill(); });
+  panel.querySelectorAll(".chip-w").forEach(c=>c.onclick = ()=>{
+    if(c.classList.contains("used")) return;
+    panel.querySelectorAll(".chip-w").forEach(x=>x.classList.remove("sel"));
+    if(fillState.sel === c.dataset.w){ fillState.sel = null; return; }
+    fillState.sel = c.dataset.w; c.classList.add("sel");
+  });
+  panel.querySelectorAll(".blank").forEach(bl=>bl.onclick = ()=>{
+    const i = +bl.dataset.i;
+    if(bl.classList.contains("ok")||bl.classList.contains("bad")) return;
+    if(fillState.filled[i]){ // return word to bank
+      const old = fillState.filled[i]; delete fillState.filled[i];
+      const c = panel.querySelector(`.chip-w[data-w="${old}"]`); if(c) c.classList.remove("used");
+      bl.textContent = "＿＿＿＿"; bl.classList.remove("ok","bad"); return;
+    }
+    if(!fillState.sel) return;
+    bl.textContent = fillState.sel; fillState.filled[i] = fillState.sel;
+    const c = panel.querySelector(`.chip-w[data-w="${fillState.sel}"]`); if(c){ c.classList.remove("sel"); c.classList.add("used"); }
+    fillState.sel = null;
+  });
+  document.getElementById("fillCheck").onclick = ()=>{
+    let ok = 0, done = 0;
+    panel.querySelectorAll(".blank").forEach(bl=>{
+      const i = +bl.dataset.i;
+      if(!fillState.filled[i]){ bl.classList.remove("ok","bad"); return; }
+      done++;
+      const good = fillState.filled[i] === FILL[i][2];
+      bl.classList.toggle("ok", good); bl.classList.toggle("bad", !good);
+      if(good) ok++;
+    });
+    const sc = document.getElementById("fillScore");
+    if(done < FILL.length){ sc.textContent = `還有 ${FILL.length-done} 題未完成 · ${FILL.length-done} left`; sc.className="score bad"; return; }
+    sc.textContent = `得分 Score：${ok} / ${FILL.length} ${ok===FILL.length?"🎉 滿分！Full marks!":""}`;
+    sc.className = "score " + (ok===FILL.length?"ok":(ok>=FILL.length*0.6?"":"bad"));
+  };
+  document.getElementById("fillReset").onclick = renderFill;
+}
+renderFill();
+
+/* ---- multiple-choice renderer ---- */
+function renderChoice(panelId, data, prefix){
+  const panel = document.getElementById(panelId);
+  panel.innerHTML = data.map((q,i)=>`
+    <div class="q-item" data-q="${i}">
+      <div class="q-line">${i+1}. ${q.q}<span class="q-en">${q.en||""}</span></div>
+      <div class="opt-row">${q.opts.map((o,j)=>`<button class="opt" data-j="${j}">${o}</button>`).join("")}</div>
+      <div class="fb"></div>
+    </div>`).join("") + `
+    <div class="p-actions">
+      <button class="btn-ghost" id="${prefix}Reset">🔄 重做 <small>Try again</small></button>
+      <span class="score" id="${prefix}Score"></span>
+    </div>`;
+  const score = ()=>{ const done = panel.querySelectorAll(".fb.ok,.fb.bad").length/2;
+    const ok = panel.querySelectorAll(".fb.ok").length;
+    if(done < data.length) return null; return [ok, data.length]; };
+  panel.querySelectorAll(".q-item").forEach(item=>{
+    const q = data[+item.dataset.q], fb = item.querySelector(".fb");
+    item.querySelectorAll(".opt").forEach(btn=>btn.onclick = ()=>{
+      if(item.dataset.done) return;
+      item.dataset.done = "1";
+      const good = btn.textContent === q.a;
+      btn.classList.add(good?"ok":"bad");
+      if(!good) item.querySelectorAll(".opt").forEach(b=>{ if(b.textContent===q.a) b.classList.add("ok"); });
+      item.querySelectorAll(".opt").forEach(b=>b.disabled = true);
+      fb.textContent = (good ? "✔ 答對了！Correct!" : "✘ 正確答案是 The answer is「" + q.a + "」") + (q.note ? "　💡 " + q.note : "");
+      fb.className = "fb show " + (good?"ok":"bad");
+      const s = score();
+      if(s){ const sc = document.getElementById(prefix+"Score"); sc.textContent = `得分 Score：${s[0]} / ${s[1]} ${s[0]===s[1]?"🎉 滿分！Full marks!":""}`; sc.className="score "+(s[0]===s[1]?"ok":"bad"); }
+    });
+  });
+  document.getElementById(prefix+"Reset").onclick = ()=>renderChoice(panelId, data, prefix);
+}
+
+/* ---- 2. 詞義選擇 ---- */
+const MEAN = [
+  {q:"「天南地北」的意思是：", en:"What does 天南地北 mean?", opts:["to speak freely","all over the place; about anything","distant and estranged"], a:"all over the place; about anything", note:"天南地北地聊 = 無所不談 chat about everything under the sun"},
+  {q:"「暢所欲言」的意思是：", en:"What does 暢所欲言 mean?", opts:["to speak freely","to be impulsive","to listen carefully"], a:"to speak freely", note:"暢所欲言 = 說出想說的所有話 say all you want to say"},
+  {q:"「深思熟慮」的意思是：", en:"What does 深思熟慮 mean?", opts:["careful deliberation","full of enthusiasm","hard to choose"], a:"careful deliberation", note:"經過深思熟慮 = 想得非常透徹 after thinking it through carefully"},
+  {q:"「興致勃勃」的意思是：", en:"What does 興致勃勃 mean?", opts:["feeling lonely","full of enthusiasm","very calm"], a:"full of enthusiasm", note:"興致勃勃地討論 discuss with great excitement"},
+  {q:"「夢寐以求」的意思是：", en:"What does 夢寐以求 mean?", opts:["something you long for in your dreams","something you regret","a frightening dream"], a:"something you long for in your dreams", note:"夢寐以求的機會 = 一直渴望的機會 the opportunity you've always dreamed of"},
+  {q:"「左右為難」的意思是：", en:"What does 左右為難 mean?", opts:["best of both worlds","in a difficult position; hard to choose","very calm and wise"], a:"in a difficult position; hard to choose", note:"一邊是朋友，一邊是家人 → 左右為難 caught in the middle"},
+  {q:"「兩全其美」的意思是：", en:"What does 兩全其美 mean?", opts:["the best of both worlds","hesitant to decide","a serious conflict"], a:"the best of both worlds", note:"既省錢又省時間 = 兩全其美 both goals achieved at once"},
+  {q:"「舉棋不定」的意思是：", en:"What does 舉棋不定 mean?", opts:["to hesitate; be in two minds","to play chess well","to make a firm decision"], a:"to hesitate; be in two minds", note:"像下棋時拿不定主意 → 猶豫不決 like a chess player who can't decide his move"},
+  {q:"「無所適從」的意思是：", en:"What does 無所適從 mean?", opts:["to have no way out at all","not knowing what to do or whom to follow","to travel everywhere"], a:"not knowing what to do or whom to follow", note:"爸爸要我這樣，媽媽要我那樣 → 無所適從 pulled in all directions"},
+  {q:"「一籌莫展」的意思是：", en:"What does 一籌莫展 mean?", opts:["full of clever plans","to be at a complete loss","to make a big decision"], a:"to be at a complete loss", note:"面對難題，一籌莫展 = 完全沒有辦法 no idea what to do about a problem"},
+  {q:"「疏遠」的意思是：", en:"What does 疏遠 mean?", opts:["distant; estranged","harmonious","reliable"], a:"distant; estranged", note:"長期缺乏溝通 → 感情漸漸疏遠 growing apart from someone"},
+  {q:"「被動」的意思是：", en:"What does 被動 mean?", opts:["passive","flexible","open-minded"], a:"passive", note:"被動 = 要別人推動才行動 passive — needing others to push you"}
+];
+renderChoice("panel-mean", MEAN, "mean");
+
+/* ---- 3. 句式練習（仿寫句式） ---- */
+const PAT = [
+  {q:"＿＿忘記學習上的煩惱，我每天都花不少時間在網上玩遊戲。", en:"___ forgetting my study worries, I spend a lot of time playing games online every day.", opts:["為了","自從","此外"], a:"為了", note:"為了 + 目的 in order to (purpose)"},
+  {q:"＿＿取得好成績，他每天都努力溫習。", en:"___ get good results, he revises hard every day.", opts:["為了","由於","比"], a:"為了", note:"為了 + 目的 in order to (purpose)"},
+  {q:"我發現我＿＿喜歡中文了。", en:"I find that I like Chinese more and more.", opts:["越來越","比","自從"], a:"越來越", note:"越來越 = more and more（程度加深 increasing degree）"},
+  {q:"我們現在要學習的科目＿＿以前多了。", en:"We now study ___ subjects than before.", opts:["比","為了","此外"], a:"比", note:"A 比 B + 形容詞 comparing: A is more … than B"},
+  {q:"他的中文説得＿＿以前好了。", en:"His Chinese is ___ better than before.", opts:["比","由於","越來越"], a:"比", note:"A 比 B + 形容詞 comparing: A is more … than B"},
+  {q:"＿＿上中學後，我的煩惱多了不少。", en:"___ starting secondary school, my worries have grown.", opts:["自從","為了","比"], a:"自從", note:"自從 + 時間點 since (a point in time)"},
+  {q:"＿＿老師的教學進度很快，很多東西我都聽不懂。", en:"___ the teacher goes very fast, I can't understand many things.", opts:["由於","為了","此外"], a:"由於", note:"由於 + 原因 because of (reason)"},
+  {q:"上了中學後，要學習的科目比以前多了。＿＿，還有很多功課要做。", en:"At secondary school there are more subjects than before. ___, there is also a lot of homework.", opts:["此外","越來越","自從"], a:"此外", note:"此外 = besides, in addition（引出另一點 adds another point）"}
+];
+renderChoice("panel-pat", PAT, "pat");
+
+/* ---- 🃏 練習詞卡 Flashcards ---- */
+const FC_EX = {
+  "溝通":"良好的溝通能減少誤會，讓彼此關係更融洽。",
+  "擔心":"媽媽見我深夜還未回家，十分擔心我的安全。",
+  "限制":"學校限制學生使用手機的時間，以免影響學習。",
+  "選擇":"面對眾多選擇，他猶豫了很久才作決定。",
+  "天南地北":"老朋友聚在一起，天南地北地聊了整個晚上。",
+  "聯繫":"即使分隔兩地，我們仍靠電話保持聯繫。",
+  "疏遠":"長期缺乏溝通，兩兄弟的感情漸漸疏遠。",
+  "人際關係":"處理好人際關係，工作起來自然事半功倍。",
+  "和諧":"一家人互相體諒，家庭氣氛自然和諧。",
+  "開明":"我的父母很開明，從不干涉我選擇的職業。",
+  "聆聽":"我們要用心聆聽別人的意見，才能互相理解。",
+  "行行出狀元":"只要肯努力，行行出狀元，不必人人都去讀大學。",
+  "有朝一日":"只要堅持夢想，有朝一日你一定會成功。",
+  "被動":"他做事太被動，總要別人催促才行動。",
+  "暢所欲言":"這裏氣氛輕鬆，大家可以暢所欲言，不必顧慮。",
+  "靈活":"處理突發事件時，必須靈活應變，不能死守規矩。",
+  "思維方式":"東西方文化的思維方式不同，值得我們比較研究。",
+  "深思熟慮":"經過深思熟慮，他終於決定辭職創業。",
+  "衝動":"購物時不要太衝動，免得事後後悔。",
+  "面臨":"公司正面臨倒閉的危險。",
+  "運用":"他善於運用新技術來解決問題。",
+  "智慧":"他憑著智慧和努力，終於成功了。",
+  "冷靜":"遇到危險時，你一定要保持冷靜。",
+  "興致勃勃":"同學們興致勃勃地討論這次旅行的計劃。",
+  "夢寐以求":"這份工作是他夢寐以求的機會。",
+  "左右為難":"一邊是朋友，一邊是家人，讓他左右為難。",
+  "矛盾":"他心裏覺得很矛盾，不知道該聽誰的。",
+  "崇拜":"很多年輕人崇拜這位歌星。",
+  "兩全其美":"這樣做既能省錢又能省時間，真是兩全其美。",
+  "利弊得失":"做決定前要先衡量事情的利弊得失。",
+  "舉棋不定":"面對兩個選擇，他一直舉棋不定。",
+  "煩惱":"不要為了小事煩惱，開心點吧。",
+  "無所適從":"爸爸要我洗車，媽媽叫我擦窗戶，弄得我無所適從。",
+  "溫習":"學生不僅上課應該認真聽講，下課後也應該溫習功課。",
+  "寂寞":"爸爸媽媽出差了，我一個人在家裏很寂寞。",
+  "面對":"你需要面對現實，不要再幻想了。",
+  "現實":"我們要學會面對現實生活中的問題。",
+  "衝突":"溝通不好會造成人與人的衝突。",
+  "解決":"你有解決這個問題的辦法嗎？"
+};
+const FC_ALL = [];
+LESSONS.forEach(L=>L.write.forEach(w=>FC_ALL.push({word:w[0], py:w[1], en:w[2], lesson:L.no, title:L.title})));
+const FC = { mode:"sent", lesson:0, idx:0, flipped:false, known:new Set(), onlyUnknown:false, order:[] };
+try{ (JSON.parse(localStorage.getItem("y9u3_fc_known")||"[]")).forEach(w=>FC.known.add(w)); }catch(e){}
+function fcSave(){ try{ localStorage.setItem("y9u3_fc_known", JSON.stringify([...FC.known])); }catch(e){} }
+
+function fcBuildList(keepPos){
+  let idxs = FC_ALL.map((_,i)=>i).filter(i=> FC.lesson===0 || FC_ALL[i].lesson===FC.lesson);
+  if(FC.onlyUnknown) idxs = idxs.filter(i=>!FC.known.has(FC_ALL[i].word));
+  FC.order = idxs;
+  if(!keepPos || FC.idx>=FC.order.length) FC.idx = 0;
+  FC.flipped = false;
+  fcRender();
+}
+function fcShuffle(){
+  for(let i=FC.order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [FC.order[i],FC.order[j]]=[FC.order[j],FC.order[i]]; }
+  FC.idx = 0; FC.flipped = false; fcRender();
+}
+function fcReveal(ev){
+  ev.stopPropagation();
+  const c = FC_ALL[FC.order[FC.idx]];
+  ev.target.textContent = c.word;
+  ev.target.classList.add("show");
+}
+function fcBlankSent(c){
+  const s = FC_EX[c.word] || "";
+  if(s.includes(c.word)) return s.replace(c.word, `<span class="gap" onclick="fcReveal(event)">${"＿".repeat(Math.min(c.word.length*2, 8))}</span>`);
+  return s;
+}
+function fcRender(){
+  const stage = document.getElementById("fcStage");
+  const countEl = document.getElementById("fcCount");
+  const bar = document.getElementById("fcBarFill");
+  if(!FC.order.length){
+    stage.innerHTML = `<div class="fc-empty">🎉 這裏的詞語全部認識了！<br><span class="en-gloss">All mastered here! 點「重置進度」可再來一次，或取消「只練未認識」。</span></div>`;
+    countEl.textContent = ""; bar.style.width = "100%"; return;
+  }
+  const c = FC_ALL[FC.order[FC.idx]];
+  const card = document.getElementById("fcCard");
+  card.classList.toggle("flipped", FC.flipped);
+  document.getElementById("fcFront").innerHTML =
+    `<span class="fc-lbl">正面 · 第 ${FC.idx+1} / ${FC.order.length} 張 · 第${c.lesson}課</span>
+     <div class="fc-word">${c.word}</div>
+     <div class="fc-tip">想一想讀音、意思和用法，再點擊卡片翻面 · <span class="en-gloss">Think, then tap to flip</span></div>`;
+  let backHtml;
+  if(FC.mode==="py")
+    backHtml = `<span class="fc-lbl">反面 · 拼音 Pinyin</span><div class="fc-py">${c.py}</div><div class="fc-note">跟着讀一讀 · read it aloud</div>`;
+  else if(FC.mode==="en")
+    backHtml = `<span class="fc-lbl">反面 · 英文 English</span><div class="fc-en">${c.en}</div>`;
+  else
+    backHtml = `<span class="fc-lbl">反面 · 填空例句 Fill in the blank</span><div class="fc-sent">${fcBlankSent(c)}</div><div class="fc-note">💡 想一想詞語填在哪裏，點擊空格顯示答案 · tap the blank to reveal</div>`;
+  document.getElementById("fcBack").innerHTML = backHtml;
+  const total = FC_ALL.filter(x=> FC.lesson===0 || x.lesson===FC.lesson).length;
+  const knownN = FC_ALL.filter(x=> (FC.lesson===0 || x.lesson===FC.lesson) && FC.known.has(x.word)).length;
+  countEl.textContent = `已認識 ${knownN} / ${total} 個詞語`;
+  bar.style.width = (total ? knownN/total*100 : 0) + "%";
+}
+function fcNext(step){
+  if(!FC.order.length) return;
+  FC.idx = (FC.idx + step + FC.order.length) % FC.order.length;
+  FC.flipped = false;
+  fcRender();
+}
+function fcMark(know){
+  if(!FC.order.length) return;
+  const c = FC_ALL[FC.order[FC.idx]];
+  if(know) FC.known.add(c.word); else FC.known.delete(c.word);
+  fcSave();
+  if(FC.onlyUnknown) fcBuildList(true); else fcNext(1);
+}
+document.getElementById("fcCard").onclick = ()=>{ FC.flipped=!FC.flipped; document.getElementById("fcCard").classList.toggle("flipped", FC.flipped); };
+document.getElementById("fcPrev").onclick = ()=>fcNext(-1);
+document.getElementById("fcNext").onclick = ()=>fcNext(1);
+document.getElementById("fcKnow").onclick = ()=>fcMark(true);
+document.getElementById("fcAgain").onclick = ()=>fcMark(false);
+document.getElementById("fcSpeak").onclick = ()=>{ if(FC.order.length) speak(FC_ALL[FC.order[FC.idx]].word); };
+document.getElementById("fcShuffle").onclick = fcShuffle;
+document.getElementById("fcUnknown").onclick = e=>{ FC.onlyUnknown=!FC.onlyUnknown; e.currentTarget.classList.toggle("on", FC.onlyUnknown); fcBuildList(); };
+document.getElementById("fcReset").onclick = ()=>{ FC.known.clear(); fcSave(); fcBuildList(); };
+document.querySelectorAll("#fcMode button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("#fcMode button").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  FC.mode = b.dataset.m; FC.flipped = false; fcRender();
+});
+const fcLessonBar = document.getElementById("fcLessons");
+fcLessonBar.innerHTML = `<button class="lsel on" data-l="0">全部</button>` + LESSONS.map(L=>`<button class="lsel" data-l="${L.no}">第${L.no}課</button>`).join("");
+fcLessonBar.querySelectorAll(".lsel").forEach(b=>b.onclick=()=>{
+  fcLessonBar.querySelectorAll(".lsel").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on");
+  FC.lesson = +b.dataset.l;
+  fcBuildList();
+});
+document.addEventListener("keydown", e=>{
+  const sec = document.getElementById("flash");
+  const r = sec.getBoundingClientRect();
+  if(r.bottom < 0 || r.top > innerHeight) return;
+  if(e.key==="ArrowRight") fcNext(1);
+  else if(e.key==="ArrowLeft") fcNext(-1);
+  else if(e.key===" "){ e.preventDefault(); FC.flipped=!FC.flipped; document.getElementById("fcCard").classList.toggle("flipped", FC.flipped); }
+});
+fcBuildList();
+
+/* ---- 成語卡點擊朗讀 ---- */
+document.querySelectorAll("#knowledge .fx-row").forEach(row=>{
+  const idiom = row.querySelector(".dy-char").textContent.trim();
+  row.style.cursor = "pointer";
+  row.onclick = ()=>speak(idiom, row);
+});
+</script>
+</body>
+</html>
