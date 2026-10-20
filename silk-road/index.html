@@ -1,0 +1,911 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>[hidden]{display:none!important}html,body{margin:0}</style>
+<title>丝绸之路 The Silk Roads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=LXGW+WenKai+TC:wght@400;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap">
+<style>
+/* Layout: one stage like a Dunhuang mural panel; scenes cross-fade inside it, controls sit in a bar beneath. */
+:root{
+  --ground:#efe3c9;      /* 沙 sand-silk */
+  --panel:#f7eedc;
+  --ink:#2a2118;         /* 墨 */
+  --muted:#6f604c;
+  --lapis:#1f4d8a;       /* 青金石 */
+  --malachite:#2c7a68;   /* 石绿 */
+  --ochre:#c3842a;       /* 赭 */
+  --cinnabar:#b4382a;    /* 朱砂 */
+  --line:#cdb894;
+  --sea:#a9c4cf;
+  --dune1:#e2c48d; --dune2:#d3a964; --dune3:#b98742;
+  --sky1:#f6d9a3; --sky2:#efe3c9;
+  --shadow:rgba(60,40,15,.14);
+  --kai:"KaiTi","STKaiti","Kaiti SC","楷体","LXGW WenKai TC","Ma Shan Zheng",serif;
+  --brush:"Ma Shan Zheng","KaiTi","STKaiti","Kaiti SC",serif;
+  --latin:"Cormorant Garamond","Georgia",serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --ground:#141b2a; --panel:#1b2437; --ink:#efe3c8; --muted:#b4a68b;
+  --lapis:#7fa6e0; --malachite:#62b49f; --ochre:#e0a74d; --cinnabar:#e0705e;
+  --line:#3a4660; --sea:#284462;
+  --dune1:#4a3d32; --dune2:#3b3028; --dune3:#2c241e;
+  --sky1:#2a3554; --sky2:#141b2a; --shadow:rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --ground:#141b2a; --panel:#1b2437; --ink:#efe3c8; --muted:#b4a68b;
+  --lapis:#7fa6e0; --malachite:#62b49f; --ochre:#e0a74d; --cinnabar:#e0705e;
+  --line:#3a4660; --sea:#284462;
+  --dune1:#4a3d32; --dune2:#3b3028; --dune3:#2c241e;
+  --sky1:#2a3554; --sky2:#141b2a; --shadow:rgba(0,0,0,.35); color-scheme:dark}
+
+html,body{height:100%}
+body{background:var(--ground);color:var(--ink);font-family:var(--kai);font-size:18px;line-height:1.7;
+  display:flex;flex-direction:column;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:12px;box-sizing:border-box;
+  background-image:radial-gradient(circle at 20% 10%,color-mix(in srgb,var(--ochre) 10%,transparent),transparent 40%),
+    radial-gradient(circle at 85% 90%,color-mix(in srgb,var(--malachite) 9%,transparent),transparent 45%);}
+*{box-sizing:border-box}
+.en{font-family:var(--latin);font-weight:500;letter-spacing:.01em}
+.py{font-family:var(--latin);font-style:italic;color:var(--muted);font-size:.86em;white-space:nowrap}
+
+#stage{position:relative;flex:1;min-height:0;max-width:1100px;width:100%;margin:0 auto;
+  background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden;
+  box-shadow:0 10px 30px var(--shadow)}
+/* 回纹 border band */
+#stage::before{content:"";position:absolute;inset:8px;border:2px solid color-mix(in srgb,var(--ochre) 55%,transparent);border-radius:3px;pointer-events:none;z-index:3;
+  outline:1px solid color-mix(in srgb,var(--ochre) 30%,transparent);outline-offset:3px}
+.scene{position:absolute;inset:0;padding:clamp(22px,4vw,48px);overflow-y:auto;opacity:0;visibility:hidden;transition:opacity .7s,visibility .7s;
+  display:flex;flex-direction:column;gap:14px}
+.scene.on{opacity:1;visibility:visible;z-index:2}
+.paused .scene *,.paused .scene{animation-play-state:paused!important}
+
+h2{font-family:var(--brush);font-weight:400;font-size:clamp(30px,4.6vw,48px);line-height:1.15;margin:0;text-wrap:balance;color:var(--ink)}
+h2 .en{display:block;font-size:.5em;color:var(--cinnabar);font-style:italic;margin-top:4px}
+p{margin:0;max-width:62ch}
+.eyebrow{font-family:var(--latin);letter-spacing:.18em;text-transform:uppercase;font-size:13px;color:var(--ochre)}
+
+/* reveal */
+.rv{opacity:1}
+.on .rv{animation:rise .9s cubic-bezier(.2,.7,.2,1) both;animation-delay:var(--d,0s)}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.on .ink{animation:inkin 1.4s ease both;animation-delay:var(--d,0s)}
+@keyframes inkin{from{opacity:0;filter:blur(6px);letter-spacing:.3em}to{opacity:1;filter:none}}
+
+/* ---------- Scene 1 ---------- */
+.s1{justify-content:flex-end;padding:0}
+.s1 svg.bg{position:absolute;inset:0;width:100%;height:100%}
+.s1 .txt{position:relative;z-index:1;padding:clamp(24px,5vw,56px);padding-bottom:clamp(24px,4vw,40px);display:flex;flex-direction:column;gap:10px;
+  background:linear-gradient(to top,color-mix(in srgb,var(--panel) 92%,transparent) 55%,transparent)}
+.s1 h1{font-family:var(--brush);font-weight:400;font-size:clamp(56px,10vw,112px);line-height:1;margin:0;letter-spacing:.06em}
+.s1 .sub{font-size:clamp(18px,2.4vw,24px)}
+.s1 .sub .en{font-size:1.25em;color:var(--cinnabar);font-style:italic}
+.ribbon{stroke-dasharray:14 10;animation:flow 3s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-48}}
+.caravan{animation:walk 26s linear infinite}
+@keyframes walk{from{transform:translateX(-30%)}to{transform:translateX(105%)}}
+.bob{animation:bob 1.1s ease-in-out infinite}
+.bob.b2{animation-delay:-.3s}.bob.b3{animation-delay:-.6s}.bob.b4{animation-delay:-.8s}
+@keyframes bob{50%{transform:translateY(-2.5px)}}
+.sun{animation:glow 5s ease-in-out infinite alternate}
+@keyframes glow{to{opacity:.75}}
+
+/* ---------- Scene 2 ---------- */
+.s2 .grid{display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(16px,3vw,36px);align-items:start}
+.s2 .grid>*{min-width:0}
+.s2 .story{display:flex;flex-direction:column;gap:14px}
+.s2 .story p{font-size:clamp(17px,1.9vw,20px)}
+.year{font-family:var(--brush);font-size:clamp(28px,3.4vw,38px);color:var(--cinnabar);line-height:1}
+.tip{border-top:1px dashed var(--line);padding-top:12px;font-size:16px;color:var(--muted)}
+.tip b{color:var(--malachite);font-weight:700}
+.art2{position:relative;aspect-ratio:4/5;max-width:100%;border-radius:4px;overflow:hidden;border:1px solid var(--line)}
+.art2 svg{width:100%;height:100%;display:block}
+.walker{animation:trek 16s linear both}
+@keyframes trek{from{transform:translate(0,0)}to{transform:translate(-120px,-34px)}}
+.seal{position:absolute;right:14px;top:14px;width:76px;height:76px;background:var(--cinnabar);color:var(--panel);
+  font-family:var(--brush);font-size:30px;line-height:1;display:grid;place-items:center;border-radius:4px;
+  writing-mode:vertical-rl;letter-spacing:.05em;box-shadow:inset 0 0 0 3px var(--panel),inset 0 0 0 5px var(--cinnabar);transform:rotate(-4deg)}
+.on .seal{animation:stamp .6s cubic-bezier(.3,1.6,.5,1) both;animation-delay:6s}
+@keyframes stamp{from{opacity:0;transform:scale(1.8) rotate(-4deg)}to{opacity:1;transform:scale(1) rotate(-4deg)}}
+.zao{color:var(--cinnabar);font-weight:700}
+
+/* ---------- Scene 3 map ---------- */
+.s3{gap:10px}
+.mapwrap{position:relative;flex:1;min-height:220px;overflow-x:auto;border:1px solid var(--line);border-radius:4px;background:color-mix(in srgb,var(--ground) 70%,var(--panel))}
+.mapwrap svg{display:block;width:100%;min-width:640px;height:100%}
+.maptxt{font-family:var(--kai)}
+.city circle.dot{fill:var(--panel);stroke:var(--ink);stroke-width:2;transition:all .5s}
+.city.seen circle.dot{fill:var(--ochre)}
+.city.now circle.dot{fill:var(--cinnabar);stroke:var(--cinnabar)}
+.city .halo{fill:none;stroke:var(--cinnabar);stroke-width:2;opacity:0}
+.city.now .halo{animation:halo 1.6s ease-out infinite}
+@keyframes halo{from{r:7;opacity:.9}to{r:22;opacity:0}}
+.city text{fill:var(--ink);font-size:17px;transition:fill .4s}
+.city.now text{fill:var(--cinnabar);font-weight:700}
+.city text.p{font-family:var(--latin);font-style:italic;font-size:13px;fill:var(--muted)}
+.corner{position:absolute;left:12px;bottom:10px;max-width:310px;font-size:13px;line-height:1.5;color:var(--muted);background:color-mix(in srgb,var(--panel) 88%,transparent);padding:8px 10px;border-left:3px solid var(--ochre)}
+.corner .en{display:block;font-size:13px;font-style:italic}
+.capbar{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;min-height:74px;padding:10px 14px;border:1px solid var(--line);border-radius:4px;background:var(--ground)}
+.capbar>*{min-width:0}
+.capnum{font-family:var(--brush);font-size:34px;color:var(--cinnabar);line-height:1;width:1.4em;text-align:center}
+.capline{font-size:clamp(16px,2vw,20px)}
+.capcity{font-size:14px;color:var(--malachite)}
+.capfade{animation:rise .6s both}
+.pips{display:flex;gap:6px;justify-content:center}
+.pips button{width:26px;height:6px;border:0;border-radius:3px;background:var(--line);cursor:pointer;padding:0}
+.pips button.on{background:var(--cinnabar)}
+
+/* ---------- Scene 4 ---------- */
+.trade{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(10px,2vw,24px);align-items:stretch}
+.trade>*{min-width:0}
+.col{border:1px solid var(--line);border-radius:4px;padding:16px 18px;background:var(--ground);display:flex;flex-direction:column;gap:10px}
+.col h3{margin:0;font-family:var(--brush);font-weight:400;font-size:26px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.col h3 .en{font-size:17px;font-style:italic;color:var(--muted)}
+.col.out{border-top:4px solid var(--cinnabar)}
+.col.in{border-top:4px solid var(--malachite)}
+.good{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center}
+.good .ic{font-size:28px;width:44px;height:44px;display:grid;place-items:center;border-radius:50%;background:var(--panel);border:1px solid var(--line)}
+.good b{font-size:20px}
+.good small{display:block;font-size:14px;color:var(--muted);line-height:1.45}
+.lane{position:relative;width:64px;display:flex;flex-direction:column;justify-content:center;gap:26px;align-items:center;color:var(--ochre)}
+.lane svg{width:64px;height:28px;overflow:visible}
+.lane .mv{animation:slide 2.4s ease-in-out infinite}
+.lane .mv.l{animation-name:slidel}
+@keyframes slide{0%{transform:translateX(-14px);opacity:0}30%,70%{opacity:1}100%{transform:translateX(14px);opacity:0}}
+@keyframes slidel{0%{transform:translateX(14px);opacity:0}30%,70%{opacity:1}100%{transform:translateX(-14px);opacity:0}}
+.note{font-size:15px;color:var(--muted);border-left:3px solid var(--ochre);padding-left:10px}
+
+/* ---------- Scene 5 ---------- */
+.niches{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,2vw,22px)}
+.niche{min-width:0;background:var(--ground);border:1px solid var(--line);border-radius:999px 999px 6px 6px;padding:28px 18px 18px;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center;position:relative}
+.niche::before{content:"";position:absolute;inset:6px;border:1px solid color-mix(in srgb,var(--ochre) 45%,transparent);border-radius:999px 999px 3px 3px;pointer-events:none}
+.niche .ic{font-size:38px;line-height:1;width:72px;height:72px;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--ochre) 30%,transparent),transparent 70%)}
+.niche h3{margin:0;font-family:var(--brush);font-weight:400;font-size:26px;line-height:1.2}
+.niche h3 .en{display:block;font-size:16px;color:var(--cinnabar);font-style:italic}
+.niche p{font-size:16px;line-height:1.6;text-align:left}
+.niche.a{--tone:var(--lapis)} .niche.b{--tone:var(--malachite)} .niche.c{--tone:var(--cinnabar)}
+.niche{border-bottom:4px solid var(--tone)}
+.lead{font-size:clamp(18px,2.2vw,22px)}
+.lead em{font-style:normal;color:var(--cinnabar)}
+
+/* ---------- Scene 6 ---------- */
+.s6 .top{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,3vw,32px)}
+.s6 .top>*{min-width:0;display:flex;flex-direction:column;gap:10px}
+.s6 p{font-size:17px}
+.sea{position:relative;flex:1;min-height:200px;border-radius:4px;overflow:hidden;border:1px solid var(--line)}
+.sea svg{width:100%;height:100%;display:block}
+.wave{animation:wave 6s linear infinite}
+.wave.w2{animation-duration:9s;animation-direction:reverse}
+@keyframes wave{to{transform:translateX(-120px)}}
+.ship{animation:sail 13s ease-in-out both}
+@keyframes sail{from{transform:translateX(0)}to{transform:translateX(-560px)}}
+.rock{animation:rock 3s ease-in-out infinite;transform-origin:60px 70px;transform-box:fill-box}
+@keyframes rock{50%{transform:rotate(-2.5deg) translateY(2px)}}
+.dates{font-family:var(--brush);color:var(--cinnabar);font-size:26px}
+
+/* ---------- Scene 7 ---------- */
+.today{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,3vw,30px)}
+.card7{min-width:0;border:1px solid var(--line);border-radius:4px;background:var(--ground);overflow:hidden;display:flex;flex-direction:column}
+.card7 svg{width:100%;height:auto;display:block;max-height:200px}
+.card7 .body{padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.big{font-family:var(--brush);font-size:46px;line-height:1;color:var(--cinnabar)}
+.card7 p{font-size:17px}
+.facts{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:14px;border:1px solid var(--line);padding:2px 10px;border-radius:999px;background:var(--panel)}
+
+/* ---------- Scene 8 ---------- */
+.s8{padding:0;justify-content:center;align-items:center;text-align:center}
+.s8 svg.bg{position:absolute;inset:0;width:100%;height:100%}
+.s8 .msg{position:relative;z-index:1;display:flex;flex-direction:column;gap:12px;align-items:center;padding:24px;max-width:720px;margin-top:-6%}
+.s8 .msg .q1{font-family:var(--brush);font-size:clamp(30px,5vw,52px);line-height:1.25;text-wrap:balance}
+.s8 .msg .en{font-size:clamp(18px,2.4vw,24px);font-style:italic;color:var(--cinnabar)}
+.btn{font-family:var(--kai);font-size:18px;border:1px solid var(--ink);background:var(--ink);color:var(--panel);padding:8px 22px;border-radius:999px;cursor:pointer}
+.btn:hover{background:var(--cinnabar);border-color:var(--cinnabar)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{color:var(--panel)}
+
+/* ---------- Scene 9 quiz ---------- */
+.quiz{display:flex;flex-direction:column;gap:14px;max-width:760px;width:100%}
+.qhead{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.qdots{display:flex;gap:6px}
+.qdots span{width:10px;height:10px;border-radius:50%;border:1px solid var(--ink)}
+.qdots span.ok{background:var(--malachite);border-color:var(--malachite)}
+.qdots span.no{background:var(--cinnabar);border-color:var(--cinnabar)}
+.qdots span.cur{box-shadow:0 0 0 3px color-mix(in srgb,var(--ochre) 45%,transparent)}
+.qtext{font-size:clamp(20px,2.6vw,26px);line-height:1.45}
+.qtext .en{display:block;font-size:.8em;color:var(--muted);font-style:italic}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;font-family:var(--kai);font-size:19px;padding:12px 16px;border:1px solid var(--line);border-radius:4px;background:var(--ground);color:var(--ink);cursor:pointer;display:flex;gap:12px;align-items:center}
+.opt:hover:not(:disabled){border-color:var(--ochre)}
+.opt .k{font-family:var(--latin);font-weight:600;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);flex:none}
+.opt.right{border-color:var(--malachite);background:color-mix(in srgb,var(--malachite) 14%,var(--ground))}
+.opt.wrong{border-color:var(--cinnabar);background:color-mix(in srgb,var(--cinnabar) 12%,var(--ground))}
+.opt:disabled{cursor:default}
+.fb{font-size:17px;padding:12px 14px;border-radius:4px;background:var(--ground);border-left:4px solid var(--ochre)}
+.fb.ok{border-left-color:var(--malachite)}.fb.no{border-left-color:var(--cinnabar)}
+.score{font-family:var(--brush);font-size:clamp(32px,5vw,48px);text-align:center}
+.qnav{display:flex;gap:10px;justify-content:flex-end}
+
+/* ---------- Controls ---------- */
+.bar{max-width:1100px;width:100%;margin:10px auto 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ctl{display:flex;gap:6px}
+.ctl button{width:44px;height:40px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:4px;font-size:16px;cursor:pointer}
+.ctl button:hover{border-color:var(--ochre)}
+.track{flex:1;min-width:120px;display:flex;gap:4px}
+.track button{flex:1;height:8px;border:0;padding:0;border-radius:4px;background:var(--line);cursor:pointer;position:relative;overflow:hidden}
+.track button.done{background:var(--ochre)}
+.track button i{position:absolute;inset:0;width:0;background:var(--cinnabar)}
+.count{font-family:var(--latin);font-size:18px;font-variant-numeric:tabular-nums;min-width:3ch;text-align:right}
+.ctl button.off{opacity:.45;filter:grayscale(1)}
+.ctl button[aria-pressed="true"]{border-color:var(--ochre);background:color-mix(in srgb,var(--ochre) 18%,var(--panel))}
+.soundon{font-family:var(--kai);font-size:16px;border:1px solid var(--cinnabar);background:var(--cinnabar);color:var(--panel);border-radius:999px;padding:7px 16px;cursor:pointer;animation:nudge 2.4s ease-in-out infinite}
+@keyframes nudge{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--cinnabar) 22%,transparent)}}
+.soundon[hidden]{display:none}
+button:focus-visible{outline:2px solid var(--lapis);outline-offset:2px}
+
+@media (max-width:760px){
+  body{font-size:16px}
+  .s2 .grid,.s6 .top,.today{grid-template-columns:1fr}
+  .art2{aspect-ratio:16/9}
+  .niches{grid-template-columns:1fr}
+  .niche{border-radius:60px 60px 6px 6px}
+  .niche::before{border-radius:56px 56px 3px 3px}
+  .trade{grid-template-columns:1fr}
+  .lane{width:100%;flex-direction:row;height:30px}
+  .lane svg{transform:rotate(90deg)}
+  .corner{position:static;max-width:none}
+  .mapwrap{flex:none;height:300px}
+  .seal{width:60px;height:60px;font-size:24px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<div id="stage">
+
+<!-- 1 -->
+<section class="scene s1 on" aria-label="场景1 丝绸之路">
+  <svg class="bg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sky1)"/><stop offset="1" stop-color="var(--sky2)"/></linearGradient>
+      <linearGradient id="silk" x1="0" x2="1"><stop offset="0" stop-color="var(--cinnabar)"/><stop offset=".5" stop-color="var(--ochre)"/><stop offset="1" stop-color="var(--malachite)"/></linearGradient>
+      <symbol id="camel" viewBox="0 0 64 52">
+        <path d="M4,30 C7,22 13,18 19,20 C22,10 31,10 33,20 C37,13 44,15 46,24 L52,13 C53,9 58,9 59,13 L58,17 L54,18 L50,30 C49,34 46,36 44,36 L45,50 L42,50 L40,37 L25,37 L23,50 L20,50 L19,37 C14,36 10,35 8,33 L5,41 L3,40 Z" fill="var(--ink)"/>
+        <path d="M22,19 L27,12 L31,19" fill="none" stroke="var(--cinnabar)" stroke-width="2.4"/>
+      </symbol>
+    </defs>
+    <rect width="1000" height="600" fill="url(#sky)"/>
+    <circle class="sun" cx="760" cy="170" r="70" fill="var(--ochre)" opacity=".55"/>
+    <circle cx="760" cy="170" r="46" fill="var(--ochre)" opacity=".7"/>
+    <path d="M0,330 C150,280 260,300 380,320 C520,345 640,270 780,285 C880,295 950,320 1000,310 L1000,600 L0,600Z" fill="var(--dune1)"/>
+    <path class="ribbon" d="M-20,250 C150,180 300,330 480,260 C650,195 800,300 1020,220" fill="none" stroke="url(#silk)" stroke-width="7" stroke-linecap="round" opacity=".85"/>
+    <path d="M-20,250 C150,180 300,330 480,260 C650,195 800,300 1020,220" fill="none" stroke="url(#silk)" stroke-width="22" opacity=".12"/>
+    <path d="M0,390 C120,350 240,360 360,385 C520,420 660,350 820,370 C910,380 960,395 1000,390 L1000,600 L0,600Z" fill="var(--dune2)"/>
+    <g class="caravan">
+      <use href="#camel" class="bob" x="80" y="330" width="78" height="64"/>
+      <use href="#camel" class="bob b2" x="150" y="334" width="72" height="60"/>
+      <use href="#camel" class="bob b3" x="216" y="338" width="68" height="56"/>
+      <use href="#camel" class="bob b4" x="278" y="341" width="64" height="52"/>
+      <line x1="140" y1="364" x2="160" y2="366" stroke="var(--ink)" stroke-width="1"/>
+      <line x1="208" y1="368" x2="226" y2="370" stroke="var(--ink)" stroke-width="1"/>
+    </g>
+    <path d="M0,460 C160,420 300,440 460,470 C620,500 780,430 1000,450 L1000,600 L0,600Z" fill="var(--dune3)"/>
+  </svg>
+  <div class="txt">
+    <div class="eyebrow rv" style="--d:.2s">Eurasia · 2nd century BC →</div>
+    <h1 class="ink" style="--d:.3s">丝绸之路</h1>
+    <div class="sub rv" style="--d:1.2s"><span class="en">The Silk Roads</span> · 连接东西方的千年交流网络</div>
+    <p class="rv" style="--d:2.2s">由多条陆路和海路组成、横跨欧亚大陆的交通与交流网络 🐫</p>
+    <p class="rv" style="--d:3.6s;color:var(--cinnabar)">几乎没有人走完全程——货物在不同商人手中一站站接力，传到远方。</p>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="scene s2" aria-label="场景2 张骞出使西域">
+  <div class="rv"><div class="eyebrow">起源 · Origins</div>
+  <h2>起源：张骞出使西域<span class="en">Zhang Qian's Mission</span></h2></div>
+  <div class="grid">
+    <div class="story">
+      <div class="year rv" style="--d:.5s">📜 公元前 138 年</div>
+      <p class="rv" style="--d:.9s">汉武帝 <span class="py">(Hàn Wǔdì)</span> 派张骞 <span class="py">(Zhāng Qiān)</span> 出使西域 <span class="en">(the Western Regions)</span>，联络大月氏 <span class="py">(Dà Yuèzhī)</span> 共抗匈奴 <span class="py">(Xiōngnú)</span>。</p>
+      <p class="rv" style="--d:3s">途中他被匈奴扣留十余年，却始终没有放弃，最终带回了西域各国的珍贵信息。</p>
+      <p class="rv" style="--d:5.5s">张骞并不是第一个走这些道路的人，但他的出使加强了汉朝与中亚的联系。司马迁在《史记》中称赞此行为<span class="zao">"凿空"</span>——意思是开通了道路。</p>
+      <p class="tip rv" style="--d:9s"><b>小知识</b>　德国地理学家李希霍芬 <span class="en">(Ferdinand von Richthofen)</span> 在1877年使用并推广了"丝绸之路"这个名称——它是近代才出现的说法。</p>
+    </div>
+    <div class="art2 rv" style="--d:.3s">
+      <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="mist" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--panel)"/><stop offset="1" stop-color="var(--ground)"/></linearGradient>
+        </defs>
+        <rect width="400" height="500" fill="url(#mist)"/>
+        <circle cx="300" cy="120" r="34" fill="var(--cinnabar)" opacity=".75"/>
+        <path d="M0,260 L60,190 L110,240 L170,150 L230,230 L290,170 L350,230 L400,200 L400,500 L0,500Z" fill="var(--ink)" opacity=".12"/>
+        <path d="M0,320 L50,270 L90,300 L150,230 L210,300 L260,260 L320,310 L400,270 L400,500 L0,500Z" fill="var(--ink)" opacity=".2"/>
+        <path d="M170,150 L185,168 L176,170 L190,186" fill="none" stroke="var(--panel)" stroke-width="3" opacity=".7"/>
+        <path d="M0,400 C90,370 200,380 260,360 C320,345 360,350 400,340 L400,500 L0,500Z" fill="var(--dune2)"/>
+        <path d="M60,470 C140,440 220,420 300,395 C340,383 370,376 400,372" fill="none" stroke="var(--ochre)" stroke-width="2" stroke-dasharray="3 7"/>
+        <g class="walker">
+          <g transform="translate(300,395)">
+            <!-- envoy with 节杖 -->
+            <path d="M-8,-46 C-12,-30 -14,-12 -14,0 L10,0 C10,-14 8,-30 5,-46Z" fill="var(--ink)"/>
+            <circle cx="-2" cy="-52" r="7" fill="var(--ink)"/>
+            <path d="M-11,-58 L7,-58 L4,-63 L-8,-63Z" fill="var(--ink)"/>
+            <line x1="14" y1="-90" x2="14" y2="2" stroke="var(--ochre)" stroke-width="2.5"/>
+            <path d="M8,-88 L20,-88 L18,-78 L10,-78Z M8,-74 L20,-74 L18,-64 L10,-64Z M8,-60 L20,-60 L18,-50 L10,-50Z" fill="var(--cinnabar)"/>
+            <line x1="5" y1="-36" x2="14" y2="-40" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/>
+          </g>
+        </g>
+      </svg>
+      <div class="seal" aria-label="凿空">凿空</div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="scene s3" aria-label="场景3 代表性城市">
+  <div class="rv"><h2 style="font-size:clamp(26px,3.6vw,40px)">丝路网络中的代表性城市<span class="en">Representative Cities on the Silk Roads</span></h2></div>
+  <div class="mapwrap rv" style="--d:.2s">
+    <svg id="map" viewBox="0 0 1000 420" preserveAspectRatio="xMidYMid meet" aria-label="丝路示意地图">
+      <defs>
+        <pattern id="sand" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="var(--ochre)" opacity=".5"/><circle cx="7" cy="6" r=".8" fill="var(--ochre)" opacity=".4"/></pattern>
+        <symbol id="mt" viewBox="0 0 30 18"><path d="M0,18 L9,3 L13,9 L18,1 L30,18Z" fill="var(--malachite)" opacity=".55"/><path d="M9,3 L11,7 L8,8Z M18,1 L20,6 L16,6Z" fill="var(--panel)"/></symbol>
+      </defs>
+      <!-- seas -->
+      <g fill="var(--sea)" stroke="var(--lapis)" stroke-width="1" stroke-opacity=".4">
+        <path d="M30,215 C60,190 95,196 120,186 C140,200 150,210 175,200 C210,185 250,190 290,200 C310,205 335,215 328,240 C300,252 250,246 200,252 C150,258 90,252 50,246 C35,241 26,229 30,215Z"/>
+        <path d="M232,140 C255,118 300,112 330,124 C342,136 320,150 290,152 C265,154 240,152 232,140Z"/>
+        <path d="M410,120 C425,110 440,125 436,150 C446,175 450,205 436,228 C420,232 412,205 414,180 C405,160 402,135 410,120Z"/>
+        <path d="M372,318 C395,325 420,345 446,368 C452,380 440,384 430,376 C410,360 385,340 372,318Z"/>
+        <path d="M900,250 C930,240 960,250 1000,240 L1000,420 L880,420 C890,380 900,330 892,300 C888,275 892,260 900,250Z"/>
+      </g>
+      <text class="maptxt" x="150" y="232" font-size="15" fill="var(--lapis)" text-anchor="middle">地中海 <tspan font-family="Cormorant Garamond,serif" font-style="italic">Mediterranean</tspan></text>
+      <!-- desert -->
+      <ellipse cx="672" cy="232" rx="58" ry="24" fill="url(#sand)" stroke="var(--ochre)" stroke-opacity=".5" stroke-dasharray="3 3"/>
+      <text class="maptxt" x="672" y="268" font-size="13" fill="var(--ochre)" text-anchor="middle">塔克拉玛干沙漠</text>
+      <text x="672" y="283" font-size="12" fill="var(--ochre)" text-anchor="middle" font-family="Cormorant Garamond,serif" font-style="italic">Taklamakan Desert</text>
+      <!-- Tianshan -->
+      <g><use href="#mt" x="610" y="140" width="34" height="20"/><use href="#mt" x="640" y="134" width="38" height="22"/><use href="#mt" x="676" y="140" width="34" height="20"/><use href="#mt" x="708" y="132" width="40" height="24"/><use href="#mt" x="746" y="140" width="32" height="19"/></g>
+      <text class="maptxt" x="694" y="124" font-size="14" fill="var(--malachite)" text-anchor="middle">天山 <tspan font-family="Cormorant Garamond,serif" font-style="italic">Tianshan</tspan></text>
+      <!-- Pamirs -->
+      <g><use href="#mt" x="566" y="226" width="30" height="18"/><use href="#mt" x="588" y="232" width="34" height="20"/></g>
+      <text class="maptxt" x="596" y="268" font-size="13" fill="var(--malachite)" text-anchor="middle">帕米尔高原</text>
+      <text x="596" y="283" font-size="12" fill="var(--malachite)" text-anchor="middle" font-family="Cormorant Garamond,serif" font-style="italic">Pamirs</text>
+      <!-- Yellow river -->
+      <path d="M780,250 C800,220 830,215 850,232 C866,246 880,240 900,226" fill="none" stroke="var(--ochre)" stroke-width="2" opacity=".6"/>
+      <!-- compass -->
+      <g transform="translate(950,60)" fill="var(--muted)"><path d="M0,-24 L5,0 L0,24 L-5,0Z" opacity=".7"/><path d="M-24,0 L0,-4 L24,0 L0,4Z" opacity=".4"/><text y="-28" font-size="12" text-anchor="middle" font-family="Cormorant Garamond,serif">N</text></g>
+      <!-- route segments (drawn in JS) -->
+      <g id="route" fill="none" stroke="var(--cinnabar)" stroke-width="3" stroke-linecap="round"></g>
+      <g id="routeGhost" fill="none" stroke="var(--ink)" stroke-opacity=".18" stroke-width="2" stroke-dasharray="2 6"></g>
+      <g id="cities"></g>
+      <g id="bundle"><circle r="9" fill="var(--ochre)" stroke="var(--panel)" stroke-width="2"/><text y="5" font-size="11" text-anchor="middle">🧵</text></g>
+    </svg>
+    <div class="corner">这些城市兴盛于不同历史时期，货物通常经过多次转手，而不是由同一支商队走完全程。<span class="en">These cities flourished in different periods. Goods changed hands many times along the way.</span></div>
+  </div>
+  <div class="capbar" aria-live="polite">
+    <div class="capnum" id="capnum">1</div>
+    <div><div class="capline" id="capline"></div><div class="capcity" id="capcity"></div></div>
+  </div>
+  <div class="pips" id="pips"></div>
+</section>
+
+<!-- 4 -->
+<section class="scene s4" aria-label="场景4 交易的商品">
+  <div class="rv"><h2>交易的商品<span class="en">Goods on the Road</span></h2></div>
+  <div class="trade">
+    <div class="col out rv" style="--d:.4s">
+      <h3>➡ 从中国输出 <span class="en">From China</span></h3>
+      <div class="good rv" style="--d:1s"><span class="ic">🧵</span><div><b>丝绸</b> <span class="en">Silk</span></div></div>
+      <div class="good rv" style="--d:1.5s"><span class="ic">🏺</span><div><b>瓷器</b> <span class="en">Porcelain</span></div></div>
+      <div class="good rv" style="--d:2s"><span class="ic">🍵</span><div><b>茶叶</b> <span class="en">Tea</span></div></div>
+    </div>
+    <div class="lane rv" style="--d:2.4s" aria-hidden="true">
+      <svg viewBox="0 0 64 28"><g class="mv"><path d="M8,14 H50 M42,6 L52,14 L42,22" fill="none" stroke="var(--cinnabar)" stroke-width="3" stroke-linecap="round"/></g></svg>
+      <svg viewBox="0 0 64 28"><g class="mv l"><path d="M56,14 H14 M22,6 L12,14 L22,22" fill="none" stroke="var(--malachite)" stroke-width="3" stroke-linecap="round"/></g></svg>
+    </div>
+    <div class="col in rv" style="--d:2.8s">
+      <h3>⬅ 传入中国 <span class="en">Into China</span></h3>
+      <div class="good rv" style="--d:3.4s"><span class="ic">🐎</span><div><b>汗血马</b> <span class="en">Ferghana horses</span><small>来自大宛 <span class="py">(Dàyuān)</span>，汉武帝曾为它出兵</small></div></div>
+      <div class="good rv" style="--d:4.2s"><span class="ic">🍇</span><div><b>葡萄</b> <span class="en">Grapes</span><small>栽培葡萄和酿酒方法来自中亚</small></div></div>
+      <div class="good rv" style="--d:5s"><span class="ic">💎</span><div><b>宝石</b> <span class="en">Gems</span></div></div>
+      <div class="good rv" style="--d:5.6s"><span class="ic">🌶️</span><div><b>香料</b> <span class="en">Spices</span><small>许多来自南亚和东南亚</small></div></div>
+    </div>
+  </div>
+  <p class="note rv" style="--d:7s">注：瓷器、茶叶的大规模外销主要在唐宋以后，许多还经海路运输。</p>
+</section>
+
+<!-- 5 -->
+<section class="scene s5" aria-label="场景5 文化交流">
+  <div class="rv"><h2>文化交流<span class="en">Exchange of Ideas</span></h2></div>
+  <p class="lead rv" style="--d:.5s">丝路上流动的不只是货物，还有<em>思想、宗教和技术</em>！</p>
+  <div class="niches">
+    <div class="niche a rv" style="--d:1.4s"><div class="ic">☸️</div><h3>佛教东传<span class="en">Buddhism spread east</span></h3>
+      <p>佛教起源于古印度，约两汉之际经中亚逐渐传入中国，敦煌莫高窟 <span class="py">(Mògāo Caves)</span> 就是见证。</p></div>
+    <div class="niche b rv" style="--d:4.4s"><div class="ic">📜</div><h3>造纸术西传<span class="en">Papermaking spread west</span></h3>
+      <p>造纸技术逐渐西传。8世纪以后，撒马尔罕成为重要的造纸中心，后来又经伊斯兰世界传到欧洲。</p></div>
+    <div class="niche c rv" style="--d:7.4s"><div class="ic">🎶</div><h3>音乐与舞蹈<span class="en">Music &amp; Dance</span></h3>
+      <p>某些类型的琵琶 <span class="py">(pípa)</span>，以及胡旋舞等乐舞，从西域传入中原。</p></div>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="scene s6" aria-label="场景6 海上丝绸之路">
+  <div class="rv"><h2>海上丝绸之路<span class="en">Maritime Silk Road</span></h2></div>
+  <div class="top">
+    <div>
+      <p class="rv" style="--d:.5s">⛵ 除了陆路，还有一条海上丝绸之路！</p>
+      <p class="rv" style="--d:1.5s">中国、东南亚、印度、阿拉伯和东非的商人与船队，通过广州 <span class="py">(Guǎngzhōu)</span>、泉州 <span class="py">(Quánzhōu)</span> 等港口进行双向贸易。</p>
+      <p class="rv" style="--d:3.5s">唐宋以后海路日益繁荣——船能装下更多又重又易碎的瓷器。</p>
+    </div>
+    <div>
+      <div class="dates rv" style="--d:5s">1405 – 1433 · 七下西洋</div>
+      <p class="rv" style="--d:5.5s">海上贸易在郑和之前已经发展了很长时间。明朝郑和 <span class="py">(Zhèng Hé)</span> 的官方船队从南京出发，经福建长乐出海，七下西洋（1405–1433），最远到达东非。</p>
+    </div>
+  </div>
+  <div class="sea rv" style="--d:.2s">
+    <svg viewBox="0 0 1000 220" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sea)"/><stop offset="1" stop-color="var(--lapis)" stop-opacity=".55"/></linearGradient>
+        <pattern id="waves" width="40" height="18" patternUnits="userSpaceOnUse"><path d="M0,14 C10,2 30,2 40,14" fill="none" stroke="var(--panel)" stroke-width="1.6" opacity=".6"/><path d="M8,14 C14,7 26,7 32,14" fill="none" stroke="var(--panel)" stroke-width="1.2" opacity=".45"/></pattern>
+      </defs>
+      <rect width="1000" height="220" fill="var(--panel)"/>
+      <rect y="90" width="1000" height="130" fill="url(#water)"/>
+      <g class="wave"><rect x="0" y="96" width="1200" height="124" fill="url(#waves)"/></g>
+      <!-- port names along the horizon, west ← east -->
+      <g font-size="15" fill="var(--ink)" text-anchor="middle" class="maptxt">
+        <text x="70" y="78">东非</text><text x="230" y="78">阿拉伯</text><text x="390" y="78">印度</text><text x="550" y="78">东南亚</text><text x="700" y="78">广州</text><text x="810" y="78">泉州</text><text x="920" y="78">长乐·南京</text>
+      </g>
+      <g fill="var(--cinnabar)"><circle cx="70" cy="88" r="4"/><circle cx="230" cy="88" r="4"/><circle cx="390" cy="88" r="4"/><circle cx="550" cy="88" r="4"/><circle cx="700" cy="88" r="4"/><circle cx="810" cy="88" r="4"/><circle cx="920" cy="88" r="4"/></g>
+      <line x1="70" y1="88" x2="920" y2="88" stroke="var(--cinnabar)" stroke-width="1" stroke-dasharray="4 6"/>
+      <g class="ship"><g transform="translate(840,70)"><g class="rock">
+        <path d="M0,62 C20,82 100,82 124,58 L112,52 L10,54Z" fill="var(--ink)"/>
+        <path d="M118,56 L130,40 L124,58Z" fill="var(--ink)"/>
+        <line x1="40" y1="54" x2="40" y2="-2" stroke="var(--ink)" stroke-width="2.5"/>
+        <line x1="78" y1="54" x2="78" y2="8" stroke="var(--ink)" stroke-width="2.5"/>
+        <path d="M24,4 L56,0 L58,48 L22,48Z" fill="var(--cinnabar)"/>
+        <path d="M64,12 L92,9 L94,48 L62,48Z" fill="var(--ochre)"/>
+        <g stroke="var(--panel)" stroke-width="1" opacity=".7"><line x1="23" y1="16" x2="57" y2="13"/><line x1="23" y1="28" x2="57" y2="26"/><line x1="23" y1="40" x2="58" y2="38"/><line x1="63" y1="24" x2="93" y2="22"/><line x1="63" y1="36" x2="94" y2="35"/></g>
+      </g></g></g>
+      <g class="wave w2" opacity=".7"><rect x="-200" y="160" width="1400" height="60" fill="url(#waves)"/></g>
+    </svg>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="scene s7" aria-label="场景7 今日丝路">
+  <div class="rv"><h2>今日丝路<span class="en">The Silk Roads Today</span></h2></div>
+  <div class="today">
+    <div class="card7 rv" style="--d:.5s">
+      <svg viewBox="0 0 400 160" aria-hidden="true">
+        <rect width="400" height="160" fill="var(--panel)"/>
+        <path d="M0,120 C80,108 160,116 240,112 C300,108 350,114 400,110 L400,160 L0,160Z" fill="var(--dune1)"/>
+        <!-- beacon tower 烽燧 -->
+        <path d="M150,118 L162,48 L198,48 L210,118Z" fill="var(--dune3)"/>
+        <g stroke="var(--panel)" stroke-width="1" opacity=".5"><line x1="157" y1="70" x2="203" y2="70"/><line x1="154" y1="92" x2="206" y2="92"/></g>
+        <path d="M168,48 L170,40 L190,40 L192,48Z" fill="var(--dune3)"/>
+        <path d="M262,118 L264,96 L300,96 L304,118Z M268,96 L270,86 L282,86 L284,96Z" fill="var(--dune2)"/>
+        <path d="M60,118 L64,100 L90,100 L92,118Z" fill="var(--dune2)" opacity=".8"/>
+        <g fill="var(--ochre)" opacity=".85"><circle cx="330" cy="40" r="14"/></g>
+      </svg>
+      <div class="body">
+        <div class="big">2014</div>
+        <p>🏛️ "丝绸之路：长安-天山廊道的路网" <span class="en">(Silk Roads: the Routes Network of Chang'an–Tianshan Corridor)</span> 由中国、哈萨克斯坦、吉尔吉斯斯坦联合申报，列入世界遗产 <span class="en">(World Heritage)</span>。</p>
+        <div class="facts"><span class="chip">3 国联合申报</span><span class="chip">33 处遗址</span></div>
+      </div>
+    </div>
+    <div class="card7 rv" style="--d:3.5s">
+      <svg viewBox="0 0 400 160" aria-hidden="true">
+        <rect width="400" height="160" fill="var(--panel)"/>
+        <circle cx="200" cy="80" r="58" fill="var(--sea)" stroke="var(--lapis)" stroke-opacity=".5"/>
+        <g fill="none" stroke="var(--lapis)" stroke-opacity=".35"><ellipse cx="200" cy="80" rx="58" ry="20"/><ellipse cx="200" cy="80" rx="24" ry="58"/><line x1="142" y1="80" x2="258" y2="80"/></g>
+        <path d="M150,62 C175,52 205,70 230,58 C240,54 250,60 254,66" fill="none" stroke="var(--cinnabar)" stroke-width="3" stroke-linecap="round" class="ribbon"/>
+        <path d="M152,100 C180,112 215,96 248,104" fill="none" stroke="var(--ochre)" stroke-width="3" stroke-linecap="round" class="ribbon"/>
+      </svg>
+      <div class="body">
+        <div class="big">2013</div>
+        <p>🌏 中国提出"一带一路"倡议 <span class="en">(Belt and Road Initiative)</span>，借用了古丝绸之路的名称。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="scene s8" aria-label="场景8 旅程结束">
+  <svg class="bg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="dusk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--panel)"/><stop offset=".7" stop-color="var(--sky1)"/></linearGradient>
+    </defs>
+    <rect width="1000" height="600" fill="url(#dusk)"/>
+    <circle cx="500" cy="470" r="120" fill="var(--cinnabar)" opacity=".35"/>
+    <circle cx="500" cy="470" r="80" fill="var(--ochre)" opacity=".55"/>
+    <path d="M0,480 C200,450 380,470 520,480 C700,492 860,455 1000,470 L1000,600 L0,600Z" fill="var(--dune2)"/>
+    <g class="caravan" style="animation-duration:20s">
+      <use href="#camel" class="bob" x="100" y="436" width="60" height="48"/>
+      <use href="#camel" class="bob b2" x="156" y="438" width="56" height="45"/>
+      <use href="#camel" class="bob b3" x="206" y="440" width="52" height="42"/>
+    </g>
+    <path d="M0,530 C220,505 420,520 600,535 C780,550 900,520 1000,525 L1000,600 L0,600Z" fill="var(--dune3)"/>
+  </svg>
+  <div class="msg">
+    <div class="q1 ink" style="--d:.4s">丝路告诉我们：<br>交流让世界更丰富多彩。</div>
+    <div class="en rv" style="--d:2s">The Silk Roads show how connection enriches the world.</div>
+    <p class="rv" style="--d:3.4s;font-size:20px">丝路是许多民族和地区共同创造的。</p>
+    <button class="btn rv" style="--d:5s" id="toQuiz">准备好挑战小测验了吗？ ➡</button>
+  </div>
+</section>
+
+<!-- 9 -->
+<section class="scene s9" aria-label="场景9 小测验" style="align-items:center">
+  <div class="rv" style="align-self:stretch"><h2>小测验<span class="en">Quick Quiz</span></h2></div>
+  <div class="quiz" id="quiz"></div>
+</section>
+
+</div>
+
+<div class="bar">
+  <div class="ctl">
+    <button id="prev" aria-label="上一场景">⏮</button>
+    <button id="play" aria-label="暂停">⏸</button>
+    <button id="next" aria-label="下一场景">⏭</button>
+  </div>
+  <div class="ctl snd">
+    <button id="voice" class="off" aria-pressed="false" aria-label="配音" title="配音 Narration">🔊</button>
+    <button id="music" class="off" aria-pressed="false" aria-label="背景音乐" title="背景音乐 Music">🎵</button>
+  </div>
+  <button class="soundon" id="soundon">🔊 开启配音和音乐</button>
+  <div class="track" id="track"></div>
+  <div class="count" id="count">1/9</div>
+</div>
+
+<script>
+const stage=document.getElementById('stage');
+const scenes=[...document.querySelectorAll('.scene')];
+const N=scenes.length;
+const STEP=3400, DRAW=2600;
+const dur=[10000,18000,STEP*7+2500,14000,15000,14000,12000,9500,0];
+let cur=0,t=0,playing=true,last=performance.now();
+
+/* track */
+const track=document.getElementById('track');
+const bars=scenes.map((s,k)=>{const b=document.createElement('button');b.setAttribute('aria-label','场景 '+(k+1));b.innerHTML='<i></i>';b.onclick=()=>go(k);track.appendChild(b);return b});
+
+function go(n){
+  n=Math.max(0,Math.min(N-1,n));
+  scenes.forEach(s=>s.classList.remove('on'));
+  void stage.offsetWidth;
+  cur=n;t=0;scenes[n].classList.add('on');scenes[n].scrollTop=0;
+  document.getElementById('count').textContent=(n+1)+'/'+N;
+  bars.forEach((b,k)=>{b.classList.toggle('done',k<n);b.firstChild.style.width=k<n?'100%':'0'});
+  stopSpeech();
+  if(n===2){lastStep=-1;updateMap(0)}
+  if(n===8)buildQuiz();
+  narrateScene(n);
+}
+document.getElementById('prev').onclick=()=>go(cur-1);
+document.getElementById('next').onclick=()=>go(cur+1);
+const playBtn=document.getElementById('play');
+function setPlay(p){
+  if(hasTTS&&typeof voiceOn!=='undefined'&&voiceOn){p?speechSynthesis.resume():speechSynthesis.pause()}
+  if(ac&&musicOn){p?ac.resume():ac.suspend()}
+  if(typeof recEl!=='undefined'&&recEl){p?recEl.play().catch(()=>{}):recEl.pause()}
+  playing=p;stage.classList.toggle('paused',!p);playBtn.textContent=p?'⏸':'▶';playBtn.setAttribute('aria-label',p?'暂停':'播放')}
+playBtn.onclick=()=>setPlay(!playing);
+document.getElementById('toQuiz').onclick=()=>go(8);
+addEventListener('keydown',e=>{
+  if(e.target.closest&&e.target.closest('.opt'))return;
+  if(e.key==='ArrowRight')go(cur+1);else if(e.key==='ArrowLeft')go(cur-1);
+  else if(e.key===' '){e.preventDefault();setPlay(!playing)}
+});
+
+/* ---------- map ---------- */
+const P=(lon,lat)=>[30+lon*7.6,(52-lat)*16];
+const cities=[
+ {n:'长安',p:"Cháng'ān",d:'西汉、唐朝都城',ll:[108.9,34.3],lab:'below'},
+ {n:'敦煌',p:'Dūnhuáng',d:'河西走廊西端的绿洲重镇',ll:[94.7,40.1],lab:'right'},
+ {n:'楼兰',p:'Lóulán',d:'罗布泊附近的古国，约4世纪后衰落',ll:[89.9,40.5],lab:'belowL'},
+ {n:'喀什',p:'Kāshí (Kashgar)',d:'翻越帕米尔前的枢纽',ll:[76,39.5],lab:'left'},
+ {n:'撒马尔罕',p:'Samarkand',d:'粟特商人的故乡',ll:[67,39.6],lab:'belowL'},
+ {n:'巴格达',p:'Baghdad',d:'阿拔斯王朝都城（762年建城）',ll:[44.4,33.3],lab:'below'},
+ {n:'罗马',p:'Rome',d:'罗马帝国的中心，代表地中海世界',ll:[12.5,41.9],lab:'above'}
+];
+const caps=[
+ '丝绸从长安 <span class="py">(Cháng\'ān)</span> 出发，开始向西流动',
+ '穿过河西走廊 <span class="py">(Héxī Corridor)</span>，来到敦煌 <span class="py">(Dūnhuáng)</span>',
+ '沿塔克拉玛干沙漠边缘前进，楼兰 <span class="py">(Lóulán)</span> 曾是汉代的重要一站',
+ '到达喀什 <span class="py">(Kāshí)</span>，前方是帕米尔高原 <span class="en">(Pamirs)</span>',
+ '撒马尔罕 <span class="en">(Samarkand)</span>：粟特商人在这里接手，继续转运',
+ '巴格达 <span class="en">(Baghdad)</span>：唐代时伊斯兰世界的学术与商业中心',
+ '地中海世界 <span class="en">(Mediterranean World)</span>：经过多次转手，丝绸在罗马帝国成了昂贵的奢侈品'
+];
+const NS='http://www.w3.org/2000/svg';
+const mk=(tag,attrs,parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);parent&&parent.appendChild(e);return e};
+const pts=cities.map(c=>P(...c.ll));
+const bends=[[0,-30],[0,-14],[0,-10],[0,6],[0,-30],[0,-40]];
+const route=document.getElementById('route'),ghost=document.getElementById('routeGhost');
+const segs=[];
+for(let k=0;k<pts.length-1;k++){
+  const [x1,y1]=pts[k],[x2,y2]=pts[k+1];
+  const d=`M${x1},${y1} Q${(x1+x2)/2+bends[k][0]},${(y1+y2)/2+bends[k][1]} ${x2},${y2}`;
+  mk('path',{d},ghost);
+  const s=mk('path',{d},route);
+  const L=s.getTotalLength();s.style.strokeDasharray=L;s.style.strokeDashoffset=L;segs.push({s,L});
+}
+const cg=document.getElementById('cities');
+const cityEls=cities.map((c,k)=>{
+  const [x,y]=pts[k];const g=mk('g',{class:'city'},cg);
+  mk('circle',{class:'halo',cx:x,cy:y,r:7},g);
+  mk('circle',{class:'dot',cx:x,cy:y,r:7},g);
+  let tx=x,ty,anchor='middle';
+  if(c.lab==='above')ty=y-30;else ty=y+28;
+  if(c.lab==='belowL'){anchor='end';tx=x+4}
+  if(c.lab==='left'){anchor='end';tx=x-10;ty=y-26}
+  if(c.lab==='right'){anchor='start';tx=x+12;ty=y-12}
+  const t1=mk('text',{x:tx,y:ty,'text-anchor':anchor,class:'maptxt'},g);t1.textContent=c.n;
+  const t2=mk('text',{x:tx,y:ty+16,'text-anchor':anchor,class:'p'},g);t2.textContent=c.p;
+  return g;
+});
+const bundle=document.getElementById('bundle');
+const pips=document.getElementById('pips');
+const pipEls=caps.map((_,k)=>{const b=document.createElement('button');b.setAttribute('aria-label','第'+(k+1)+'站');b.onclick=()=>{t=k*STEP+DRAW;updateMap(t)};pips.appendChild(b);return b});
+let lastStep=-1;
+function updateMap(time){
+  const step=Math.min(6,Math.floor(time/STEP));
+  segs.forEach((g,k)=>{const p=Math.max(0,Math.min(1,(time-(k+1)*STEP)/DRAW));g.s.style.strokeDashoffset=g.L*(1-p)});
+  let bx,by;
+  if(step===0){[bx,by]=pts[0]}else{
+    const g=segs[step-1];const p=Math.max(0,Math.min(1,(time-step*STEP)/DRAW));
+    const q=g.s.getPointAtLength(p*g.L);bx=q.x;by=q.y;
+  }
+  bundle.setAttribute('transform',`translate(${bx},${by-18})`);
+  if(step!==lastStep){
+    lastStep=step;
+    cityEls.forEach((e,k)=>{e.classList.toggle('seen',k<step);e.classList.toggle('now',k===step)});
+    pipEls.forEach((b,k)=>b.classList.toggle('on',k<=step));
+    document.getElementById('capnum').textContent=step+1;
+    const cl=document.getElementById('capline');cl.innerHTML=caps[step];
+    const cc=document.getElementById('capcity');const c=cities[step];
+    cc.innerHTML=`📍 ${c.n} <span class="py">${c.p}</span> — ${c.d}`;
+    [cl,cc].forEach(el=>{el.classList.remove('capfade');void el.offsetWidth;el.classList.add('capfade')});
+    speakCaption(step);
+  }
+}
+function speakCaption(step){
+  if(cur!==2)return;
+  if(REC['m'+step]){playRec(REC['m'+step]);return}
+  say(plain(caps[step])+(step===0?'。':''));
+}
+
+/* ---------- quiz ---------- */
+const Q=[
+ {q:'张骞第一次出使西域是在哪一年？',e:'When did Zhang Qian first set out?',o:['公元前138年 138 BC','公元618年 AD 618','公元1405年 AD 1405'],a:0,x:'公元前138年。有趣的是，那时还没有"丝绸之路"这个名字——它要到1877年才出现。（618年是唐朝建立，1405年是郑和第一次下西洋。）'},
+ {q:'哪一项是传入中国的？',e:'Which came into China?',o:['丝绸 Silk','葡萄 Grapes','瓷器 Porcelain'],a:1,x:'中国原本有野生葡萄，但栽培葡萄和酿酒方法是从中亚传入的。丝绸和瓷器则是中国输出的商品。'},
+ {q:'哪项技术经丝路传到了西方？',e:'Which technology spread west?',o:['造纸术 Papermaking','印刷电路 Circuits','蒸汽机 Steam engine'],a:0,x:'造纸技术逐渐西传，8世纪以后撒马尔罕成为造纸中心，约12世纪传到欧洲。蒸汽机是18世纪英国的发明。'},
+ {q:'"丝绸之路：长安-天山廊道的路网"哪年列入世界遗产？',e:'When did it become World Heritage?',o:['2001','2014','2020'],a:1,x:'2014年，由中国、哈萨克斯坦、吉尔吉斯斯坦联合申报，共包括33处遗址。'}
+];
+let qi=0,res=[];
+const quiz=document.getElementById('quiz');
+function buildQuiz(){qi=0;res=[];renderQ()}
+function dots(){return '<div class="qdots">'+Q.map((_,k)=>`<span class="${res[k]===true?'ok':res[k]===false?'no':''} ${k===qi?'cur':''}"></span>`).join('')+'</div>'}
+function renderQ(){
+  if(qi>=Q.length){
+    const s=res.filter(Boolean).length;
+    quiz.innerHTML=`<div class="qhead">${dots()}</div><div class="score capfade">得分 Score: ${s}/4${s===4?' 🏆 丝路大师！':' 👍 继续加油！'}</div>
+      <div class="qnav" style="justify-content:center"><button class="btn ghost" id="again">再做一次</button><button class="btn" id="replay">重看动画</button></div>`;
+    document.getElementById('again').onclick=buildQuiz;
+    document.getElementById('replay').onclick=()=>{setPlay(true);go(0)};
+    speakQuizState();
+    return;
+  }
+  const d=Q[qi];
+  quiz.innerHTML=`<div class="qhead">${dots()}<span class="en" style="color:var(--muted)">Q${qi+1} / ${Q.length}</span></div>
+    <div class="qtext capfade">Q${qi+1}. ${d.q}<span class="en">${d.e}</span></div>
+    <div class="opts">${d.o.map((o,k)=>`<button class="opt" data-k="${k}"><span class="k">${'ABC'[k]}</span>${o}</button>`).join('')}</div>
+    <div id="fbx"></div>`;
+  quiz.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answer(+b.dataset.k));
+  speakQuizState();
+}
+const CN='零一二三四';
+function speakQuizState(){
+  if(cur!==8)return;
+  if(qi>=Q.length){const s=res.filter(Boolean).length;if(REC['s'+s]){playRec(REC['s'+s]);return}say(`得分${CN[s]}分，满分四分。${s===4?'丝路大师！':'继续加油！'}`);return}
+  const d=Q[qi];
+  if(REC['q'+(qi+1)]){playRec(REC['q'+(qi+1)]);return}
+  say(`第${CN[qi+1]}题。${d.q}${d.o.map((o,k)=>'ABC'[k]+'，'+o.split(' ')[0]).join('；')}。`);
+}
+function answer(k){
+  const d=Q[qi],ok=k===d.a;res[qi]=ok;
+  quiz.querySelectorAll('.opt').forEach((b,j)=>{b.disabled=true;if(j===d.a)b.classList.add('right');else if(j===k)b.classList.add('wrong')});
+  quiz.querySelector('.qdots').outerHTML=dots();
+  document.getElementById('fbx').innerHTML=`<div class="fb ${ok?'ok':'no'} capfade">${ok?'✅ 答对了！':'❌ 再想想～ '}${d.x}</div>
+    <div class="qnav" style="margin-top:12px"><button class="btn" id="nq">${qi<Q.length-1?'下一题 ➡':'看得分 ➡'}</button></div>`;
+  const nq=document.getElementById('nq');nq.onclick=()=>{qi++;renderQ()};nq.focus();
+  if(REC['e'+(qi+1)]){playSeq([REC[ok?'ok':'no'],REC['e'+(qi+1)]]);return}
+  say((ok?'答对了！':'再想想。')+d.x.replace(/——/g,'，'));
+}
+
+/* ---------- narration (Web Speech) ---------- */
+const NARR=[
+ '丝绸之路，连接东西方的千年交流网络。它是由多条陆路和海路组成、横跨欧亚大陆的交通与交流网络。几乎没有人走完全程，货物在不同商人手中一站站接力，传到远方。',
+ '起源：张骞出使西域。公元前138年，汉武帝派张骞出使西域，联络大月氏，共抗匈奴。途中他被匈奴扣留十余年，却始终没有放弃，最终带回了西域各国的珍贵信息。张骞并不是第一个走这些道路的人，但他的出使加强了汉朝与中亚的联系。司马迁在《史记》中称赞此行为“凿空”，意思是开通了道路。小知识：德国地理学家李希霍芬在1877年使用并推广了“丝绸之路”这个名称，它是近代才出现的说法。',
+ null,
+ '交易的商品。从中国输出的有：丝绸、瓷器、茶叶。传入中国的有：汗血马，来自大宛，汉武帝曾为它出兵；葡萄，栽培葡萄和酿酒方法来自中亚；还有宝石；以及香料，许多来自南亚和东南亚。注意：瓷器、茶叶的大规模外销主要在唐宋以后，许多还经海路运输。',
+ '文化交流。丝路上流动的不只是货物，还有思想、宗教和技术！佛教东传：佛教起源于古印度，约两汉之际经中亚逐渐传入中国，敦煌莫高窟就是见证。造纸术西传：造纸技术逐渐西传。8世纪以后，撒马尔罕成为重要的造纸中心，后来又经伊斯兰世界传到欧洲。音乐与舞蹈：某些类型的琵琶，以及胡旋舞等乐舞，从西域传入中原。',
+ '海上丝绸之路。除了陆路，还有一条海上丝绸之路！中国、东南亚、印度、阿拉伯和东非的商人与船队，通过广州、泉州等港口进行双向贸易。唐宋以后海路日益繁荣，船能装下更多又重又易碎的瓷器。海上贸易在郑和之前已经发展了很长时间。明朝郑和的官方船队从南京出发，经福建长乐出海，从1405年到1433年七下西洋，最远到达东非。',
+ '今日丝路。2014年，“丝绸之路：长安－天山廊道的路网”由中国、哈萨克斯坦、吉尔吉斯斯坦联合申报，列入世界遗产。2013年，中国提出“一带一路”倡议，借用了古丝绸之路的名称。',
+ '旅程结束。丝路告诉我们：交流让世界更丰富多彩。丝路是许多民族和地区共同创造的。准备好挑战小测验了吗？',
+ null
+];
+const hasTTS='speechSynthesis' in window;
+let voiceOn=false,zhVoice=null,gen=0,pending=0,deadline=0;
+function pickVoice(){
+  if(!hasTTS)return;
+  const vs=speechSynthesis.getVoices().filter(v=>/^zh[-_](CN|Hans)|^cmn/i.test(v.lang)||/普通话|Mandarin|Chinese \(China|Xiaoxiao|Tingting|Yunxi/i.test(v.name));
+  const pref=[/Xiaoxiao.*Natural/i,/Natural/i,/Xiaoxiao/i,/Tingting|婷婷/i,/Google.*普通话|Google.*Mandarin/i,/Yunxi/i];
+  for(const r of pref){const v=vs.find(v=>r.test(v.name));if(v){zhVoice=v;return}}
+  zhVoice=vs[0]||null;
+}
+if(hasTTS){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
+const plain=s=>s.replace(/<[^>]+>/g,'').replace(/\s*[（(][^)）]*[)）]/g,'').replace(/[🏆👍✅❌]/gu,'').trim();
+/* recorded narration (ElevenLabs), keyed by scene index; others fall back to browser speech */
+const REC={0:'audio/01.mp3',1:'audio/02.mp3',3:'audio/04.mp3',4:'audio/05.mp3',5:'audio/06.mp3',6:'audio/07.mp3',7:'audio/08.mp3','m0':'audio/03-1.mp3','m1':'audio/03-2.mp3','m2':'audio/03-3.mp3','m3':'audio/03-4.mp3','m4':'audio/03-5.mp3','m5':'audio/03-6.mp3','m6':'audio/03-7.mp3','q1':'audio/09-q1.mp3','e1':'audio/09-e1.mp3','q2':'audio/09-q2.mp3','e2':'audio/09-e2.mp3','q3':'audio/09-q3.mp3','e3':'audio/09-e3.mp3','q4':'audio/09-q4.mp3','e4':'audio/09-e4.mp3','s0':'audio/09-s0.mp3','s1':'audio/09-s1.mp3','s2':'audio/09-s2.mp3','s3':'audio/09-s3.mp3','s4':'audio/09-s4.mp3','ok':'audio/09-ok.mp3','no':'audio/09-no.mp3'};
+let recEl=null;
+function stopSpeech(){gen++;pending=0;if(hasTTS)speechSynthesis.cancel();if(recEl){recEl.pause();recEl=null}}
+function playRec(src){playSeq([src])}
+function playSeq(list){
+  stopSpeech();
+  list=list.filter(Boolean);
+  if(!voiceOn||!list.length)return;
+  const my=gen;let k=0;pending=1;
+  deadline=performance.now()+120000;
+  const next=()=>{
+    if(my!==gen)return;
+    if(k>=list.length){pending=0;recEl=null;return}
+    const a=new Audio(list[k++]);recEl=a;
+    a.onloadedmetadata=()=>{if(my===gen)deadline=performance.now()+(a.duration-a.currentTime)*1000+1500+(list.length-k)*20000};
+    a.onended=next;a.onerror=next;
+    if(playing)a.play().catch(next);
+  };
+  next();
+}
+function say(text){
+  stopSpeech();
+  if(!voiceOn||!hasTTS||!text)return;
+  const my=gen;
+  const parts=text.match(/[^。！？；]+[。！？；]?/g)||[text];
+  pending=parts.length;
+  deadline=performance.now()+text.length*330+2500;
+  parts.forEach(p=>{
+    const u=new SpeechSynthesisUtterance(p);
+    u.lang='zh-CN';if(zhVoice)u.voice=zhVoice;u.rate=.95;u.pitch=1;
+    const done=()=>{if(my===gen&&pending>0)pending--};
+    u.onend=done;u.onerror=done;
+    speechSynthesis.speak(u);
+  });
+  if(!playing)speechSynthesis.pause();
+}
+const speaking=()=>voiceOn&&pending>0&&performance.now()<deadline;
+function narrateScene(n){
+  if(n===2)return;            // map captions are read one by one
+  if(n===8)return;            // quiz reads its own questions
+  if(REC[n]){playRec(REC[n]);return}
+  say(NARR[n]);
+}
+
+/* ---------- background music (Web Audio, pentatonic plucks + drone + camel bells) ---------- */
+let ac=null,master,musicGain,verb,musicOn=false,nextNote=0,beat=0,schedTimer=null,droneNodes=[];
+const SCALE=[0,2,4,7,9];  // 宫 商 角 徵 羽
+const ROOT=146.83;        // D3
+const hz=(deg,oct=0)=>{const i=((deg%5)+5)%5,o=Math.floor(deg/5)+oct;return ROOT*Math.pow(2,(SCALE[i]+12*o)/12)};
+function initAudio(){
+  if(ac)return;
+  const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+  ac=new AC();
+  const lim=ac.createDynamicsCompressor();lim.threshold.value=-18;lim.knee.value=12;lim.ratio.value=8;lim.attack.value=.005;lim.release.value=.25;lim.connect(ac.destination);
+  master=ac.createGain();master.gain.value=.7;master.connect(lim);
+  musicGain=ac.createGain();musicGain.gain.value=0;
+  // simple generated reverb
+  verb=ac.createConvolver();
+  const len=ac.sampleRate*2.6,buf=ac.createBuffer(2,len,ac.sampleRate);
+  for(let c=0;c<2;c++){const d=buf.getChannelData(c);let lp=0;for(let i=0;i<len;i++){lp+=.08*((Math.random()*2-1)-lp);d[i]=lp*3*Math.exp(-i/(ac.sampleRate*.55))}}
+  verb.buffer=buf;
+  const wet=ac.createGain();wet.gain.value=.22;
+  musicGain.connect(master);musicGain.connect(verb);verb.connect(wet);wet.connect(master);
+  // drone: D2 + A2, slowly breathing
+  [[ROOT/2,.05],[ROOT*0.75,.03]].forEach(([f,g])=>{
+    const o=ac.createOscillator(),gn=ac.createGain(),lfo=ac.createOscillator(),lg=ac.createGain();
+    o.type='sine';o.frequency.value=f;gn.gain.value=g;
+    lfo.frequency.value=.07+Math.random()*.05;lg.gain.value=g*.6;lfo.connect(lg);lg.connect(gn.gain);
+    o.connect(gn);gn.connect(musicGain);o.start();lfo.start();droneNodes.push(o,lfo);
+  });
+}
+function pluck(f,t,v=.22,len=2.4){
+  const o=ac.createOscillator(),o2=ac.createOscillator(),g=ac.createGain(),flt=ac.createBiquadFilter();
+  o.type='sine';o2.type='sine';
+  o.frequency.setValueAtTime(f*1.025,t);o.frequency.exponentialRampToValueAtTime(f,t+.09);
+  o2.frequency.setValueAtTime(f*2,t);
+  flt.type='lowpass';flt.frequency.setValueAtTime(2200,t);flt.frequency.exponentialRampToValueAtTime(420,t+len*.6);flt.Q.value=.3;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.012);g.gain.exponentialRampToValueAtTime(.0005,t+len);g.gain.linearRampToValueAtTime(0,t+len+.04);
+  const g2=ac.createGain();g2.gain.value=.25;
+  o.connect(flt);o2.connect(g2);g2.connect(flt);flt.connect(g);g.connect(musicGain);
+  o.start(t);o2.start(t);o.stop(t+len+.05);o2.stop(t+len+.05);
+}
+function bell(t){
+  [[1318,.035],[1318*2.76,.01]].forEach(([f,v])=>{
+    const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=f;
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.003);g.gain.exponentialRampToValueAtTime(.0005,t+1.2);
+    o.connect(g);g.connect(musicGain);o.start(t);o.stop(t+1.3);
+  });
+}
+let mel=5;
+const RHYTHM=[1,0,1,1, 1,0,0,1, 1,0,1,0, 1,0,0,0]; // 16 eighth-notes = 2 bars
+function schedule(){
+  if(!ac)return;
+  const e=60/68/2; // eighth note at 68 bpm
+  while(nextNote<ac.currentTime+.4){
+    const b=beat%16;
+    if(RHYTHM[b]){
+      mel+=[-2,-1,-1,1,1,2,0][Math.floor(Math.random()*7)];
+      mel=Math.max(3,Math.min(11,mel));
+      pluck(hz(mel),nextNote,b%4===0?.2:.13,b===12?3.6:2.2);
+      if(b===0&&Math.random()<.5)pluck(hz(mel+2),nextNote+.03,.07,2);
+    }
+    if(b===0)pluck(hz(beat%32===0?0:-1,-1),nextNote,.16,3.4);      // bass
+    if(b===8&&beat%64===8)pluck(hz(3,-1),nextNote,.12,3);
+    if(beat%48===30){bell(nextNote);bell(nextNote+.42)}               // camel bells
+    nextNote+=e;beat++;
+  }
+}
+function musicLevel(){
+  if(!ac)return;
+  const target=!musicOn?0:(speaking()?.16:.42);
+  if(target===musicLevel.last)return;musicLevel.last=target;
+  musicGain.gain.setTargetAtTime(target,ac.currentTime,.4);
+}
+function setMusic(on){
+  musicOn=on;initAudio();if(!ac)return;
+  if(on){ac.resume();if(!schedTimer){nextNote=ac.currentTime+.1;schedTimer=setInterval(schedule,100)}}
+  musicLevel();
+  const b=document.getElementById('music');b.classList.toggle('off',!on);b.setAttribute('aria-pressed',on);
+}
+function setVoice(on){
+  voiceOn=on;
+  const b=document.getElementById('voice');b.classList.toggle('off',!voiceOn);b.setAttribute('aria-pressed',voiceOn);
+  if(!voiceOn){stopSpeech();return}
+  if(cur===2){speakCaption(lastStep<0?0:lastStep)}
+  else if(cur===8){speakQuizState()}
+  else narrateScene(cur);
+}
+document.getElementById('voice').onclick=()=>{setVoice(!voiceOn);hideHint()};
+document.getElementById('music').onclick=()=>{setMusic(!musicOn);hideHint()};
+const hint=document.getElementById('soundon');
+function hideHint(){hint.hidden=true}
+hint.onclick=()=>{hideHint();setMusic(true);setPlay(true);go(cur===8?8:cur);setVoice(true)};
+
+/* ---------- clock ---------- */
+function tick(now){
+  const dt=Math.min(100,now-last);last=now;
+  if(playing)t+=dt;else deadline+=dt;
+  const D=dur[cur];
+  // while the narrator is still talking, hold the scene (or the current map stop)
+  if(speaking()&&D){
+    const limit=cur===2?Math.min(D,(Math.floor(t/STEP)+1)*STEP):D;
+    if(t>=limit-1)t=limit-1;
+  }
+  musicLevel();
+  if(cur===2)updateMap(t);
+  if(D){bars[cur].firstChild.style.width=Math.min(100,t/D*100)+'%';if(t>=D&&cur<N-1)go(cur+1)}
+  else bars[cur].firstChild.style.width='100%';
+  requestAnimationFrame(tick);
+}
+if(matchMedia('(prefers-reduced-motion: reduce)').matches)setPlay(false);
+go(0);requestAnimationFrame(tick);
+</script>
+
+</body>
+</html>
