@@ -7,7 +7,7 @@
 <title>丝绸之路 The Silk Roads</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=LXGW+WenKai+TC:wght@400;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap">
 <style>
 /* Layout: one stage like a Dunhuang mural panel; scenes cross-fade inside it, controls sit in a bar beneath. */
 :root{
@@ -25,8 +25,8 @@
   --sky1:#f6d9a3; --sky2:#efe3c9;
   --shadow:rgba(60,40,15,.14);
   --imgf:none; --veil:rgba(0,0,0,0);
-  --kai:"KaiTi","STKaiti","Kaiti SC","楷体","LXGW WenKai TC","Ma Shan Zheng",serif;
-  --brush:"Ma Shan Zheng","KaiTi","STKaiti","Kaiti SC",serif;
+  --kai:"Kaiti SC","STKaiti","KaiTi","楷体","LXGW WenKai TC",serif;
+  --brush:"Kaiti SC","STKaiti","KaiTi","楷体","LXGW WenKai TC",serif;
   --latin:"Cormorant Garamond","Georgia",serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
@@ -64,7 +64,7 @@ body{background:var(--ground);color:var(--ink);font-family:var(--kai);font-size:
 .scene.on{opacity:1;visibility:visible;z-index:2}
 .paused .scene *,.paused .scene{animation-play-state:paused!important}
 
-h2{font-family:var(--brush);font-weight:400;font-size:clamp(30px,4.6vw,48px);line-height:1.15;margin:0;text-wrap:balance;color:var(--ink)}
+h2{font-family:var(--brush);font-weight:700;font-size:clamp(30px,4.6vw,48px);line-height:1.15;margin:0;text-wrap:balance;color:var(--ink)}
 h2 .en{display:block;font-size:.5em;color:var(--cinnabar);font-style:italic;margin-top:4px}
 p{margin:0;max-width:62ch}
 .eyebrow{font-family:var(--latin);letter-spacing:.18em;text-transform:uppercase;font-size:13px;color:var(--ochre)}
@@ -81,7 +81,7 @@ p{margin:0;max-width:62ch}
 .s1 svg.bg{position:absolute;inset:0;width:100%;height:100%}
 .s1 .txt{position:relative;z-index:1;padding:clamp(24px,5vw,56px);padding-bottom:clamp(24px,4vw,40px);display:flex;flex-direction:column;gap:10px;
   background:linear-gradient(to top,color-mix(in srgb,var(--panel) 92%,transparent) 55%,transparent)}
-.s1 h1{font-family:var(--brush);font-weight:400;font-size:clamp(48px,8.5vw,104px);line-height:1;margin:0;letter-spacing:.04em;white-space:nowrap}
+.s1 h1{font-family:var(--brush);font-weight:700;font-size:clamp(48px,8.5vw,104px);line-height:1;margin:0;letter-spacing:.04em;white-space:nowrap}
 .s1 .sub{font-size:clamp(18px,2.4vw,24px)}
 .s1 .sub .en{font-size:1.25em;color:var(--cinnabar);font-style:italic}
 .ribbon{stroke-dasharray:14 10;animation:flow 3s linear infinite}
@@ -123,17 +123,17 @@ p{margin:0;max-width:62ch}
 .city.now circle.dot{fill:var(--cinnabar);stroke:var(--cinnabar)}
 .city .halo{fill:none;stroke:var(--cinnabar);stroke-width:2;opacity:0}
 .city.now .halo{animation:halo 1.6s ease-out infinite}
-@keyframes halo{from{r:7;opacity:.9}to{r:22;opacity:0}}
-.city text{fill:var(--ink);font-size:17px;transition:fill .4s}
+@keyframes halo{from{r:9;opacity:.9}to{r:26;opacity:0}}
+.city text{fill:var(--ink);font-size:25px;font-weight:700;transition:fill .4s}
 .city.now text{fill:var(--cinnabar);font-weight:700}
-.city text.p{font-family:var(--latin);font-style:italic;font-size:13px;fill:var(--muted)}
+.city text.p{font-family:var(--latin);font-style:italic;font-weight:500;font-size:17px;fill:var(--muted)}
 .corner{position:absolute;left:12px;bottom:10px;max-width:310px;font-size:13px;line-height:1.5;color:var(--muted);background:color-mix(in srgb,var(--panel) 88%,transparent);padding:8px 10px;border-left:3px solid var(--ochre)}
 .corner .en{display:block;font-size:13px;font-style:italic}
 .capbar{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;min-height:74px;padding:10px 14px;border:1px solid var(--line);border-radius:4px;background:var(--ground)}
 .capbar>*{min-width:0}
 .capnum{font-family:var(--brush);font-size:34px;color:var(--cinnabar);line-height:1;width:1.4em;text-align:center}
-.capline{font-size:clamp(16px,2vw,20px)}
-.capcity{font-size:14px;color:var(--malachite)}
+.capline{font-size:clamp(18px,2.4vw,26px)}
+.capcity{font-size:clamp(14px,1.6vw,18px);color:var(--malachite)}
 .capfade{animation:rise .6s both}
 .pips{display:flex;gap:6px;justify-content:center}
 .pips button{width:26px;height:6px;border:0;border-radius:3px;background:var(--line);cursor:pointer;padding:0}
@@ -143,7 +143,7 @@ p{margin:0;max-width:62ch}
 .trade{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(10px,2vw,24px);align-items:stretch}
 .trade>*{min-width:0}
 .col{border:1px solid var(--line);border-radius:4px;padding:16px 18px;background:var(--ground);display:flex;flex-direction:column;gap:10px}
-.col h3{margin:0;font-family:var(--brush);font-weight:400;font-size:26px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.col h3{margin:0;font-family:var(--brush);font-weight:700;font-size:26px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
 .col h3 .en{font-size:17px;font-style:italic;color:var(--muted)}
 .col.out{border-top:4px solid var(--cinnabar)}
 .col.in{border-top:4px solid var(--malachite)}
@@ -164,7 +164,7 @@ p{margin:0;max-width:62ch}
 .niche{min-width:0;background:var(--ground);border:1px solid var(--line);border-radius:999px 999px 6px 6px;padding:28px 18px 18px;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center;position:relative}
 .niche::before{content:"";position:absolute;inset:6px;border:1px solid color-mix(in srgb,var(--ochre) 45%,transparent);border-radius:999px 999px 3px 3px;pointer-events:none}
 .niche .ic{font-size:38px;line-height:1;width:72px;height:72px;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--ochre) 30%,transparent),transparent 70%)}
-.niche h3{margin:0;font-family:var(--brush);font-weight:400;font-size:26px;line-height:1.2}
+.niche h3{margin:0;font-family:var(--brush);font-weight:700;font-size:26px;line-height:1.2}
 .niche h3 .en{display:block;font-size:16px;color:var(--cinnabar);font-style:italic}
 .niche p{font-size:16px;line-height:1.6;text-align:left}
 .niche.a{--tone:var(--lapis)} .niche.b{--tone:var(--malachite)} .niche.c{--tone:var(--cinnabar)}
@@ -299,13 +299,14 @@ img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:
 }
 
 /* map note sits under the map */
-.s3 .corner{position:static;max-width:880px;align-self:center;font-size:13px}
+.s3 .corner{position:static;max-width:1200px;align-self:center;font-size:13px}
 .s3 .corner .en{display:inline;margin-left:6px}
 /* scenes 3, 4, 9: painted backdrop, content kept in the blank centre */
 .s3,.s4,.s9{background-color:var(--panel);background-size:cover;background-position:center;background-repeat:no-repeat}
 .s3,.s9{background-image:linear-gradient(var(--veil),var(--veil)),url("img/bg-soft.webp")}
 .s4{background-image:linear-gradient(var(--veil),var(--veil)),url("img/bg-rich.webp")}
-.s3>*,.s4>*{width:100%;max-width:880px;align-self:center}
+.s4>*{width:100%;max-width:880px;align-self:center}
+.s3>*{width:100%;max-width:1200px;align-self:center}
 .s3>div:first-child,.s4>div:first-child,.s9>div:first-child{text-align:center}
 .s3 .mapwrap{background:color-mix(in srgb,var(--panel) 80%,transparent);backdrop-filter:blur(2px)}
 .s3 .capbar{background:color-mix(in srgb,var(--ground) 90%,transparent)}
@@ -314,7 +315,8 @@ img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:
 .s4 .note{background:color-mix(in srgb,var(--panel) 80%,transparent);padding-block:6px}
 .s9 .quiz{background:color-mix(in srgb,var(--panel) 72%,transparent);padding:16px 18px;border-radius:6px}
 @media (min-width:761px){
-  .s3,.s4,.s9{padding-left:clamp(48px,9vw,140px);padding-right:clamp(48px,9vw,140px)}
+  .s4,.s9{padding-left:clamp(48px,9vw,140px);padding-right:clamp(48px,9vw,140px)}
+  .s3{padding-left:clamp(28px,3.5vw,56px);padding-right:clamp(28px,3.5vw,56px)}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -361,7 +363,7 @@ img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:
 <section class="scene s3" aria-label="场景3 代表性城市">
   <div class="rv"><h2 style="font-size:clamp(26px,3.6vw,40px)">丝路网络中的代表性城市<span class="en">Representative Cities on the Silk Roads</span></h2></div>
   <div class="mapwrap rv" style="--d:.2s">
-    <svg id="map" viewBox="0 0 1000 420" preserveAspectRatio="xMidYMid meet" aria-label="丝路示意地图">
+    <svg id="map" viewBox="50 74 920 292" preserveAspectRatio="xMidYMid meet" aria-label="丝路示意地图">
       <defs>
         <pattern id="sand" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="var(--ochre)" opacity=".5"/><circle cx="7" cy="6" r=".8" fill="var(--ochre)" opacity=".4"/></pattern>
         <symbol id="mt" viewBox="0 0 30 18"><path d="M0,18 L9,3 L13,9 L18,1 L30,18Z" fill="var(--malachite)" opacity=".55"/><path d="M9,3 L11,7 L8,8Z M18,1 L20,6 L16,6Z" fill="var(--panel)"/></symbol>
@@ -374,22 +376,22 @@ img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:
         <path d="M372,318 C395,325 420,345 446,368 C452,380 440,384 430,376 C410,360 385,340 372,318Z"/>
         <path d="M900,250 C930,240 960,250 1000,240 L1000,420 L880,420 C890,380 900,330 892,300 C888,275 892,260 900,250Z"/>
       </g>
-      <text class="maptxt" x="150" y="232" font-size="15" fill="var(--lapis)" text-anchor="middle">地中海 <tspan font-family="Cormorant Garamond,serif" font-style="italic">Mediterranean</tspan></text>
+      <text class="maptxt" x="160" y="234" font-size="20" fill="var(--lapis)" text-anchor="middle">地中海 <tspan font-family="Cormorant Garamond,serif" font-style="italic">Mediterranean</tspan></text>
       <!-- desert -->
-      <ellipse cx="672" cy="232" rx="58" ry="24" fill="url(#sand)" stroke="var(--ochre)" stroke-opacity=".5" stroke-dasharray="3 3"/>
-      <text class="maptxt" x="694" y="268" font-size="13" fill="var(--ochre)" text-anchor="middle">塔克拉玛干沙漠</text>
-      <text x="694" y="283" font-size="12" fill="var(--ochre)" text-anchor="middle" font-family="Cormorant Garamond,serif" font-style="italic">Taklamakan Desert</text>
+      <ellipse cx="682" cy="252" rx="52" ry="22" fill="url(#sand)" stroke="var(--ochre)" stroke-opacity=".5" stroke-dasharray="3 3"/>
+      <text class="maptxt" x="712" y="298" font-size="17" fill="var(--ochre)" text-anchor="middle">塔克拉玛干沙漠</text>
+      <text x="712" y="316" font-size="15" fill="var(--ochre)" text-anchor="middle" font-family="Cormorant Garamond,serif" font-style="italic">Taklamakan Desert</text>
       <!-- Tianshan -->
-      <g><use href="#mt" x="610" y="140" width="34" height="20"/><use href="#mt" x="640" y="134" width="38" height="22"/><use href="#mt" x="676" y="140" width="34" height="20"/><use href="#mt" x="708" y="132" width="40" height="24"/><use href="#mt" x="746" y="140" width="32" height="19"/></g>
-      <text class="maptxt" x="694" y="124" font-size="14" fill="var(--malachite)" text-anchor="middle">天山 <tspan font-family="Cormorant Garamond,serif" font-style="italic">Tianshan</tspan></text>
+      <g><use href="#mt" x="610" y="110" width="34" height="20"/><use href="#mt" x="640" y="104" width="38" height="22"/><use href="#mt" x="676" y="110" width="34" height="20"/><use href="#mt" x="708" y="102" width="40" height="24"/><use href="#mt" x="746" y="110" width="32" height="19"/></g>
+      <text class="maptxt" x="694" y="96" font-size="18" fill="var(--malachite)" text-anchor="middle">天山 <tspan font-family="Cormorant Garamond,serif" font-style="italic">Tianshan</tspan></text>
       <!-- Pamirs -->
-      <g><use href="#mt" x="566" y="226" width="30" height="18"/><use href="#mt" x="588" y="232" width="34" height="20"/></g>
-      <text class="maptxt" x="584" y="268" font-size="13" fill="var(--malachite)" text-anchor="middle">帕米尔高原</text>
-      <text x="584" y="283" font-size="12" fill="var(--malachite)" text-anchor="middle" font-family="Cormorant Garamond,serif" font-style="italic">Pamirs</text>
+      <g><use href="#mt" x="582" y="236" width="30" height="18"/><use href="#mt" x="604" y="242" width="34" height="20"/></g>
+      <text class="maptxt" x="602" y="292" font-size="17" fill="var(--malachite)" text-anchor="middle">帕米尔高原</text>
+      <text x="602" y="310" font-size="15" fill="var(--malachite)" text-anchor="middle" font-family="Cormorant Garamond,serif" font-style="italic">Pamirs</text>
       <!-- Yellow river -->
       <path d="M780,250 C800,220 830,215 850,232 C866,246 880,240 900,226" fill="none" stroke="var(--ochre)" stroke-width="2" opacity=".6"/>
       <!-- compass -->
-      <g transform="translate(950,60)" fill="var(--muted)"><path d="M0,-24 L5,0 L0,24 L-5,0Z" opacity=".7"/><path d="M-24,0 L0,-4 L24,0 L0,4Z" opacity=".4"/><text y="-28" font-size="12" text-anchor="middle" font-family="Cormorant Garamond,serif">N</text></g>
+      <g transform="translate(930,118)" fill="var(--muted)"><path d="M0,-24 L5,0 L0,24 L-5,0Z" opacity=".7"/><path d="M-24,0 L0,-4 L24,0 L0,4Z" opacity=".4"/><text y="-28" font-size="12" text-anchor="middle" font-family="Cormorant Garamond,serif">N</text></g>
       <!-- route segments (drawn in JS) -->
       <g id="route" fill="none" stroke="var(--cinnabar)" stroke-width="3" stroke-linecap="round"></g>
       <g id="routeGhost" fill="none" stroke="var(--ink)" stroke-opacity=".18" stroke-width="2" stroke-dasharray="2 6"></g>
@@ -566,8 +568,8 @@ const cities=[
  {n:'长安',p:"Cháng'ān",d:'西汉、唐朝都城',ll:[108.9,34.3],lab:'below'},
  {n:'敦煌',p:'Dūnhuáng',d:'河西走廊西端的绿洲重镇',ll:[94.7,40.1],lab:'right'},
  {n:'楼兰',p:'Lóulán',d:'罗布泊附近的古国，约4世纪后衰落',ll:[89.9,40.5],lab:'belowL'},
- {n:'喀什',p:'Kāshí (Kashgar)',d:'翻越帕米尔前的枢纽',ll:[76,39.5],lab:'left'},
- {n:'撒马尔罕',p:'Samarkand',d:'粟特商人的故乡',ll:[67,39.6],lab:'belowL'},
+ {n:'喀什',p:'Kāshí (Kashgar)',d:'翻越帕米尔前的枢纽',ll:[76,39.5],lab:'above'},
+ {n:'撒马尔罕',p:'Samarkand',d:'粟特商人的故乡',ll:[67,39.6],lab:'below'},
  {n:'巴格达',p:'Baghdad',d:'阿拔斯王朝都城（762年建城）',ll:[44.4,33.3],lab:'below'},
  {n:'罗马',p:'Rome',d:'罗马帝国的中心，代表地中海世界',ll:[12.5,41.9],lab:'above'}
 ];
@@ -597,14 +599,14 @@ const cg=document.getElementById('cities');
 const cityEls=cities.map((c,k)=>{
   const [x,y]=pts[k];const g=mk('g',{class:'city'},cg);
   mk('circle',{class:'halo',cx:x,cy:y,r:7},g);
-  mk('circle',{class:'dot',cx:x,cy:y,r:7},g);
+  mk('circle',{class:'dot',cx:x,cy:y,r:9},g);
   let tx=x,ty,anchor='middle';
-  if(c.lab==='above')ty=y-30;else ty=y+28;
+  if(c.lab==='above')ty=y-40;else ty=y+34;
   if(c.lab==='belowL'){anchor='end';tx=x+4}
-  if(c.lab==='left'){anchor='end';tx=x-10;ty=y-26}
-  if(c.lab==='right'){anchor='start';tx=x+12;ty=y-12}
+  if(c.lab==='left'){anchor='end';tx=x-12;ty=y-30}
+  if(c.lab==='right'){anchor='start';tx=x+14;ty=y-28}
   const t1=mk('text',{x:tx,y:ty,'text-anchor':anchor,class:'maptxt'},g);t1.textContent=c.n;
-  const t2=mk('text',{x:tx,y:ty+16,'text-anchor':anchor,class:'p'},g);t2.textContent=c.p;
+  const t2=mk('text',{x:tx,y:ty+20,'text-anchor':anchor,class:'p'},g);t2.textContent=c.p;
   return g;
 });
 const bundle=document.getElementById('bundle');
@@ -619,7 +621,7 @@ function updateMap(time){
     const g=segs[step-1];const p=Math.max(0,Math.min(1,(time-step*STEP)/DRAW));
     const q=g.s.getPointAtLength(p*g.L);bx=q.x;by=q.y;
   }
-  bundle.setAttribute('transform',`translate(${bx},${by-18})`);
+  bundle.setAttribute('transform',`translate(${bx},${by})`);
   if(step!==lastStep){
     lastStep=step;
     cityEls.forEach((e,k)=>{e.classList.toggle('seen',k<step);e.classList.toggle('now',k===step)});
