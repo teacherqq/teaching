@@ -24,7 +24,7 @@
   --dune1:#e2c48d; --dune2:#d3a964; --dune3:#b98742;
   --sky1:#f6d9a3; --sky2:#efe3c9;
   --shadow:rgba(60,40,15,.14);
-  --imgf:none;
+  --imgf:none; --veil:rgba(0,0,0,0);
   --kai:"KaiTi","STKaiti","Kaiti SC","楷体","LXGW WenKai TC","Ma Shan Zheng",serif;
   --brush:"Ma Shan Zheng","KaiTi","STKaiti","Kaiti SC",serif;
   --latin:"Cormorant Garamond","Georgia",serif;
@@ -34,13 +34,13 @@
   --lapis:#7fa6e0; --malachite:#62b49f; --ochre:#e0a74d; --cinnabar:#e0705e;
   --line:#3a4660; --sea:#284462;
   --dune1:#4a3d32; --dune2:#3b3028; --dune3:#2c241e;
-  --sky1:#2a3554; --sky2:#141b2a; --shadow:rgba(0,0,0,.35); --imgf:brightness(.78) saturate(.9); color-scheme:dark}}
+  --sky1:#2a3554; --sky2:#141b2a; --shadow:rgba(0,0,0,.35); --imgf:brightness(.78) saturate(.9); --veil:rgba(12,16,28,.42); color-scheme:dark}}
 :root[data-theme="dark"]{
   --ground:#141b2a; --panel:#1b2437; --ink:#efe3c8; --muted:#b4a68b;
   --lapis:#7fa6e0; --malachite:#62b49f; --ochre:#e0a74d; --cinnabar:#e0705e;
   --line:#3a4660; --sea:#284462;
   --dune1:#4a3d32; --dune2:#3b3028; --dune3:#2c241e;
-  --sky1:#2a3554; --sky2:#141b2a; --shadow:rgba(0,0,0,.35); --imgf:brightness(.78) saturate(.9); color-scheme:dark}
+  --sky1:#2a3554; --sky2:#141b2a; --shadow:rgba(0,0,0,.35); --imgf:brightness(.78) saturate(.9); --veil:rgba(12,16,28,.42); color-scheme:dark}
 
 html,body{height:100%}
 body{background:var(--ground);color:var(--ink);font-family:var(--kai);font-size:18px;line-height:1.7;
@@ -298,6 +298,25 @@ img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:
   .s2 .art2 img{object-position:60% 45%}
 }
 
+/* map note sits under the map */
+.s3 .corner{position:static;max-width:880px;align-self:center;font-size:13px}
+.s3 .corner .en{display:inline;margin-left:6px}
+/* scenes 3, 4, 9: painted backdrop, content kept in the blank centre */
+.s3,.s4,.s9{background-color:var(--panel);background-size:cover;background-position:center;background-repeat:no-repeat}
+.s3,.s9{background-image:linear-gradient(var(--veil),var(--veil)),url("img/bg-soft.webp")}
+.s4{background-image:linear-gradient(var(--veil),var(--veil)),url("img/bg-rich.webp")}
+.s3>*,.s4>*{width:100%;max-width:880px;align-self:center}
+.s3>div:first-child,.s4>div:first-child,.s9>div:first-child{text-align:center}
+.s3 .mapwrap{background:color-mix(in srgb,var(--panel) 80%,transparent);backdrop-filter:blur(2px)}
+.s3 .capbar{background:color-mix(in srgb,var(--ground) 90%,transparent)}
+.s3 .corner{background:color-mix(in srgb,var(--panel) 92%,transparent)}
+.s4 .col{background:color-mix(in srgb,var(--ground) 88%,transparent);backdrop-filter:blur(2px)}
+.s4 .note{background:color-mix(in srgb,var(--panel) 80%,transparent);padding-block:6px}
+.s9 .quiz{background:color-mix(in srgb,var(--panel) 72%,transparent);padding:16px 18px;border-radius:6px}
+@media (min-width:761px){
+  .s3,.s4,.s9{padding-left:clamp(48px,9vw,140px);padding-right:clamp(48px,9vw,140px)}
+}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
@@ -358,15 +377,15 @@ img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:
       <text class="maptxt" x="150" y="232" font-size="15" fill="var(--lapis)" text-anchor="middle">地中海 <tspan font-family="Cormorant Garamond,serif" font-style="italic">Mediterranean</tspan></text>
       <!-- desert -->
       <ellipse cx="672" cy="232" rx="58" ry="24" fill="url(#sand)" stroke="var(--ochre)" stroke-opacity=".5" stroke-dasharray="3 3"/>
-      <text class="maptxt" x="672" y="268" font-size="13" fill="var(--ochre)" text-anchor="middle">塔克拉玛干沙漠</text>
-      <text x="672" y="283" font-size="12" fill="var(--ochre)" text-anchor="middle" font-family="Cormorant Garamond,serif" font-style="italic">Taklamakan Desert</text>
+      <text class="maptxt" x="694" y="268" font-size="13" fill="var(--ochre)" text-anchor="middle">塔克拉玛干沙漠</text>
+      <text x="694" y="283" font-size="12" fill="var(--ochre)" text-anchor="middle" font-family="Cormorant Garamond,serif" font-style="italic">Taklamakan Desert</text>
       <!-- Tianshan -->
       <g><use href="#mt" x="610" y="140" width="34" height="20"/><use href="#mt" x="640" y="134" width="38" height="22"/><use href="#mt" x="676" y="140" width="34" height="20"/><use href="#mt" x="708" y="132" width="40" height="24"/><use href="#mt" x="746" y="140" width="32" height="19"/></g>
       <text class="maptxt" x="694" y="124" font-size="14" fill="var(--malachite)" text-anchor="middle">天山 <tspan font-family="Cormorant Garamond,serif" font-style="italic">Tianshan</tspan></text>
       <!-- Pamirs -->
       <g><use href="#mt" x="566" y="226" width="30" height="18"/><use href="#mt" x="588" y="232" width="34" height="20"/></g>
-      <text class="maptxt" x="596" y="268" font-size="13" fill="var(--malachite)" text-anchor="middle">帕米尔高原</text>
-      <text x="596" y="283" font-size="12" fill="var(--malachite)" text-anchor="middle" font-family="Cormorant Garamond,serif" font-style="italic">Pamirs</text>
+      <text class="maptxt" x="584" y="268" font-size="13" fill="var(--malachite)" text-anchor="middle">帕米尔高原</text>
+      <text x="584" y="283" font-size="12" fill="var(--malachite)" text-anchor="middle" font-family="Cormorant Garamond,serif" font-style="italic">Pamirs</text>
       <!-- Yellow river -->
       <path d="M780,250 C800,220 830,215 850,232 C866,246 880,240 900,226" fill="none" stroke="var(--ochre)" stroke-width="2" opacity=".6"/>
       <!-- compass -->
@@ -377,8 +396,9 @@ img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:
       <g id="cities"></g>
       <g id="bundle"><circle r="9" fill="var(--ochre)" stroke="var(--panel)" stroke-width="2"/><text y="5" font-size="11" text-anchor="middle">🧵</text></g>
     </svg>
-    <div class="corner">这些城市兴盛于不同历史时期，货物通常经过多次转手，而不是由同一支商队走完全程。<span class="en">These cities flourished in different periods. Goods changed hands many times along the way.</span></div>
+
   </div>
+  <div class="corner">这些城市兴盛于不同历史时期，货物通常经过多次转手，而不是由同一支商队走完全程。<span class="en">These cities flourished in different periods. Goods changed hands many times along the way.</span></div>
   <div class="capbar" aria-live="polite">
     <div class="capnum" id="capnum">1</div>
     <div><div class="capline" id="capline"></div><div class="capcity" id="capcity"></div></div>
