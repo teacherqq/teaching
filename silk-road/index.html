@@ -24,6 +24,7 @@
   --dune1:#e2c48d; --dune2:#d3a964; --dune3:#b98742;
   --sky1:#f6d9a3; --sky2:#efe3c9;
   --shadow:rgba(60,40,15,.14);
+  --imgf:none;
   --kai:"KaiTi","STKaiti","Kaiti SC","楷体","LXGW WenKai TC","Ma Shan Zheng",serif;
   --brush:"Ma Shan Zheng","KaiTi","STKaiti","Kaiti SC",serif;
   --latin:"Cormorant Garamond","Georgia",serif;
@@ -33,13 +34,13 @@
   --lapis:#7fa6e0; --malachite:#62b49f; --ochre:#e0a74d; --cinnabar:#e0705e;
   --line:#3a4660; --sea:#284462;
   --dune1:#4a3d32; --dune2:#3b3028; --dune3:#2c241e;
-  --sky1:#2a3554; --sky2:#141b2a; --shadow:rgba(0,0,0,.35); color-scheme:dark}}
+  --sky1:#2a3554; --sky2:#141b2a; --shadow:rgba(0,0,0,.35); --imgf:brightness(.78) saturate(.9); color-scheme:dark}}
 :root[data-theme="dark"]{
   --ground:#141b2a; --panel:#1b2437; --ink:#efe3c8; --muted:#b4a68b;
   --lapis:#7fa6e0; --malachite:#62b49f; --ochre:#e0a74d; --cinnabar:#e0705e;
   --line:#3a4660; --sea:#284462;
   --dune1:#4a3d32; --dune2:#3b3028; --dune3:#2c241e;
-  --sky1:#2a3554; --sky2:#141b2a; --shadow:rgba(0,0,0,.35); color-scheme:dark}
+  --sky1:#2a3554; --sky2:#141b2a; --shadow:rgba(0,0,0,.35); --imgf:brightness(.78) saturate(.9); color-scheme:dark}
 
 html,body{height:100%}
 body{background:var(--ground);color:var(--ink);font-family:var(--kai);font-size:18px;line-height:1.7;
@@ -80,7 +81,7 @@ p{margin:0;max-width:62ch}
 .s1 svg.bg{position:absolute;inset:0;width:100%;height:100%}
 .s1 .txt{position:relative;z-index:1;padding:clamp(24px,5vw,56px);padding-bottom:clamp(24px,4vw,40px);display:flex;flex-direction:column;gap:10px;
   background:linear-gradient(to top,color-mix(in srgb,var(--panel) 92%,transparent) 55%,transparent)}
-.s1 h1{font-family:var(--brush);font-weight:400;font-size:clamp(56px,10vw,112px);line-height:1;margin:0;letter-spacing:.06em}
+.s1 h1{font-family:var(--brush);font-weight:400;font-size:clamp(48px,8.5vw,104px);line-height:1;margin:0;letter-spacing:.04em;white-space:nowrap}
 .s1 .sub{font-size:clamp(18px,2.4vw,24px)}
 .s1 .sub .en{font-size:1.25em;color:var(--cinnabar);font-style:italic}
 .ribbon{stroke-dasharray:14 10;animation:flow 3s linear infinite}
@@ -260,6 +261,35 @@ button:focus-visible{outline:2px solid var(--lapis);outline-offset:2px}
   .mapwrap{flex:none;height:300px}
   .seal{width:60px;height:60px;font-size:24px}
 }
+
+/* ---------- painted illustrations ---------- */
+img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:var(--imgf);max-width:none}
+.kb{animation:kb 34s ease-in-out infinite alternate;transform-origin:70% 60%}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.08)}}
+.s1{justify-content:stretch}
+.s1 img.bg{object-position:72% 55%}
+.s1 .txt{flex:1;justify-content:center;max-width:min(620px,62%);padding-right:clamp(48px,9vw,140px);
+  background:linear-gradient(to right,color-mix(in srgb,var(--panel) 88%,transparent) 50%,transparent)}
+.art2 img{width:100%;height:100%;object-fit:cover;object-position:60% 40%;display:block;filter:var(--imgf);max-width:none}
+.on .art2 img{animation:kb 22s ease-in-out infinite alternate}
+.nimg{width:100%;aspect-ratio:685/510;object-fit:cover;display:block;border-radius:160px 160px 4px 4px;filter:var(--imgf);margin-top:-14px}
+.niche{padding-top:22px}
+.sea{min-height:180px;background:var(--ground)}
+.ship{width:100%;height:100%;object-fit:cover;object-position:35% 60%;display:block;filter:var(--imgf);max-width:none}
+.on .ship{animation:drift 14s ease-in-out infinite alternate}
+@keyframes drift{from{transform:scale(1.04) translateX(1.5%)}to{transform:scale(1.04) translateX(-1.5%)}}
+.cardimg{width:100%;aspect-ratio:3/2;max-height:230px;object-fit:cover;display:block;filter:var(--imgf)}
+.s8{justify-content:flex-start}
+.s8 img.bg{object-position:50% 75%}
+.s8 .msg{margin-top:0;padding-top:clamp(28px,6vw,72px);
+  background:radial-gradient(ellipse 70% 80% at 50% 40%,color-mix(in srgb,var(--panel) 82%,transparent) 45%,transparent 80%)}
+@media (max-width:760px){
+  .s1 .txt{max-width:none;padding-right:clamp(24px,5vw,56px);justify-content:flex-end;
+    background:linear-gradient(to top,color-mix(in srgb,var(--panel) 92%,transparent) 55%,transparent)}
+  .s1 img.bg{object-position:80% 50%}
+  .sea{flex:none;height:200px}
+}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
@@ -271,32 +301,7 @@ button:focus-visible{outline:2px solid var(--lapis);outline-offset:2px}
 
 <!-- 1 -->
 <section class="scene s1 on" aria-label="场景1 丝绸之路">
-  <svg class="bg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sky1)"/><stop offset="1" stop-color="var(--sky2)"/></linearGradient>
-      <linearGradient id="silk" x1="0" x2="1"><stop offset="0" stop-color="var(--cinnabar)"/><stop offset=".5" stop-color="var(--ochre)"/><stop offset="1" stop-color="var(--malachite)"/></linearGradient>
-      <symbol id="camel" viewBox="0 0 64 52">
-        <path d="M4,30 C7,22 13,18 19,20 C22,10 31,10 33,20 C37,13 44,15 46,24 L52,13 C53,9 58,9 59,13 L58,17 L54,18 L50,30 C49,34 46,36 44,36 L45,50 L42,50 L40,37 L25,37 L23,50 L20,50 L19,37 C14,36 10,35 8,33 L5,41 L3,40 Z" fill="var(--ink)"/>
-        <path d="M22,19 L27,12 L31,19" fill="none" stroke="var(--cinnabar)" stroke-width="2.4"/>
-      </symbol>
-    </defs>
-    <rect width="1000" height="600" fill="url(#sky)"/>
-    <circle class="sun" cx="760" cy="170" r="70" fill="var(--ochre)" opacity=".55"/>
-    <circle cx="760" cy="170" r="46" fill="var(--ochre)" opacity=".7"/>
-    <path d="M0,330 C150,280 260,300 380,320 C520,345 640,270 780,285 C880,295 950,320 1000,310 L1000,600 L0,600Z" fill="var(--dune1)"/>
-    <path class="ribbon" d="M-20,250 C150,180 300,330 480,260 C650,195 800,300 1020,220" fill="none" stroke="url(#silk)" stroke-width="7" stroke-linecap="round" opacity=".85"/>
-    <path d="M-20,250 C150,180 300,330 480,260 C650,195 800,300 1020,220" fill="none" stroke="url(#silk)" stroke-width="22" opacity=".12"/>
-    <path d="M0,390 C120,350 240,360 360,385 C520,420 660,350 820,370 C910,380 960,395 1000,390 L1000,600 L0,600Z" fill="var(--dune2)"/>
-    <g class="caravan">
-      <use href="#camel" class="bob" x="80" y="330" width="78" height="64"/>
-      <use href="#camel" class="bob b2" x="150" y="334" width="72" height="60"/>
-      <use href="#camel" class="bob b3" x="216" y="338" width="68" height="56"/>
-      <use href="#camel" class="bob b4" x="278" y="341" width="64" height="52"/>
-      <line x1="140" y1="364" x2="160" y2="366" stroke="var(--ink)" stroke-width="1"/>
-      <line x1="208" y1="368" x2="226" y2="370" stroke="var(--ink)" stroke-width="1"/>
-    </g>
-    <path d="M0,460 C160,420 300,440 460,470 C620,500 780,430 1000,450 L1000,600 L0,600Z" fill="var(--dune3)"/>
-  </svg>
+  <img class="bg kb" src="img/s1-desert.webp" alt="" aria-hidden="true">
   <div class="txt">
     <div class="eyebrow rv" style="--d:.2s">Eurasia · 2nd century BC →</div>
     <h1 class="ink" style="--d:.3s">丝绸之路</h1>
@@ -319,29 +324,7 @@ button:focus-visible{outline:2px solid var(--lapis);outline-offset:2px}
       <p class="tip rv" style="--d:9s"><b>小知识</b>　德国地理学家李希霍芬 <span class="en">(Ferdinand von Richthofen)</span> 在1877年使用并推广了"丝绸之路"这个名称——它是近代才出现的说法。</p>
     </div>
     <div class="art2 rv" style="--d:.3s">
-      <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-        <defs>
-          <linearGradient id="mist" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--panel)"/><stop offset="1" stop-color="var(--ground)"/></linearGradient>
-        </defs>
-        <rect width="400" height="500" fill="url(#mist)"/>
-        <circle cx="300" cy="120" r="34" fill="var(--cinnabar)" opacity=".75"/>
-        <path d="M0,260 L60,190 L110,240 L170,150 L230,230 L290,170 L350,230 L400,200 L400,500 L0,500Z" fill="var(--ink)" opacity=".12"/>
-        <path d="M0,320 L50,270 L90,300 L150,230 L210,300 L260,260 L320,310 L400,270 L400,500 L0,500Z" fill="var(--ink)" opacity=".2"/>
-        <path d="M170,150 L185,168 L176,170 L190,186" fill="none" stroke="var(--panel)" stroke-width="3" opacity=".7"/>
-        <path d="M0,400 C90,370 200,380 260,360 C320,345 360,350 400,340 L400,500 L0,500Z" fill="var(--dune2)"/>
-        <path d="M60,470 C140,440 220,420 300,395 C340,383 370,376 400,372" fill="none" stroke="var(--ochre)" stroke-width="2" stroke-dasharray="3 7"/>
-        <g class="walker">
-          <g transform="translate(300,395)">
-            <!-- envoy with 节杖 -->
-            <path d="M-8,-46 C-12,-30 -14,-12 -14,0 L10,0 C10,-14 8,-30 5,-46Z" fill="var(--ink)"/>
-            <circle cx="-2" cy="-52" r="7" fill="var(--ink)"/>
-            <path d="M-11,-58 L7,-58 L4,-63 L-8,-63Z" fill="var(--ink)"/>
-            <line x1="14" y1="-90" x2="14" y2="2" stroke="var(--ochre)" stroke-width="2.5"/>
-            <path d="M8,-88 L20,-88 L18,-78 L10,-78Z M8,-74 L20,-74 L18,-64 L10,-64Z M8,-60 L20,-60 L18,-50 L10,-50Z" fill="var(--cinnabar)"/>
-            <line x1="5" y1="-36" x2="14" y2="-40" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/>
-          </g>
-        </g>
-      </svg>
+      <img src="img/s2-zhangqian.webp" alt="张骞牵马行走在西域山间">
       <div class="seal" aria-label="凿空">凿空</div>
     </div>
   </div>
@@ -425,11 +408,11 @@ button:focus-visible{outline:2px solid var(--lapis);outline-offset:2px}
   <div class="rv"><h2>文化交流<span class="en">Exchange of Ideas</span></h2></div>
   <p class="lead rv" style="--d:.5s">丝路上流动的不只是货物，还有<em>思想、宗教和技术</em>！</p>
   <div class="niches">
-    <div class="niche a rv" style="--d:1.4s"><div class="ic">☸️</div><h3>佛教东传<span class="en">Buddhism spread east</span></h3>
+    <div class="niche a rv" style="--d:1.4s"><img class="nimg" src="img/buddhism.webp" alt="僧人与石窟"><h3>佛教东传<span class="en">Buddhism spread east</span></h3>
       <p>佛教起源于古印度，约两汉之际经中亚逐渐传入中国，敦煌莫高窟 <span class="py">(Mògāo Caves)</span> 就是见证。</p></div>
-    <div class="niche b rv" style="--d:4.4s"><div class="ic">📜</div><h3>造纸术西传<span class="en">Papermaking spread west</span></h3>
+    <div class="niche b rv" style="--d:4.4s"><img class="nimg" src="img/paper.webp" alt="造纸作坊"><h3>造纸术西传<span class="en">Papermaking spread west</span></h3>
       <p>造纸技术逐渐西传。8世纪以后，撒马尔罕成为重要的造纸中心，后来又经伊斯兰世界传到欧洲。</p></div>
-    <div class="niche c rv" style="--d:7.4s"><div class="ic">🎶</div><h3>音乐与舞蹈<span class="en">Music &amp; Dance</span></h3>
+    <div class="niche c rv" style="--d:7.4s"><img class="nimg" src="img/music.webp" alt="琵琶与胡旋舞"><h3>音乐与舞蹈<span class="en">Music &amp; Dance</span></h3>
       <p>某些类型的琵琶 <span class="py">(pípa)</span>，以及胡旋舞等乐舞，从西域传入中原。</p></div>
   </div>
 </section>
@@ -449,31 +432,7 @@ button:focus-visible{outline:2px solid var(--lapis);outline-offset:2px}
     </div>
   </div>
   <div class="sea rv" style="--d:.2s">
-    <svg viewBox="0 0 1000 220" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <defs>
-        <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sea)"/><stop offset="1" stop-color="var(--lapis)" stop-opacity=".55"/></linearGradient>
-        <pattern id="waves" width="40" height="18" patternUnits="userSpaceOnUse"><path d="M0,14 C10,2 30,2 40,14" fill="none" stroke="var(--panel)" stroke-width="1.6" opacity=".6"/><path d="M8,14 C14,7 26,7 32,14" fill="none" stroke="var(--panel)" stroke-width="1.2" opacity=".45"/></pattern>
-      </defs>
-      <rect width="1000" height="220" fill="var(--panel)"/>
-      <rect y="90" width="1000" height="130" fill="url(#water)"/>
-      <g class="wave"><rect x="0" y="96" width="1200" height="124" fill="url(#waves)"/></g>
-      <!-- port names along the horizon, west ← east -->
-      <g font-size="15" fill="var(--ink)" text-anchor="middle" class="maptxt">
-        <text x="70" y="78">东非</text><text x="230" y="78">阿拉伯</text><text x="390" y="78">印度</text><text x="550" y="78">东南亚</text><text x="700" y="78">广州</text><text x="810" y="78">泉州</text><text x="920" y="78">长乐·南京</text>
-      </g>
-      <g fill="var(--cinnabar)"><circle cx="70" cy="88" r="4"/><circle cx="230" cy="88" r="4"/><circle cx="390" cy="88" r="4"/><circle cx="550" cy="88" r="4"/><circle cx="700" cy="88" r="4"/><circle cx="810" cy="88" r="4"/><circle cx="920" cy="88" r="4"/></g>
-      <line x1="70" y1="88" x2="920" y2="88" stroke="var(--cinnabar)" stroke-width="1" stroke-dasharray="4 6"/>
-      <g class="ship"><g transform="translate(840,70)"><g class="rock">
-        <path d="M0,62 C20,82 100,82 124,58 L112,52 L10,54Z" fill="var(--ink)"/>
-        <path d="M118,56 L130,40 L124,58Z" fill="var(--ink)"/>
-        <line x1="40" y1="54" x2="40" y2="-2" stroke="var(--ink)" stroke-width="2.5"/>
-        <line x1="78" y1="54" x2="78" y2="8" stroke="var(--ink)" stroke-width="2.5"/>
-        <path d="M24,4 L56,0 L58,48 L22,48Z" fill="var(--cinnabar)"/>
-        <path d="M64,12 L92,9 L94,48 L62,48Z" fill="var(--ochre)"/>
-        <g stroke="var(--panel)" stroke-width="1" opacity=".7"><line x1="23" y1="16" x2="57" y2="13"/><line x1="23" y1="28" x2="57" y2="26"/><line x1="23" y1="40" x2="58" y2="38"/><line x1="63" y1="24" x2="93" y2="22"/><line x1="63" y1="36" x2="94" y2="35"/></g>
-      </g></g></g>
-      <g class="wave w2" opacity=".7"><rect x="-200" y="160" width="1400" height="60" fill="url(#waves)"/></g>
-    </svg>
+    <img class="ship" src="img/s6-ship.webp" alt="满载瓷器的中国帆船驶向远方港口">
   </div>
 </section>
 
@@ -482,17 +441,7 @@ button:focus-visible{outline:2px solid var(--lapis);outline-offset:2px}
   <div class="rv"><h2>今日丝路<span class="en">The Silk Roads Today</span></h2></div>
   <div class="today">
     <div class="card7 rv" style="--d:.5s">
-      <svg viewBox="0 0 400 160" aria-hidden="true">
-        <rect width="400" height="160" fill="var(--panel)"/>
-        <path d="M0,120 C80,108 160,116 240,112 C300,108 350,114 400,110 L400,160 L0,160Z" fill="var(--dune1)"/>
-        <!-- beacon tower 烽燧 -->
-        <path d="M150,118 L162,48 L198,48 L210,118Z" fill="var(--dune3)"/>
-        <g stroke="var(--panel)" stroke-width="1" opacity=".5"><line x1="157" y1="70" x2="203" y2="70"/><line x1="154" y1="92" x2="206" y2="92"/></g>
-        <path d="M168,48 L170,40 L190,40 L192,48Z" fill="var(--dune3)"/>
-        <path d="M262,118 L264,96 L300,96 L304,118Z M268,96 L270,86 L282,86 L284,96Z" fill="var(--dune2)"/>
-        <path d="M60,118 L64,100 L90,100 L92,118Z" fill="var(--dune2)" opacity=".8"/>
-        <g fill="var(--ochre)" opacity=".85"><circle cx="330" cy="40" r="14"/></g>
-      </svg>
+      <img class="cardimg" src="img/s7-heritage.webp" alt="雪山下的古城遗址">
       <div class="body">
         <div class="big">2014</div>
         <p>🏛️ "丝绸之路：长安-天山廊道的路网" <span class="en">(Silk Roads: the Routes Network of Chang'an–Tianshan Corridor)</span> 由中国、哈萨克斯坦、吉尔吉斯斯坦联合申报，列入世界遗产 <span class="en">(World Heritage)</span>。</p>
@@ -500,13 +449,7 @@ button:focus-visible{outline:2px solid var(--lapis);outline-offset:2px}
       </div>
     </div>
     <div class="card7 rv" style="--d:3.5s">
-      <svg viewBox="0 0 400 160" aria-hidden="true">
-        <rect width="400" height="160" fill="var(--panel)"/>
-        <circle cx="200" cy="80" r="58" fill="var(--sea)" stroke="var(--lapis)" stroke-opacity=".5"/>
-        <g fill="none" stroke="var(--lapis)" stroke-opacity=".35"><ellipse cx="200" cy="80" rx="58" ry="20"/><ellipse cx="200" cy="80" rx="24" ry="58"/><line x1="142" y1="80" x2="258" y2="80"/></g>
-        <path d="M150,62 C175,52 205,70 230,58 C240,54 250,60 254,66" fill="none" stroke="var(--cinnabar)" stroke-width="3" stroke-linecap="round" class="ribbon"/>
-        <path d="M152,100 C180,112 215,96 248,104" fill="none" stroke="var(--ochre)" stroke-width="3" stroke-linecap="round" class="ribbon"/>
-      </svg>
+      <img class="cardimg" src="img/s7-belt.webp" alt="地球上的陆海路线，火车与货轮">
       <div class="body">
         <div class="big">2013</div>
         <p>🌏 中国提出"一带一路"倡议 <span class="en">(Belt and Road Initiative)</span>，借用了古丝绸之路的名称。</p>
@@ -517,21 +460,7 @@ button:focus-visible{outline:2px solid var(--lapis);outline-offset:2px}
 
 <!-- 8 -->
 <section class="scene s8" aria-label="场景8 旅程结束">
-  <svg class="bg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <defs>
-      <linearGradient id="dusk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--panel)"/><stop offset=".7" stop-color="var(--sky1)"/></linearGradient>
-    </defs>
-    <rect width="1000" height="600" fill="url(#dusk)"/>
-    <circle cx="500" cy="470" r="120" fill="var(--cinnabar)" opacity=".35"/>
-    <circle cx="500" cy="470" r="80" fill="var(--ochre)" opacity=".55"/>
-    <path d="M0,480 C200,450 380,470 520,480 C700,492 860,455 1000,470 L1000,600 L0,600Z" fill="var(--dune2)"/>
-    <g class="caravan" style="animation-duration:20s">
-      <use href="#camel" class="bob" x="100" y="436" width="60" height="48"/>
-      <use href="#camel" class="bob b2" x="156" y="438" width="56" height="45"/>
-      <use href="#camel" class="bob b3" x="206" y="440" width="52" height="42"/>
-    </g>
-    <path d="M0,530 C220,505 420,520 600,535 C780,550 900,520 1000,525 L1000,600 L0,600Z" fill="var(--dune3)"/>
-  </svg>
+  <img class="bg kb" src="img/s8-campfire.webp" alt="" aria-hidden="true">
   <div class="msg">
     <div class="q1 ink" style="--d:.4s">丝路告诉我们：<br>交流让世界更丰富多彩。</div>
     <div class="en rv" style="--d:2s">The Silk Roads show how connection enriches the world.</div>
