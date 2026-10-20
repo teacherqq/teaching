@@ -53,7 +53,7 @@ body{background:var(--ground);color:var(--ink);font-family:var(--kai);font-size:
 .en{font-family:var(--latin);font-weight:500;letter-spacing:.01em}
 .py{font-family:var(--latin);font-style:italic;color:var(--muted);font-size:.86em;white-space:nowrap}
 
-#stage{position:relative;flex:1;min-height:0;max-width:1100px;width:100%;margin:0 auto;
+#stage{position:relative;flex:1;min-height:0;max-width:1680px;width:100%;margin:0 auto;
   background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden;
   box-shadow:0 10px 30px var(--shadow)}
 /* 回纹 border band */
@@ -231,7 +231,7 @@ p{margin:0;max-width:62ch}
 .qnav{display:flex;gap:10px;justify-content:flex-end}
 
 /* ---------- Controls ---------- */
-.bar{max-width:1100px;width:100%;margin:10px auto 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.bar{max-width:1680px;width:100%;margin:10px auto 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .ctl{display:flex;gap:6px}
 .ctl button{width:44px;height:40px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:4px;font-size:16px;cursor:pointer}
 .ctl button:hover{border-color:var(--ochre)}
@@ -299,14 +299,14 @@ img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:
 }
 
 /* map note sits under the map */
-.s3 .corner{position:static;max-width:1200px;align-self:center;font-size:13px}
+.s3 .corner{position:static;max-width:none;padding-block:4px;line-height:1.4;align-self:center;font-size:13px}
 .s3 .corner .en{display:inline;margin-left:6px}
 /* scenes 3, 4, 9: painted backdrop, content kept in the blank centre */
 .s3,.s4,.s9{background-color:var(--panel);background-size:cover;background-position:center;background-repeat:no-repeat}
 .s3,.s9{background-image:linear-gradient(var(--veil),var(--veil)),url("img/bg-soft.webp")}
 .s4{background-image:linear-gradient(var(--veil),var(--veil)),url("img/bg-rich.webp")}
 .s4>*{width:100%;max-width:880px;align-self:center}
-.s3>*{width:100%;max-width:1200px;align-self:center}
+.s3>*{width:100%;max-width:none;align-self:stretch}
 .s3>div:first-child,.s4>div:first-child,.s9>div:first-child{text-align:center}
 .s3 .mapwrap{background:color-mix(in srgb,var(--panel) 80%,transparent);backdrop-filter:blur(2px)}
 .s3 .capbar{background:color-mix(in srgb,var(--ground) 90%,transparent)}
@@ -316,7 +316,10 @@ img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:
 .s9 .quiz{background:color-mix(in srgb,var(--panel) 72%,transparent);padding:16px 18px;border-radius:6px}
 @media (min-width:761px){
   .s4,.s9{padding-left:clamp(48px,9vw,140px);padding-right:clamp(48px,9vw,140px)}
-  .s3{padding-left:clamp(28px,3.5vw,56px);padding-right:clamp(28px,3.5vw,56px)}
+  .s3{padding-left:20px;padding-right:20px;padding-block:18px 14px;gap:8px}
+  .s3 h2{font-size:clamp(24px,2.8vw,34px)}
+  .s3 .mapwrap{min-height:320px}
+  .s3 .capbar{min-height:60px;padding-block:6px}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -363,7 +366,7 @@ img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:
 <section class="scene s3" aria-label="场景3 代表性城市">
   <div class="rv"><h2 style="font-size:clamp(26px,3.6vw,40px)">丝路网络中的代表性城市<span class="en">Representative Cities on the Silk Roads</span></h2></div>
   <div class="mapwrap rv" style="--d:.2s">
-    <svg id="map" viewBox="50 74 920 292" preserveAspectRatio="xMidYMid meet" aria-label="丝路示意地图">
+    <svg id="map" viewBox="62 96 900 266" preserveAspectRatio="xMidYMid meet" aria-label="丝路示意地图">
       <defs>
         <pattern id="sand" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="var(--ochre)" opacity=".5"/><circle cx="7" cy="6" r=".8" fill="var(--ochre)" opacity=".4"/></pattern>
         <symbol id="mt" viewBox="0 0 30 18"><path d="M0,18 L9,3 L13,9 L18,1 L30,18Z" fill="var(--malachite)" opacity=".55"/><path d="M9,3 L11,7 L8,8Z M18,1 L20,6 L16,6Z" fill="var(--panel)"/></symbol>
@@ -383,7 +386,7 @@ img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:
       <text x="712" y="316" font-size="15" fill="var(--ochre)" text-anchor="middle" font-family="Cormorant Garamond,serif" font-style="italic">Taklamakan Desert</text>
       <!-- Tianshan -->
       <g><use href="#mt" x="610" y="110" width="34" height="20"/><use href="#mt" x="640" y="104" width="38" height="22"/><use href="#mt" x="676" y="110" width="34" height="20"/><use href="#mt" x="708" y="102" width="40" height="24"/><use href="#mt" x="746" y="110" width="32" height="19"/></g>
-      <text class="maptxt" x="694" y="96" font-size="18" fill="var(--malachite)" text-anchor="middle">天山 <tspan font-family="Cormorant Garamond,serif" font-style="italic">Tianshan</tspan></text>
+      <text class="maptxt" x="600" y="124" font-size="18" fill="var(--malachite)" text-anchor="end">天山 <tspan font-family="Cormorant Garamond,serif" font-style="italic">Tianshan</tspan></text>
       <!-- Pamirs -->
       <g><use href="#mt" x="582" y="236" width="30" height="18"/><use href="#mt" x="604" y="242" width="34" height="20"/></g>
       <text class="maptxt" x="602" y="292" font-size="17" fill="var(--malachite)" text-anchor="middle">帕米尔高原</text>
@@ -391,7 +394,7 @@ img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:
       <!-- Yellow river -->
       <path d="M780,250 C800,220 830,215 850,232 C866,246 880,240 900,226" fill="none" stroke="var(--ochre)" stroke-width="2" opacity=".6"/>
       <!-- compass -->
-      <g transform="translate(930,118)" fill="var(--muted)"><path d="M0,-24 L5,0 L0,24 L-5,0Z" opacity=".7"/><path d="M-24,0 L0,-4 L24,0 L0,4Z" opacity=".4"/><text y="-28" font-size="12" text-anchor="middle" font-family="Cormorant Garamond,serif">N</text></g>
+      <g transform="translate(935,128)" fill="var(--muted)"><path d="M0,-24 L5,0 L0,24 L-5,0Z" opacity=".7"/><path d="M-24,0 L0,-4 L24,0 L0,4Z" opacity=".4"/><text y="-28" font-size="12" text-anchor="middle" font-family="Cormorant Garamond,serif">N</text></g>
       <!-- route segments (drawn in JS) -->
       <g id="route" fill="none" stroke="var(--cinnabar)" stroke-width="3" stroke-linecap="round"></g>
       <g id="routeGhost" fill="none" stroke="var(--ink)" stroke-opacity=".18" stroke-width="2" stroke-dasharray="2 6"></g>
