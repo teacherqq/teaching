@@ -1,0 +1,534 @@
+<title>__TITLE__</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap">
+<style>
+/* 版面：16:9 幻燈片，一頁課文（上繁下簡）接一頁練習；最後是詞彙卡和選詞填空。點哪段讀哪段。 */
+:root{
+  --bg:#ebe7df; --paper:#fbf9f4; --paper2:#f4f0e7; --ink:#24211c; --ink2:#4a453c; --muted:#857d70; --rule:#d9d1c2;
+  --accent:#9b3d2c; --accent-soft:#f3e4dc; --ok:#2f6f4a; --no:#a8402e; --hl:#efe2c4;
+  --kai:"Kaiti TC","Kaiti SC","STKaiti","BiauKai","DFKai-SB","KaiTi","楷體","楷体",serif;
+  --latin:"Cormorant Garamond","Iowan Old Style",Georgia,serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#15130f; --paper:#1f1c17; --paper2:#26221c; --ink:#ece6da; --ink2:#c9c1b2; --muted:#968d7e; --rule:#3a342b;
+  --accent:#e08b72; --accent-soft:#3a2720; --ok:#7cc59a; --no:#e08b72; --hl:#4a3f28; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#15130f; --paper:#1f1c17; --paper2:#26221c; --ink:#ece6da; --ink2:#c9c1b2; --muted:#968d7e; --rule:#3a342b;
+  --accent:#e08b72; --accent-soft:#3a2720; --ok:#7cc59a; --no:#e08b72; --hl:#4a3f28; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--kai);font-weight:700;margin:0}
+.wrap{max-width:1880px;margin:0 auto;padding-block:10px 110px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:8px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px}
+.eyebrow{font-size:15px;letter-spacing:.16em;color:var(--muted)}
+h1{margin:0;font-size:clamp(22px,2.2vw,36px);letter-spacing:.06em}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+/* 幻燈片 */
+.deck{display:flex;flex-direction:column;align-items:center;gap:10px}
+.deckhead,.stage,.deckfoot{width:100%}
+.deckhead{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap}
+.deckhead .pg{font-size:16px;color:var(--muted);font-variant-numeric:tabular-nums;font-family:var(--latin)}
+.sn{font:inherit;font-size:16px;padding:5px 14px;border-radius:999px;border:1px solid var(--rule);background:var(--paper);color:var(--ink);cursor:pointer}
+.sn:disabled{opacity:.4;cursor:default}
+.dots{display:flex;flex-wrap:wrap;gap:5px;align-items:center;flex:1}
+.dots button{width:11px;height:11px;border-radius:50%;border:0;padding:0;background:var(--rule);cursor:pointer}
+.dots button.q{border-radius:2px;background:transparent;box-shadow:inset 0 0 0 1.5px var(--muted)}
+.dots button.v{width:7px;height:7px}
+.dots button.f{border-radius:2px;width:15px}
+.dots button.on{background:var(--accent);box-shadow:none}
+.stage{position:relative}
+.slide{display:none;position:relative;height:var(--slideH,calc(100vh - 200px));width:100%;background:var(--paper);border-radius:6px;overflow:hidden;
+  box-shadow:0 1px 0 var(--rule),0 18px 40px -24px color-mix(in srgb,var(--ink) 40%,transparent);
+  padding:clamp(40px,4.4vw,72px) clamp(22px,3.4vw,64px) clamp(18px,2.4vw,40px);grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:clamp(16px,2vw,32px)}
+.slide::before{content:"";position:absolute;inset:10px;border:1px solid var(--rule);border-radius:3px;pointer-events:none}
+.slide.on{display:grid}
+.slide.has-side{grid-template-columns:minmax(0,1fr) var(--imgw,34%)}
+.slide.has-side.img-left{grid-template-columns:var(--imgw,34%) minmax(0,1fr)}.img-left .media{grid-column:1!important}.img-left .duo{grid-column:2}
+.img-frame .media{border:clamp(6px,.7vw,12px) solid #fffdf8;box-shadow:0 10px 26px -12px rgba(0,0,0,.4);transform:rotate(1.2deg)}.img-frame.img-left .media{transform:rotate(-1.2deg)}
+.slide.has-top{grid-template-columns:minmax(0,1fr);grid-template-rows:var(--imgh,34%) minmax(0,1fr)}.has-top .media{display:block;grid-row:1;grid-column:1;width:100%;height:100%;object-fit:cover;object-position:var(--imgpos,center);border-radius:3px}.has-top .duo{grid-row:2}
+.has-panel .media{opacity:1!important}.has-panel .duo{width:var(--panelw,60%);justify-self:start}
+.media{display:none}
+.has-side .media{display:block;grid-column:2;grid-row:1;width:100%;height:100%;object-fit:cover;object-position:var(--imgpos,center);border-radius:3px}
+.has-bg .media{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.has-bg.clean .qbox{background:none}
+.has-bg.clean:not(.cs) .media{opacity:.42}
+.qbox.cover{justify-content:center;gap:.5em;padding-left:4%}.cover .ceb{font-size:.55em;letter-spacing:.2em;color:var(--muted)}.qbox.cover h2{font-size:2.3em;color:var(--ink);letter-spacing:.14em}.cover .csub{font-size:.5em;color:var(--muted);letter-spacing:.1em}
+.has-bg .duo,.has-bg .qbox,.has-bg .vcard{background:color-mix(in srgb,var(--paper) 90%,transparent);border-radius:6px;padding:.4em .8em}
+.plabel{position:absolute;top:clamp(18px,1.8vw,28px);left:clamp(22px,3.4vw,64px);right:70px;z-index:2;font-size:clamp(13px,1vw,16px);letter-spacing:.14em;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.plabel i{font-style:normal;margin:0 .7em;color:var(--rule)}
+.plabel b{color:var(--ink2);font-weight:700}
+/* 課文頁：上繁下簡 */
+.duo{grid-column:1;grid-row:1;display:grid;grid-template-rows:minmax(0,1fr) auto minmax(0,1fr);min-height:0;position:relative;z-index:1}
+.half{position:relative;min-height:0;display:flex;align-items:center;padding-left:clamp(34px,3vw,52px)}
+.hl{position:absolute;left:0;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;font-size:clamp(12px,.9vw,15px);letter-spacing:.4em;color:var(--muted);border-left:1px solid var(--rule);padding-left:6px}
+.sep{display:flex;align-items:center;gap:14px;color:var(--rule);font-size:11px;margin:clamp(6px,1vw,14px) 0}
+.sep::before,.sep::after{content:"";flex:1;border-top:1px solid var(--rule)}
+.ptext{width:100%;max-height:100%;overflow:hidden;line-height:1.75}
+.hans .ptext{color:var(--ink2);font-weight:500}
+.blk{position:relative;margin:0 0 .25em;padding:.05em .3em;border-radius:4px;cursor:pointer;transition:background .2s}
+.blk:hover{background:var(--paper2)}
+.blk.reading{background:var(--paper2)}
+.blk.title{text-align:center;font-size:1.2em;letter-spacing:.1em}
+.blk.p{text-indent:2em}
+.blk.cont{text-indent:0}
+.blk.indent{padding-left:2.3em}
+.blk.right{text-align:right}
+.s{border-radius:3px;transition:background .2s}
+.s.now{background:var(--hl);box-shadow:0 2px 0 var(--accent)}
+.blk .play{display:inline-block;text-indent:0;font-size:.55em;vertical-align:middle;margin-left:.4em;color:var(--muted);opacity:0;transition:opacity .2s}
+.blk:hover .play,.blk.reading .play{opacity:1}
+.tag{display:none;position:absolute;left:-.3em;top:.45em;transform:translateX(-100%);font-size:13px;line-height:1.3;text-indent:0;color:var(--accent);border:1px solid currentColor;padding:2px 6px;border-radius:3px;white-space:nowrap;font-weight:700}
+.show-tags .hant .tag{display:inline-block}
+.show-tags .hant .ptext{padding-left:clamp(80px,7vw,120px)}
+/* 練習頁 */
+.qs{background:var(--paper)}
+.qbox{grid-column:1;grid-row:1;min-height:0;height:100%;overflow:hidden;display:flex;flex-direction:column;gap:.6em;position:relative;z-index:1;padding-right:6px;font-size:clamp(15px,1.25vw,22px)}
+.qbox>*{flex-shrink:0}
+.qbox.one{justify-content:center}
+.qbox.one .qc{border-top:0;padding-top:0;gap:.7em}
+.qbox.one .qh{font-size:1.15em}
+.qbox.one .opts{grid-template-columns:1fr 1fr}
+.qbox h2{margin:0;font-size:1.25em;letter-spacing:.12em;color:var(--accent);font-weight:700}
+.qc{border-top:1px solid var(--rule);padding-top:.7em;display:flex;flex-direction:column;gap:.55em}
+.qc .qh{display:flex;gap:.6em;align-items:baseline;line-height:1.55}
+.qc .qt{font-family:var(--latin);font-size:.8em;letter-spacing:.08em;color:var(--muted);white-space:nowrap;border:1px solid var(--rule);border-radius:999px;padding:0 .7em}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:.45em}
+.opts button,.tfb button{font:inherit;font-size:.92em;text-align:left;padding:.45em .8em;border-radius:6px;border:1px solid var(--rule);background:var(--paper2);color:var(--ink);cursor:pointer;line-height:1.45}
+.opts button.sel{border-color:var(--ink2);background:var(--hl)}
+.opts button.right,.tfb button.right{border-color:var(--ok);color:var(--ok);background:color-mix(in srgb,var(--ok) 10%,var(--paper))}
+.opts button.wrong,.tfb button.wrong{border-color:var(--no);color:var(--no);background:color-mix(in srgb,var(--no) 10%,var(--paper))}
+.tfb{display:flex;gap:.6em}.tfb button{min-width:5em;text-align:center}
+.qc textarea{font:inherit;font-weight:500;font-size:.92em;width:100%;min-height:3.4em;resize:vertical;border:1px solid var(--rule);border-radius:6px;padding:.4em .7em;background:var(--paper2);color:var(--ink)}
+.ref{font-size:.9em;line-height:1.7;color:var(--ink2);background:var(--paper2);border-left:3px solid var(--accent);padding:.4em .8em;border-radius:0 6px 6px 0;font-weight:500}
+.mini{font:inherit;font-size:.82em;align-self:flex-start;border:1px solid var(--rule);background:transparent;color:var(--ink2);border-radius:999px;padding:.2em .9em;cursor:pointer}
+.row{display:flex;flex-wrap:wrap;gap:.5em}
+.gbox{justify-content:center}
+.lmap{display:flex;flex-direction:column;gap:.15em;background:var(--paper2);border:1px solid var(--rule);border-radius:4px;padding:.6em 1em;
+}
+.lm-row+.lm-row{border-top:1px dashed color-mix(in srgb,var(--rule) 80%,transparent)}
+.lm-row{display:grid;grid-template-columns:5.2em minmax(0,1fr) 11em;align-items:center;gap:.8em;min-height:1.9em}
+.lm-tag{font-size:.75em;color:var(--accent);white-space:nowrap}
+.lm-tag b{display:inline-grid;place-items:center;width:1.5em;height:1.5em;border-radius:50%;border:1px solid currentColor;margin-right:.35em;font-family:var(--latin);font-size:.9em}
+.lm-line.indent{padding-left:2em}.lm-line.right{text-align:right}
+.lm-line.body{display:flex;flex-direction:column;gap:.45em;padding:.3em 0}
+.lm-line.body i{display:block;height:.35em;border-radius:3px;background:var(--rule)}
+.lm-line.body i:first-child{margin-left:2em}.lm-line.body i.short{width:60%}
+.lm-pos{font-size:.62em;color:var(--muted);font-weight:500;line-height:1.4}
+.gtab{display:grid;grid-template-columns:auto auto auto 1fr;border-top:2px solid var(--ink2)}
+.gtab>div{padding:.45em .7em;border-bottom:1px solid var(--rule);line-height:1.45}
+.gtab .gh{font-size:.75em;letter-spacing:.2em;color:var(--muted)}
+.gtab .gn{white-space:nowrap;color:var(--accent)}
+.gtab .gn b{font-family:var(--latin)}
+.gtab .gex{white-space:nowrap}
+.gtab .gtip{font-weight:500;color:var(--ink2);font-size:.85em}
+/* 選詞填空 */
+.bank{font-size:.72em;display:flex;flex-wrap:wrap;gap:.4em;padding:.6em;border:1px dashed var(--rule);border-radius:6px;background:var(--paper)}
+.bank button{font:inherit;font-size:.9em;padding:.2em .7em;border-radius:4px;border:1px solid var(--rule);background:var(--paper2);color:var(--ink);cursor:pointer}
+.bank button.used{opacity:.35}
+.fs{line-height:2.1}
+.blank{font:inherit;min-width:4.2em;padding:0 .4em;margin:0 .15em;border:0;border-bottom:2px solid var(--muted);background:transparent;color:var(--ink);cursor:pointer;border-radius:3px 3px 0 0}
+.blank.act{background:var(--hl);border-color:var(--accent)}
+.blank.right{color:var(--ok);border-color:var(--ok)}.blank.wrong{color:var(--no);border-color:var(--no)}
+/* 詞彙卡：一頁幾張，點卡片翻面；字號按卡片大小縮放（容器單位） */
+.vgrid{grid-column:1;grid-row:1;display:grid;grid-template-columns:repeat(var(--vc,3),minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:clamp(10px,1.4vw,22px);min-height:0;position:relative;z-index:1}
+.vcell{perspective:1400px;container-type:size;min-height:0}
+.vcard{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.7,.2,1);cursor:pointer;border:0;background:none;padding:0;font:inherit;color:inherit;display:block}
+.vcard.flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2cqh;background:var(--paper2);border:1px solid var(--rule);border-radius:8px;padding:5cqh 6cqw;text-align:center;overflow:hidden}
+.face.back{transform:rotateY(180deg);gap:3cqh}
+.vw{font-size:min(30cqh,18cqw);letter-spacing:.06em;line-height:1.1}
+.vws{font-size:min(12cqh,8cqw);color:var(--ink2);font-weight:500;letter-spacing:.08em}
+.vpy{font-family:var(--latin);font-style:italic;font-size:min(13cqh,8cqw);color:var(--accent);font-weight:500}
+.ven{font-family:var(--latin);font-size:min(14cqh,9cqw);font-weight:600;line-height:1.15}
+.vex{font-size:min(9.5cqh,6cqw);line-height:1.45}
+.vex.s{color:var(--ink2);font-weight:500}
+.vkey{position:absolute;top:4cqh;left:5cqw;font-size:min(8cqh,5cqw);color:var(--accent)}
+.vsay{position:absolute;top:3cqh;right:4cqw;font-size:min(9cqh,6cqw);border:0;background:none;cursor:pointer;opacity:.55;padding:0}
+.vsay:hover{opacity:1}
+.vtools{position:absolute;bottom:clamp(8px,1vw,16px);right:clamp(22px,3.4vw,64px);display:flex;gap:10px;z-index:2}
+/* 換圖 */
+.imgctl{position:absolute;top:16px;right:16px;z-index:3;opacity:.35;transition:opacity .2s}
+.slide:hover .imgctl,.imgctl:focus-within{opacity:1}
+.imgctl>button{font-size:16px;width:34px;height:34px;border-radius:50%;border:1px solid var(--rule);background:var(--paper);cursor:pointer}
+.imgmenu{position:absolute;right:0;top:40px;background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:6px;display:flex;flex-direction:column;gap:2px;min-width:130px;box-shadow:0 6px 20px color-mix(in srgb,var(--ink) 18%,transparent)}
+.imgmenu button{font:inherit;font-size:15px;text-align:left;padding:6px 10px;border:0;border-radius:4px;background:transparent;color:var(--ink);cursor:pointer}
+.imgmenu button:hover{background:var(--paper2)}
+.slide.drag{outline:3px dashed var(--accent);outline-offset:-6px}
+.follow{display:none;position:absolute;left:24px;bottom:20px;z-index:3;align-items:center;gap:10px;color:var(--accent);font-size:18px;background:var(--paper);border:1px solid var(--rule);border-radius:999px;padding:5px 14px 5px 6px}
+.follow.on{display:flex}
+.ring{width:28px;height:28px;border-radius:50%;background:conic-gradient(var(--accent) var(--p,0%),var(--accent-soft) 0)}
+.deckfoot{display:flex;flex-direction:column;gap:10px}
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:12px 16px;font-size:16px;line-height:1.7}
+.card h3{margin:0 0 4px;font-size:17px;color:var(--accent)}
+#guide{display:none}.show-tags #guide{display:block}
+.hint{color:var(--muted);font-size:14px;line-height:1.7}
+.present header,.present .deckfoot{display:none}
+.present .wrap{max-width:none;padding-top:8px;gap:8px}
+.present .wrap{padding-top:6px}
+/* 控制條 */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(6px);border-top:1px solid var(--rule);
+  padding-top:9px;padding-bottom:calc(9px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bar .in{max-width:1680px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-size:15px}
+.bar button,.bar select{font:inherit;font-size:15px;padding:6px 12px;border-radius:999px;border:1px solid var(--rule);background:var(--paper);color:var(--ink);cursor:pointer}
+.bar .tog[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.bar label{display:flex;align-items:center;gap:6px;color:var(--ink2)}
+.zhsw{display:inline-flex!important;padding:0!important;overflow:hidden}.zhsw span{padding:6px 12px}.zhsw .t,.simp .zhsw .s{background:var(--ink);color:var(--paper)}.simp .zhsw .t{background:none;color:var(--ink)}
+.zs{display:none}.simp .zt{display:none}.simp .zs{display:inline}
+.zoom{display:flex;align-items:center;gap:4px}.zoom span{min-width:3.2em;text-align:center;color:var(--ink2);font-variant-numeric:tabular-nums}
+.bar .now{flex:1;min-width:120px;color:var(--muted);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:600px),(max-width:900px) and (orientation:portrait){
+  .deckhead,.stage,.deckfoot{width:100%;min-width:0}
+  .slide{height:auto;min-height:62vh}
+  .slide.on{display:flex;flex-direction:column}
+  .duo{display:flex;flex-direction:column}
+  .has-side .media,.has-top .media{order:-1;height:24vh}.img-frame .media{transform:none}.has-panel .duo{width:auto}
+  .ptext{max-height:none;font-size:20px!important}
+  .show-tags .hant .ptext{padding-left:0}.tag{position:static;transform:none;margin-right:6px;vertical-align:middle}
+  .qbox{height:auto;overflow:visible;font-size:19px}.qbox.one .opts{grid-template-columns:1fr}
+  .vgrid{grid-template-columns:1fr 1fr;grid-auto-rows:34vw}.wrap{padding-bottom:170px}.imgctl{opacity:1}}
+@media (max-width:600px){#fs,.dots,.bar .now{display:none}.wrap{padding-bottom:130px}}
+/* 課堂標註 */
+.an-hy{background:#f7e27a;border-radius:2px}.an-hg{background:#bfe3b4;border-radius:2px}.an-hp{background:#f5c0cf;border-radius:2px}
+.an-cr{color:#c0392b!important}.an-cb{color:#1f5fa8!important}.an-b{font-weight:900;-webkit-text-stroke:.03em currentColor}.an-u{text-decoration:underline;text-decoration-thickness:.09em;text-underline-offset:.18em}
+.an-n{text-decoration:underline dotted #c0392b;text-decoration-thickness:.08em;text-underline-offset:.2em}
+.anote{display:inline-block;text-indent:0;font-size:.62em;line-height:1.3;font-weight:700;color:#fff;background:#c0392b;border-radius:.5em;padding:.1em .5em;margin:0 .25em;vertical-align:.35em;max-width:14em;white-space:normal}
+.annot .blk{cursor:text;user-select:text;-webkit-user-select:text}.annot .blk:hover{background:none}.annot .blk .play{display:none}
+.anbar{position:fixed;left:0;right:0;bottom:0;z-index:8;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;
+  background:var(--paper);border-top:1px solid var(--rule);padding:7px max(12px,env(safe-area-inset-right,0px)) calc(7px + env(safe-area-inset-bottom,0px));font-size:17px}
+.annot .bar{display:none}
+.anbar button{font:inherit;min-width:44px;min-height:44px;padding:4px 12px;border-radius:10px;border:1px solid var(--rule);background:var(--paper2);color:var(--ink);cursor:pointer}
+.anbar button:active{transform:scale(.96)}.anbar .sw{width:44px;padding:0}.anbar i{width:1px;height:30px;background:var(--rule);margin:0 2px}
+.anbar input{font:inherit;font-weight:500;min-height:44px;width:9em;border:1px solid var(--rule);border-radius:10px;padding:0 10px;background:var(--paper2);color:var(--ink)}
+.anbar .done{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header><div class="eyebrow" id="eyebrow"></div><h1 id="h1"></h1></header>
+  <div class="deck">
+    <div class="deckhead"><button class="sn" id="sprev">‹ 上一頁</button><span class="pg" id="pgno"></span><div class="dots" id="dots"></div><button class="sn" id="snext">下一頁 ›</button></div>
+    <div class="stage">
+      <div id="letter"></div>
+      <div class="follow" id="follow"><span class="ring" id="ring"></span><span>請跟讀這一句</span></div>
+    </div>
+    <div class="deckfoot">
+      <div class="card" id="guide"></div>
+      <div class="hint">點任一段就讀那一段，再點一次停止。← → 或翻頁筆換頁。每頁右上角 🖼 可換插圖或背景，也可以把圖片拖到頁面上；換的圖只存在這台電腦的瀏覽器裏。</div>
+    </div>
+  </div>
+  <input type="file" id="imgfile" accept="image/*" hidden>
+</div>
+
+<div class="anbar" id="anbar" hidden>
+  <button class="sw" data-an="hy" title="黃色螢光" style="background:#f7e27a">🖍</button><button class="sw" data-an="hg" title="綠色螢光" style="background:#bfe3b4">🖍</button><button class="sw" data-an="hp" title="粉色螢光" style="background:#f5c0cf">🖍</button><i></i>
+  <button data-an="cr" title="紅字" style="color:#c0392b">字</button><button data-an="cb" title="藍字" style="color:#1f5fa8">字</button><button data-an="b" title="加粗"><b>B</b></button><button data-an="u" title="底線"><u>U</u></button><i></i>
+  <input id="annote" placeholder="批註內容"><button data-an="n" title="加批註">💬 批註</button><i></i>
+  <button data-an="erase" title="去掉選中文字的標註">🧽 擦除</button><button data-an="undo" title="撤銷">↶ 撤銷</button><button data-an="clear" title="清除本頁全部標註">🗑 清除本頁</button><button class="done" data-an="done">完成</button>
+</div>
+<div class="bar"><div class="in">
+  <button id="stopbtn">⏹ 停止</button>
+  <span class="now" id="nowtxt">點課文任一段開始朗讀</span>
+  <button class="tog" id="follow-tog" aria-pressed="false">跟讀</button>
+  <button class="tog" id="tag-tog" aria-pressed="false" hidden>標出格式</button>
+  <button id="zh-tog" class="zhsw" title="題目和詞彙用繁體或簡體" aria-label="切換繁體或簡體"><span class="t">繁</span><span class="s">简</span></button>
+  <label for="rate">語速 <select id="rate"><option value=".7">慢</option><option value=".85" selected>適中</option><option value="1">正常</option></select></label>
+  <button class="tog" id="ann-tog" aria-pressed="false">✏️ 標註</button>
+  <span class="zoom"><button id="zminus" aria-label="字小一點">A−</button><span id="zval">100%</span><button id="zplus" aria-label="字大一點">A+</button></span>
+  <button id="fs">⛶ 投影</button>
+</div></div>
+
+<script>
+/*LESSON-START*/
+const LESSON = __LESSON_JSON__;
+/*LESSON-END*/
+const $=id=>document.getElementById(id);
+const MOB=matchMedia('(max-width:600px),(max-width:900px) and (orientation:portrait)');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const on=id=>$(id).getAttribute('aria-pressed')=='true';
+document.title=LESSON.title;
+$('eyebrow').textContent=LESSON.eyebrow||'';$('h1').textContent=LESSON.title;
+if(LESSON.guide)$('guide').innerHTML='<h3>'+esc(LESSON.guide.title)+'</h3><div class="hint">'+esc(LESSON.guide.text)+'</div>';
+
+/* 分頁：頁由「片段」組成，片段 = [block, 起句, 止句]。LESSON.slides[i].segs 逐頁指定（也接受 blocks），
+   slides[i].qs 是這頁課文後的練習。沒指定時一段一頁，超過 pageChars（預設 100）字的頁按句子平均切開。 */
+const SENT=[],SEGS=[];
+function split(t){return t.match(/[^。！？；：]+[。！？；：]*[」』”]?|[」』”]+/g)||[t]}
+const NS=b=>split(LESSON.blocks[b].text).length;
+const full=bs=>bs.map(b=>[b,0,NS(b)-1]);
+let PAGES=[];
+if((LESSON.slides||[]).some(s=>s.segs||s.blocks))PAGES=LESSON.slides.map(s=>({type:'text',segs:s.segs||full(s.blocks),label:s.label,qs:s.qs||[]}));
+else{let c=null;LESSON.blocks.forEach((b,bi)=>{const isP=(b.type||'p')=='p';
+  if(!c||(isP&&c.hasP)){c={bl:[],hasP:false};PAGES.push(c)}c.bl.push(bi);if(isP)c.hasP=true});
+  const MAX=LESSON.pageChars||100,out=[];
+  PAGES.forEach(pg=>{const ss=[];pg.bl.forEach(b=>split(LESSON.blocks[b].text).forEach((x,j)=>ss.push([b,j,x.length])));
+    const tot=ss.reduce((a,x)=>a+x[2],0),n=Math.max(1,Math.ceil(tot/MAX));let acc=0,k=0,ch=[[]];
+    ss.forEach(x=>{if(acc>=tot/n*(k+1)-x[2]/2&&ch[k].length&&k<n-1){k++;ch.push([])}ch[k].push(x);acc+=x[2]});
+    ch.forEach(c=>{const segs=[];c.forEach(([b,j])=>{const l=segs[segs.length-1];if(l&&l[0]===b)l[2]=j;else segs.push([b,j,j])});out.push({type:'text',segs,qs:[]})})});
+  PAGES=out}
+const PARTS=LESSON.parts||[];
+const partOf=b=>{let r=null;PARTS.forEach(x=>{if(b>=x.from)r=x.name});return r};
+const DECK=[];let qn=0;
+if(LESSON.cover)DECK.push({type:'c'});
+/* 每道題一頁，字號放大到佔滿整頁，方便投影 */
+PAGES.forEach((pg,ti)=>{pg.ti=ti;DECK.push(pg);if(pg.qs.length){qn++;pg.qs.forEach((q,j)=>DECK.push({type:'q',ti,qs:[q],n:qn,j,m:pg.qs.length}))}});
+/* 書信格式講解：課文讀完後，先看格式圖、再看寫法表，接着做格式練習 */
+if(LESSON.format){DECK.push({type:'g',kind:'map'});(LESSON.format.tablePages||[LESSON.format.parts.map((_,i)=>i)]).forEach(rows=>DECK.push({type:'g',kind:'table',rows}));const fq=LESSON.format.qs||[];fq.forEach((q,j)=>DECK.push({type:'q',fmt:1,qs:[q],j,m:fq.length}))}
+{const V=LESSON.vocab||[],N=LESSON.vocabPerPage||6,M=Math.ceil(V.length/N);for(let j=0;j<M;j++)DECK.push({type:'v',ids:V.map((_,i)=>i).slice(j*N,j*N+N),j,m:M})}
+/* 選詞填空分幾頁，每頁都放完整詞庫；LESSON.fill.pages 可指定每頁的題號，否則每頁 3 題 */
+if(LESSON.fill){const F=LESSON.fill,P=F.pages||F.items.map((_,i)=>i).reduce((a,i)=>{if(i%3==0)a.push([]);a[a.length-1].push(i);return a},[]);
+  P.forEach((ids,j)=>DECK.push({type:'f',ids,j,m:P.length}))}
+
+/* 課文頁 */
+function segHTML([bi,s0,s1],p,simp){const b=LESSON.blocks[bi],ts=split(b.text),zs=b.textS?split(b.textS):ts,src=simp?zs:ts;
+  let g=simp?null:SEGS.push({p,from:SENT.length,to:SENT.length+s1-s0})-1;
+  const parts=src.slice(s0,s1+1).map((t,jj)=>{const j=s0+jj;let i;if(simp)i=SEGBASE+jj;else i=SENT.push({t:ts[j],b:bi,p})-1;return `<span class="s" data-i="${i}">${esc(t)}</span>`}).join('');
+  if(simp)g=SEGG;
+  return `<p class="blk ${b.type||'p'}${s0>0?' cont':''}" data-g="${g}">${b.tag&&s0==0?`<span class="tag">${esc(b.tag)}</span>`:''}${parts}<span class="play" aria-hidden="true">🔊</span></p>`}
+let SEGBASE=0,SEGG=0;
+function textHTML(pg,p){const hant=pg.segs.map(sg=>segHTML(sg,p,false)).join('');
+  const g0=SEGS.length-pg.segs.length;
+  const hans=pg.segs.map((sg,k)=>{SEGG=g0+k;SEGBASE=SEGS[SEGG].from;return segHTML(sg,p,true)}).join('');
+  return `<div class="duo"><div class="half hant"><span class="hl">繁體</span><div class="ptext" lang="zh-Hant">${hant}</div></div><div class="sep">◆</div><div class="half hans"><span class="hl">简体</span><div class="ptext" lang="zh-Hans">${hans}</div></div></div>`}
+function plabel(pg){let pt=null,l=null;if(pg.type=='c')return '';
+  if(pg.type=='text'){pt=partOf(pg.segs[0][0]);l=pg.label}
+  else if(pg.type=='q'&&pg.fmt){pt='書信格式';l='格式練習'+(pg.m>1?` · 第 ${pg.j+1} / ${pg.m} 題`:'')}
+  else if(pg.type=='q'){pt=partOf(PAGES[pg.ti].segs[0][0]);l='練習 '+pg.n+(pg.m>1?` · 第 ${pg.j+1} / ${pg.m} 題`:'')}
+  else if(pg.type=='g'){pt='書信格式';l=pg.kind=='map'?'五個部分的位置':'每部分怎樣寫'}
+  else if(pg.type=='v'){pt='詞彙';l=`${pg.ids[0]+1}–${pg.ids[pg.ids.length-1]+1}（共 ${LESSON.vocab.length} 個）· 點卡片翻面`}else{pt='詞語練習';l=(LESSON.fill.title||'選詞填空')+(pg.m>1?` · ${pg.j+1} / ${pg.m}`:'')}
+  const s=[pt&&`<b>${esc(pt)}</b>`,l&&esc(l)].filter(Boolean).join('<i>｜</i>');return s?`<div class="plabel">${s}</div>`:''}
+
+/* 練習題型：mc 單選、multi 多選、tf 是非、qa 問答 */
+const TN={mc:'選擇題',multi:'多選題',tf:'是非題',qa:'問答題'};
+function qHTML(q,id){const head=`<div class="qh"><span class="qt">${TN[q.t]||''}</span><span>${esc(q.q)}</span></div>`;
+  if(q.t=='mc'||q.t=='multi')return `<div class="qc" data-q="${id}">${head}<div class="opts">${q.o.map((o,j)=>`<button data-j="${j}">${'ABCD'[j]}. ${esc(o)}</button>`).join('')}</div>${q.t=='multi'?'<button class="mini" data-do="check">檢查答案</button>':''}<div class="ref" hidden></div></div>`;
+  if(q.t=='tf')return `<div class="qc" data-q="${id}">${head}<div class="tfb"><button data-v="1">✓ 是</button><button data-v="0">✗ 非</button></div><div class="ref" hidden></div></div>`;
+  return `<div class="qc" data-q="${id}">${head}<textarea placeholder="寫下你的答案…"></textarea><button class="mini" data-do="ans">顯示參考答案</button><div class="ref" hidden>參考答案：${esc(q.a)}</div></div>`}
+function fillHTML(pg){const F=LESSON.fill;let n=0;
+  return `<div class="qbox fill"><h2>${esc(F.title||'選詞填空')}</h2><div class="bank">${F.bank.map((w,k)=>`<button data-w="${esc(w)}">${esc(w)}</button>`).join('')}</div>
+    ${pg.ids.map(i=>[F.items[i],i]).map(([it,i])=>`<div class="fs">${i+1}. ${it.s.split('{}').map((x,k,arr)=>esc(x)+(k<arr.length-1?`<button class="blank" data-b="${n++}" data-a="${esc(it.a[k])}"></button>`:'')).join('')}</div>`).join('')}
+    <div class="row"><button class="mini" data-do="fcheck">檢查答案</button><button class="mini" data-do="fshow">顯示答案</button><button class="mini" data-do="fclear">清空</button></div><div class="hint">先點空格，再點上面的詞語；也可以直接點詞語，會填進下一個空格。</div></div>`}
+function gHTML(pg){const F=LESSON.format,P=F.parts;
+  if(pg.kind=='map')return `<div class="qbox gbox"><h2>${esc(F.title||'書信格式')}</h2><div class="lmap">${P.map((x,i)=>x.lines.map((ln,k)=>`<div class="lm-row" data-i="${i}"><span class="lm-tag">${k==0?`<b>${i+1}</b>${esc(x.name)}`:''}</span><div class="lm-line ${ln[0]}">${ln[0]=='body'?'<i></i><i></i><i class="short"></i>':esc(ln[1])}</div><span class="lm-pos">${k==0?esc(x.pos):''}</span></div>`).join('')).join('')}</div></div>`;
+  return `<div class="qbox gbox"><h2>${esc(F.title||'書信格式')}</h2><div class="gtab"><div class="gh">部分</div><div class="gh">位置</div><div class="gh">課文例子</div><div class="gh">小提示</div>${P.map((x,i)=>pg.rows&&!pg.rows.includes(i)?'':`<div class="gn"><b>${i+1}</b> ${esc(x.name)}</div><div>${esc(x.pos)}</div><div class="gex">${x.lines.some(l=>l[0]=='body')?'（課文第一至六段）':x.lines.map(l=>esc(l[1])).join('<br>')}</div><div class="gtip">${esc(x.tip||'')}</div>`).join('')}</div></div>`}
+function vHTML(pg){const n=pg.ids.length,c=n<=2?n:n<=4?2:3;
+  return `<div class="vgrid" style="--vc:${c}">${pg.ids.map(k=>{const v=LESSON.vocab[k];return `<div class="vcell"><div class="vcard" data-k="${k}" role="button" tabindex="0" aria-label="${esc(v.w)}，點擊翻面">
+    <div class="face front">${v.key?'<span class="vkey">★</span>':''}<span class="vsay" data-do="vsay" title="讀詞語">🔊</span><div class="vw nodual">${D2(v.w,v.ws||v.w)}</div>${v.ws&&v.ws!==v.w?`<div class="vws nodual">${D2(v.ws,v.w)}</div>`:''}<div class="vpy">${esc(v.py)}</div></div>
+    <div class="face back"><span class="vsay" data-do="vex" title="讀例句">🔊</span><div class="ven">${esc(v.en)}</div><div class="vex nodual">${D2(v.ex,v.exS||v.ex)}</div></div></div></div>`}).join('')}</div>
+    <div class="vtools"><button class="mini" data-do="vall">全部翻面</button></div>`}
+const IMGCTL='<div class="imgctl"><button class="imgbtn" aria-label="換插圖或背景" title="換插圖或背景">🖼</button><div class="imgmenu" hidden><button data-img="pick">選擇圖片…</button><button data-img="side">作插圖</button><button data-img="bg">作背景</button><button data-img="none">不要圖片</button></div></div>';
+const QS=[];
+$('letter').innerHTML=DECK.map((pg,p)=>{const cls={text:'text',q:'qs',v:'vs',f:'qs',g:'qs gs',c:'qs cs'}[pg.type];let body;
+  if(pg.type=='text')body=textHTML(pg,p);
+  else if(pg.type=='q')body=`<div class="qbox one">${pg.qs.map(q=>qHTML(q,QS.push(q)-1)).join('')}</div>`;
+  else if(pg.type=='c')body=`<div class="qbox cover"><div class="ceb">${esc(LESSON.eyebrow||'')}</div><h2>${esc(LESSON.title)}</h2><div class="csub">按「下一頁」或 → 開始</div></div>`;
+  else if(pg.type=='v')body=vHTML(pg);else if(pg.type=='g')body=gHTML(pg);else body=fillHTML(pg);
+  return `<section class="slide ${cls}" data-p="${p}">${plabel(pg)}<img class="media" alt="">${body}${IMGCTL}</section>`}).join('');
+const slides=[...document.querySelectorAll('.slide')];
+$('dots').innerHTML=DECK.map((pg,p)=>`<button data-p="${p}" class="${pg.type=='text'?'':pg.type}" aria-label="${pg.type=='c'?'封面':pg.type=='text'?'課文 '+(pg.ti+1):pg.type=='q'?(pg.fmt?'格式練習':'練習 '+pg.n):pg.type=='g'?'書信格式':pg.type=='v'?'詞彙 '+(pg.j+1):'選詞填空'}"></button>`).join('');
+if(LESSON.blocks.some(b=>b.tag))$('tag-tog').hidden=false;
+
+/* 字號：上下兩半用同一字號，剛好都放得下 */
+function fit(sl){if(!sl||!sl.offsetParent)return;const qb=sl.querySelector('.qbox');if(qb){fitQ(qb);return}if(!sl.classList.contains('text'))return;const ts=[...sl.querySelectorAll('.ptext')];
+  if(MOB.matches){ts.forEach(t=>t.style.fontSize=Z!=1?(20*Z)+'px':'');return}
+  let lo=12,hi=Math.max(20,Math.min(sl.clientWidth/(sl.classList.contains('has-side')?24:30),60));
+  for(let k=0;k<14;k++){const m=(lo+hi)/2;ts.forEach(t=>t.style.fontSize=m+'px');if(ts.every(t=>t.scrollHeight<=t.clientHeight+1))lo=m;else hi=m}
+  ts.forEach(t=>{t.style.fontSize=(lo*Z)+'px';t.style.overflowY=Z>1?'auto':''})}
+function fitQ(t){if(MOB.matches){t.style.fontSize=Z!=1?(19*Z)+'px':'';return}
+  let lo=14,hi=110;t.style.overflow='hidden';
+  for(let k=0;k<16;k++){const m=(lo+hi)/2;t.style.fontSize=m+'px';if(t.scrollHeight<=t.clientHeight+1&&t.scrollWidth<=t.clientWidth+1)lo=m;else hi=m}
+  t.style.fontSize=(lo*Z)+'px';t.style.overflow=Z>1?'auto':'hidden'}
+function layout(){if(MOB.matches){document.documentElement.style.removeProperty('--slideH');return}
+  const st=document.querySelector('.stage'),top=st.getBoundingClientRect().top+scrollY,bar=Math.max(document.querySelector('.bar').offsetHeight,$('anbar').offsetHeight);
+  document.documentElement.style.setProperty('--slideH',Math.max(320,innerHeight-top-bar-14)+'px')}
+function fitCur(){layout();fit(slides[pg])}
+let Z=1;try{Z=+localStorage.getItem('lr-zoom')||1}catch(e){}
+function setZ(z){Z=Math.round(Math.min(1.8,Math.max(.6,z))*10)/10;$('zval').textContent=Math.round(Z*100)+'%';try{localStorage.setItem('lr-zoom',Z)}catch(e){}fitCur()}
+$('zminus').onclick=()=>setZ(Z-.1);$('zplus').onclick=()=>setZ(Z+.1);$('zval').ondblclick=()=>setZ(1);$('zval').textContent=Math.round(Z*100)+'%';
+addEventListener('resize',fitCur);if(document.fonts)document.fonts.ready.then(fitCur);
+
+/* 翻頁 */
+let pg=-1;
+function show(p){p=Math.max(0,Math.min(DECK.length-1,p));if(p===pg)return;stopAll();pg=p;
+  slides.forEach((s,k)=>s.classList.toggle('on',k==p));
+  document.querySelectorAll('#dots button').forEach((d,k)=>d.classList.toggle('on',k==p));
+  $('pgno').textContent=`${p+1} / ${DECK.length}`;$('sprev').disabled=p==0;$('snext').disabled=p==DECK.length-1;
+  slides[p].querySelectorAll('.vcard').forEach(c=>c.classList.remove('flip'));fit(slides[p])}
+$('sprev').onclick=()=>show(pg-1);$('snext').onclick=()=>show(pg+1);
+$('dots').onclick=e=>{const b=e.target.closest('button');if(b)show(+b.dataset.p)};
+
+/* 朗讀：只在點擊時讀那一段；有錄音（LESSON.audio["s"+i]）就播錄音，否則用瀏覽器中文朗讀 */
+const synth=window.speechSynthesis;let voices=[];
+const PREF=(LESSON.voicePrefer||['Meijia','美佳','Tingting','Xiaoxiao','曉曉','Hsiao','Yating','zh-TW','zh-CN']);
+function loadVoices(){if(!synth)return;voices=synth.getVoices().filter(v=>/^(zh|cmn|yue)/i.test(v.lang))}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices}
+function pickVoice(){
+  for(const p of PREF){const v=voices.find(v=>v.name.includes(p)||v.lang==p);if(v)return v}return voices[0]}
+let token=0,audioEl=null,waitT=null,readingG=-1;
+function speak(text,done){const my=token;
+  const fin=()=>{if(my===token)done()};
+  const rec=(LESSON.audio||{})[text.key];
+  if(rec){audioEl=new Audio(rec);audioEl.playbackRate=+$('rate').value/.85;audioEl.onended=fin;audioEl.onerror=()=>tts(text.t,fin);audioEl.play().catch(()=>tts(text.t,fin));return}
+  tts(text.t,fin)}
+function tts(t,fin){if(!synth){setTimeout(fin,t.length*250);return}
+  const clean=t.replace(/[「」『』“”]/g,'');const u=new SpeechSynthesisUtterance(clean);const v=pickVoice();
+  if(v){u.voice=v;u.lang=v.lang}else u.lang='zh-TW';u.rate=+$('rate').value;u.onend=fin;u.onerror=fin;synth.speak(u)}
+function hl(i){document.querySelectorAll('.s.now').forEach(s=>s.classList.remove('now'));if(i>=0)document.querySelectorAll(`.s[data-i="${i}"]`).forEach(s=>s.classList.add('now'))}
+function stopAll(){token++;if(synth)synth.cancel();if(audioEl){audioEl.pause();audioEl=null}clearTimeout(waitT);$('follow').classList.remove('on');
+  hl(-1);document.querySelectorAll('.blk.reading').forEach(b=>b.classList.remove('reading'));readingG=-1;$('nowtxt').textContent='點課文任一段開始朗讀'}
+function readSeg(g){stopAll();const S=SEGS[g];readingG=g;const my=token;
+  document.querySelectorAll(`.blk[data-g="${g}"]`).forEach(b=>b.classList.add('reading'));$('nowtxt').textContent='正在朗讀這一段…';
+  const go=i=>{if(my!==token)return;if(i>S.to){stopAll();return}hl(i);
+    speak({t:SENT[i].t,key:'s'+i},()=>{if(my!==token)return;if(on('follow-tog'))followWait(SENT[i].t.length,()=>go(i+1));else go(i+1)})};go(S.from)}
+function followWait(n,go){const ms=Math.max(1800,n*420/(+$('rate').value));const t0=performance.now();$('follow').classList.add('on');
+  const tick=()=>{const p=Math.min(1,(performance.now()-t0)/ms);$('ring').style.setProperty('--p',p*100+'%');
+    if(p<1)waitT=setTimeout(tick,60);else{$('follow').classList.remove('on');go()}};tick()}
+$('letter').addEventListener('click',e=>{const b=e.target.closest('.blk');if(!b||ANN)return;const g=+b.dataset.g;if(g===readingG){stopAll();return}readSeg(g)});
+$('stopbtn').onclick=stopAll;
+
+/* 練習互動 */
+const QOF=el=>QS[+el.closest('.qc').dataset.q];
+$('letter').addEventListener('click',e=>{const qc=e.target.closest('.qc');if(!qc)return;const q=QOF(qc),ref=qc.querySelector('.ref');
+  const ob=e.target.closest('.opts button'),tb=e.target.closest('.tfb button'),d=e.target.closest('[data-do]');
+  if(ob&&q.t=='mc'){if(qc.dataset.done)return;qc.dataset.done=1;const j=+ob.dataset.j;
+    qc.querySelectorAll('.opts button').forEach((x,k)=>{if(k===q.a)x.classList.add('right');else if(k===j)x.classList.add('wrong')});
+    ref.hidden=false;ref.textContent=(j===q.a?'✅ 答對了！':'❌ 正確答案是 '+'ABCD'[q.a]+'。')+(q.e?' '+q.e:'')}
+  else if(ob&&q.t=='multi'){if(!qc.dataset.done)ob.classList.toggle('sel')}
+  else if(d&&d.dataset.do=='check'){qc.dataset.done=1;const sel=[...qc.querySelectorAll('.opts button')].map(x=>x.classList.contains('sel'));
+    qc.querySelectorAll('.opts button').forEach((x,k)=>{x.classList.remove('sel');if(q.a.includes(k))x.classList.add('right');else if(sel[k])x.classList.add('wrong')});
+    const ok=sel.every((s,k)=>s===q.a.includes(k));ref.hidden=false;ref.textContent=(ok?'✅ 全對！':'❌ 正確答案是 '+q.a.map(k=>'ABCD'[k]).join('、')+'。')+(q.e?' '+q.e:'')}
+  else if(tb){if(qc.dataset.done)return;qc.dataset.done=1;const v=tb.dataset.v=='1';
+    qc.querySelectorAll('.tfb button').forEach(x=>{const xv=x.dataset.v=='1';if(xv===q.a)x.classList.add('right');else if(x===tb)x.classList.add('wrong')});
+    ref.hidden=false;ref.textContent=(v===q.a?'✅ 答對了！':'❌ 答案是「'+(q.a?'是':'非')+'」。')+' 原因：'+q.r}
+  else if(d&&d.dataset.do=='ans'){const h=!ref.hidden;ref.hidden=h;d.textContent=h?'顯示參考答案':'隱藏參考答案'}
+  fitCur()});
+
+/* 選詞填空 */
+let actBlank=null;
+$('letter').addEventListener('click',e=>{const box=e.target.closest('.fill');if(!box)return;
+  const bl=e.target.closest('.blank'),w=e.target.closest('.bank button'),d=e.target.closest('[data-do]');
+  const blanks=[...box.querySelectorAll('.blank')];
+  const sync=()=>{const used=blanks.map(b=>b.textContent);box.querySelectorAll('.bank button').forEach(x=>x.classList.toggle('used',used.includes(x.dataset.w)))};
+  if(bl){if(bl.textContent){bl.textContent='';bl.classList.remove('right','wrong');sync()}blanks.forEach(b=>b.classList.remove('act'));bl.classList.add('act');actBlank=bl}
+  else if(w){const tgt=(actBlank&&box.contains(actBlank))?actBlank:blanks.find(b=>!b.textContent);if(!tgt)return;tgt.textContent=w.dataset.w;tgt.classList.remove('act','right','wrong');
+    actBlank=blanks.find(b=>!b.textContent)||null;if(actBlank)actBlank.classList.add('act');sync()}
+  else if(d&&d.dataset.do=='fcheck'){let ok=0;blanks.forEach(b=>{if(!b.textContent)return;const r=b.textContent===b.dataset.a;b.classList.toggle('right',r);b.classList.toggle('wrong',!r);if(r)ok++});
+    d.textContent=`檢查答案（${ok} / ${blanks.length}）`}
+  else if(d&&d.dataset.do=='fshow'){blanks.forEach(b=>{b.textContent=b.dataset.a;b.classList.add('right');b.classList.remove('wrong','act')});sync()}
+  else if(d&&d.dataset.do=='fclear'){blanks.forEach(b=>{b.textContent='';b.classList.remove('right','wrong','act')});actBlank=blanks[0];actBlank.classList.add('act');sync()}
+  fitCur()});
+
+/* 詞彙卡：點卡片翻面，🔊 讀詞語（正面）或例句（背面） */
+$('letter').addEventListener('click',e=>{const sl=e.target.closest('.vs');if(!sl)return;
+  const c=e.target.closest('.vcard'),d=e.target.closest('[data-do]');
+  if(d&&d.dataset.do=='vall'){const cs=[...sl.querySelectorAll('.vcard')],f=!cs.every(x=>x.classList.contains('flip'));cs.forEach(x=>x.classList.toggle('flip',f));return}
+  if(d&&c){const k=+c.dataset.k,v=LESSON.vocab[k];stopAll();if(d.dataset.do=='vsay')speak({t:v.w,key:'v'+k},()=>{});else speak({t:v.ex,key:'x'+k},()=>{});return}
+  if(c)c.classList.toggle('flip')});
+$('letter').addEventListener('keydown',e=>{const c=e.target.closest('.vcard');if(c&&(e.key=='Enter')){e.preventDefault();c.classList.toggle('flip')}});
+
+/* 插圖與背景：LESSON.slides[i].img / mode（side|bg）為內建；老師可在頁面上換圖，存在本機 IndexedDB */
+const IDB=(()=>{let d;const db=()=>d||(d=new Promise((res,rej)=>{try{const r=indexedDB.open('lesson-slides',1);r.onupgradeneeded=()=>r.result.createObjectStore('img');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);setTimeout(()=>rej('timeout'),2000)}catch(e){rej(e)}}));
+  const tx=(m,f)=>db().then(x=>new Promise(res=>{try{const t=x.transaction('img',m);const q=f(t.objectStore('img'));t.oncomplete=()=>res(q&&q.result);t.onerror=()=>res(null)}catch(e){res(null)}})).catch(()=>null);
+  const MEM={};/* 瀏覽器不給存時，本次打開仍然有效 */
+  return{get:k=>k in MEM?Promise.resolve(MEM[k]):tx('readonly',s=>s.get(k)),set:(k,v)=>{MEM[k]=v;tx('readwrite',s=>s.put(v,k));return Promise.resolve()}}})();
+const KEY=p=>LESSON.title+'#'+DECK[p].type+(DECK[p].type=='text'?DECK[p].ti:DECK[p].type=='q'?'q'+DECK[p].ti:DECK[p].type=='v'?DECK[p].j:'');
+function builtin(p){const pgx=DECK[p];if(pgx.type!='text'){const B=LESSON.bgs||{},k={c:'cover',g:'format',v:'vocab',f:'question'}[pgx.type]||(pgx.type=='q'?(pgx.fmt?'format':'question'):'');return B[k]?{src:B[k],mode:'bg',clean:1}:null}const s=(LESSON.slides||[])[pgx.ti]||{};
+  if(s.img)return{src:s.img,mode:s.mode||'side',o:{imgw:s.w,imgh:s.h,imgpos:s.pos,panelw:s.panelw,frame:s.frame}};if(pgx.ti==0&&LESSON.image&&!LESSON.noAutoImage)return{src:LESSON.image,mode:'side',alt:LESSON.imageAlt};return null}
+const urls={};
+function setImg(p,src,mode,alt,clean,o){const sl=slides[p],im=sl.querySelector('.media');o=o||{};sl.classList.toggle('clean',!!clean&&!!src);
+  const m=src?mode:'';sl.classList.toggle('img-left',m=='left');sl.classList.toggle('has-top',m=='top');sl.classList.toggle('has-panel',m=='panel');sl.classList.toggle('img-frame',!!o.frame&&(m=='side'||m=='left'));
+  ['imgw','imgh','imgpos','panelw'].forEach(k=>o[k]?sl.style.setProperty('--'+k,o[k]):sl.style.removeProperty('--'+k));
+  sl.classList.toggle('has-side',!!src&&(mode=='side'||mode=='left'));sl.classList.toggle('has-bg',!!src&&(mode=='bg'||mode=='panel'));sl.dataset.mode=mode||'side';
+  if(src){im.onload=()=>fit(sl);im.src=src;im.alt=alt||''}else im.removeAttribute('src');fit(sl)}
+async function applyImg(p){const b=builtin(p),r=await IDB.get(KEY(p));
+  if(r&&r.none){setImg(p,null);return}
+  let src=b&&b.src,mode=(r&&r.mode)||(b&&b.mode)||'side';
+  if(r&&r.blob){if(urls[p])URL.revokeObjectURL(urls[p]);src=urls[p]=URL.createObjectURL(r.blob)}
+  setImg(p,src,mode,b&&b.alt,b&&b.clean&&!(r&&r.blob),r&&r.blob?{}:b&&b.o)}
+DECK.forEach((_,p)=>{const b=builtin(p);if(b)setImg(p,b.src,b.mode,b.alt,b.clean,b.o);applyImg(p)});
+let pickFor=-1;
+async function putImg(p,blob){const mode=slides[p].dataset.mode||'side';await IDB.set(KEY(p),{blob,mode});applyImg(p)}
+$('letter').addEventListener('click',async e=>{const btn=e.target.closest('.imgbtn,[data-img]');if(!btn)return;e.stopPropagation();
+  const sl=btn.closest('.slide'),p=+sl.dataset.p,menu=sl.querySelector('.imgmenu');
+  if(btn.classList.contains('imgbtn')){const h=!menu.hidden;document.querySelectorAll('.imgmenu').forEach(m=>m.hidden=true);menu.hidden=h;return}
+  menu.hidden=true;const a=btn.dataset.img,im=sl.querySelector('.media');
+  /* 先同步打開選檔視窗（瀏覽器要求在點擊當下打開） */
+  if(a=='pick'||(a!='none'&&!im.getAttribute('src'))){pickFor=p;slides[p].dataset.mode=a=='pick'?(sl.dataset.mode||'side'):a;$('imgfile').value='';$('imgfile').click();return}
+  const r=(await IDB.get(KEY(p)))||{};
+  if(a=='none')await IDB.set(KEY(p),{none:true});
+  else{delete r.none;r.mode=a;await IDB.set(KEY(p),r)}
+  if(a=='none'||im.getAttribute('src'))applyImg(p)},true);
+document.addEventListener('click',e=>{if(!e.target.closest('.imgctl'))document.querySelectorAll('.imgmenu').forEach(m=>m.hidden=true)});
+$('imgfile').onchange=()=>{const f=$('imgfile').files[0];if(f&&pickFor>=0)putImg(pickFor,f)};
+slides.forEach(sl=>{sl.addEventListener('dragover',e=>{e.preventDefault();sl.classList.add('drag')});
+  sl.addEventListener('dragleave',()=>sl.classList.remove('drag'));
+  sl.addEventListener('drop',e=>{e.preventDefault();sl.classList.remove('drag');const f=[...e.dataTransfer.files].find(f=>f.type.startsWith('image/'));if(f)putImg(+sl.dataset.p,f)})});
+
+/* 按鈕、鍵盤、投影 */
+document.querySelectorAll('.tog').forEach(b=>{b.addEventListener('click',()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!='true'))});
+$('tag-tog').addEventListener('click',()=>{document.body.classList.toggle('show-tags',on('tag-tog'));fitCur()});
+document.addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;
+  if(e.key=='ArrowRight'||e.key=='PageDown'){e.preventDefault();$('snext').click()}
+  else if(e.key=='ArrowLeft'||e.key=='PageUp'){e.preventDefault();$('sprev').click()}
+  else if(e.code=='Space'&&!e.target.closest('button')){e.preventDefault();const cs=[...slides[pg].querySelectorAll('.vcard')];if(cs.length){const f=!cs.every(c=>c.classList.contains('flip'));cs.forEach(c=>c.classList.toggle('flip',f))}else stopAll()}
+  else if(e.key=='Escape')stopAll();
+  else if(e.key=='f'||e.key=='F')$('fs').click()});
+function setPresent(v){document.body.classList.toggle('present',v);$('fs').textContent=v?'✕ 退出投影':'⛶ 投影';setTimeout(fitCur,60)}
+$('fs').onclick=()=>{const d=document.documentElement,v=!document.body.classList.contains('present');
+  if(!v){if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});setPresent(false);return}
+  setPresent(true);if(d.requestFullscreen&&!document.fullscreenElement)d.requestFullscreen().catch(()=>{})};
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&document.body.classList.contains('present'))setPresent(false);else setTimeout(fitCur,60)});
+
+
+/* 課堂標註：選中文字 → 螢光、改色、加粗、底線、批註；按頁存在 localStorage，記錄字元位置（不算 .tag/.play/.anote 的字） */
+let ANN=false;const ANK='lr-ann:'+LESSON.title,ORIG=new Map(),UNDO=[];let AD={};
+try{AD=JSON.parse(localStorage.getItem(ANK)||'{}')||{}}catch(e){AD={}}
+const anSave=()=>{try{localStorage.setItem(ANK,JSON.stringify(AD))}catch(e){}};
+const anSkip=n=>n.parentElement&&n.parentElement.closest('.tag,.play,.anote');
+function anTexts(root){const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),out=[];let n;while(n=w.nextNode())if(!anSkip(n))out.push(n);return out}
+function anOff(root,node,off){const r=document.createRange();r.setStart(root,0);r.setEnd(node,off);let c=0;
+  for(const t of anTexts(root)){if(!r.intersectsNode(t))continue;if(t===r.endContainer){c+=r.endOffset;break}c+=t.length}return c}
+function anWrap(root,a,b,cls,note){let pos=0,last=null;
+  for(const t of anTexts(root)){const L=t.length,s0=Math.max(a,pos),e0=Math.min(b,pos+L);
+    if(s0<e0){let x=t;if(s0>pos)x=x.splitText(s0-pos);if(e0<pos+L)x.splitText(e0-s0);const sp=document.createElement('span');sp.className='an an-'+cls;x.parentNode.insertBefore(sp,x);sp.appendChild(x);last=sp}
+    pos+=L;if(pos>=b)break}
+  if(note&&last){const n=document.createElement('span');n.className='anote';n.textContent=note;last.after(n)}}
+function anPaint(p){const sl=slides[p];if(!sl||!sl.classList.contains('text'))return;
+  sl.querySelectorAll('.ptext').forEach((pt,k)=>{const key=p+':'+k;if(!ORIG.has(key))ORIG.set(key,pt.innerHTML);else pt.innerHTML=ORIG.get(key);
+    (AD[p]||[]).filter(x=>x.t==k).forEach(x=>anWrap(pt,x.a,x.b,x.s,x.n))})}
+function anSel(){const se=getSelection();if(!se.rangeCount||se.isCollapsed)return null;const r=se.getRangeAt(0),sl=slides[pg];
+  const pts=[...sl.querySelectorAll('.ptext')],out=[];
+  pts.forEach((pt,k)=>{if(!r.intersectsNode(pt))return;const a=pt.contains(r.startContainer)?anOff(pt,r.startContainer,r.startOffset):0;
+    const b=pt.contains(r.endContainer)?anOff(pt,r.endContainer,r.endOffset):anTexts(pt).reduce((c,t)=>c+t.length,0);if(b>a)out.push({t:k,a,b})});
+  return out.length?out:null}
+function anDo(op){const p=pg,list=AD[p]||(AD[p]=[]);
+  if(op=='undo'){const u=UNDO.pop();if(!u)return;AD[u.p]=u.v;anSave();anPaint(u.p);fit(slides[u.p]);return}
+  if(op=='done'){$('ann-tog').click();return}
+  if(!slides[p].classList.contains('text'))return;
+  const snap=()=>UNDO.push({p,v:JSON.parse(JSON.stringify(list))});
+  if(op=='clear'){if(!list.length)return;snap();AD[p]=[];}
+  else{const sel=anSel()||LASTSEL;if(!sel)return;snap();
+    if(op=='erase')AD[p]=list.filter(x=>!sel.some(s=>s.t==x.t&&s.a<x.b&&x.a<s.b));
+    else{const n=op=='n'?$('annote').value.trim():'';if(op=='n'&&!n){$('annote').focus();UNDO.pop();return}
+      sel.forEach((s,i)=>list.push({...s,s:op,...(n&&i==0?{n}:{})}));if(op=='n')$('annote').value=''}}
+  LASTSEL=null;getSelection().removeAllRanges();anSave();anPaint(p);fit(slides[p])}
+let LASTSEL=null;document.addEventListener('selectionchange',()=>{if(!ANN)return;const v=anSel();if(v)LASTSEL=v});
+$('anbar').addEventListener('mousedown',e=>{if(e.target.closest('button'))e.preventDefault()});
+$('anbar').addEventListener('click',e=>{const b=e.target.closest('[data-an]');if(b)anDo(b.dataset.an)});
+$('annote').addEventListener('keydown',e=>{e.stopPropagation();if(e.key=='Enter')anDo('n')});
+$('ann-tog').addEventListener('click',()=>{ANN=on('ann-tog');document.body.classList.toggle('annot',ANN);$('anbar').hidden=!ANN;if(ANN)stopAll();fitCur()});
+slides.forEach((_,p)=>anPaint(p));
+
+/* 繁簡切換：題目、格式、詞彙頁的文字節點一律做成 <span class=zt>繁</span><span class=zs>简</span>；課文頁本來就上繁下簡，不動 */
+const C2=LESSON.c2||{},X2=Object.entries(LESSON.x2||{}).sort((a,b)=>b[0].length-a[0].length);
+function T(t){for(const [k,v] of X2)if(t.includes(k))t=t.split(k).join(v);let o='';for(const ch of t)o+=C2[ch]||ch;return o}
+function D2(a,b){return a===b?esc(a):`<span class="zt">${esc(a)}</span><span class="zs">${esc(b)}</span>`}
+function dual(root){const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),ns=[];let n;
+  while(n=w.nextNode()){const pe=n.parentElement;if(pe.closest('.zt,.zs,.nodual,textarea,script,style'))continue;if(/[㐀-鿿]/.test(n.data)&&T(n.data)!==n.data)ns.push(n)}
+  ns.forEach(n=>{const f=document.createElement('span');f.innerHTML=D2(n.data,T(n.data));n.replaceWith(...f.childNodes)})}
+slides.forEach(sl=>{if(!sl.classList.contains('text'))dual(sl)});
+new MutationObserver(ms=>ms.forEach(m=>{const t=m.target.nodeType==1?m.target:m.target.parentElement;if(t&&t.closest&&t.closest('.ref,.qc .mini,.plabel'))dual(t)})).observe($('letter'),{childList:true,subtree:true,characterData:true});
+let SIMP=false;try{SIMP=localStorage.getItem('lr-zh')=='s'}catch(e){}
+function setZh(v){SIMP=v;document.body.classList.toggle('simp',v);try{localStorage.setItem('lr-zh',v?'s':'t')}catch(e){}fitCur()}
+$('zh-tog').onclick=()=>setZh(!SIMP);setZh(SIMP);
+show(0);
+</script>
