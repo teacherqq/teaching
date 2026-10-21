@@ -136,7 +136,8 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .vcard.flip{transform:rotateY(180deg)}
 .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2cqh;background:var(--paper2);border:1px solid var(--rule);border-radius:8px;padding:5cqh 6cqw;text-align:center;overflow:hidden}
 .face.back{transform:rotateY(180deg);gap:3cqh}
-.vw{font-size:min(30cqh,18cqw);letter-spacing:.06em;line-height:1.1}
+.vw{font-size:min(28cqh,18cqw,calc(86cqw / var(--n,2)));white-space:nowrap;letter-spacing:.06em;line-height:1.1}
+.vsl{color:var(--muted);font-weight:400;margin:0 .12em}
 .vws{font-size:min(12cqh,8cqw);color:var(--ink2);font-weight:500;letter-spacing:.08em}
 .vpy{font-family:var(--latin);font-style:italic;font-size:min(13cqh,8cqw);color:var(--accent);font-weight:500}
 .ven{font-family:var(--latin);font-size:min(14cqh,9cqw);font-weight:600;line-height:1.15}
@@ -312,7 +313,7 @@ function gHTML(pg){const F=LESSON.format,P=F.parts;
   return `<div class="qbox gbox"><h2>${esc(F.title||'書信格式')}</h2><div class="gtab"><div class="gh">部分</div><div class="gh">位置</div><div class="gh">課文例子</div><div class="gh">小提示</div>${P.map((x,i)=>pg.rows&&!pg.rows.includes(i)?'':`<div class="gn"><b>${i+1}</b> ${esc(x.name)}</div><div>${esc(x.pos)}</div><div class="gex">${x.lines.some(l=>l[0]=='body')?'（課文第一至六段）':x.lines.map(l=>esc(l[1])).join('<br>')}</div><div class="gtip">${esc(x.tip||'')}</div>`).join('')}</div></div>`}
 function vHTML(pg){const n=pg.ids.length,c=n<=2?n:n<=4?2:3;
   return `<div class="vgrid" style="--vc:${c}">${pg.ids.map(k=>{const v=LESSON.vocab[k];return `<div class="vcell"><div class="vcard" data-k="${k}" role="button" tabindex="0" aria-label="${esc(v.w)}，點擊翻面">
-    <div class="face front">${v.key?'<span class="vkey">★</span>':''}<span class="vsay" data-do="vsay" title="讀詞語">🔊</span><div class="vw nodual">${D2(v.w,v.ws||v.w)}</div>${v.ws&&v.ws!==v.w?`<div class="vws nodual">${D2(v.ws,v.w)}</div>`:''}<div class="vpy">${esc(v.py)}</div></div>
+    <div class="face front">${v.key?'<span class="vkey">★</span>':''}<span class="vsay" data-do="vsay" title="讀詞語">🔊</span>${(()=>{const two=v.ws&&v.ws!==v.w,n=two?v.w.length*2+1.2:v.w.length;return `<div class="vw nodual" style="--n:${n}">${esc(v.w)}${two?`<span class="vsl">/</span>${esc(v.ws)}`:''}</div>`})()}<div class="vpy">${esc(v.py)}</div></div>
     <div class="face back"><span class="vsay" data-do="vex" title="讀例句">🔊</span><div class="ven">${esc(v.en)}</div><div class="vex nodual">${D2(v.ex,v.exS||v.ex)}</div></div></div></div>`}).join('')}</div>
     <div class="vtools"><button class="mini" data-do="vall">全部翻面</button></div>`}
 const IMGCTL='<div class="imgctl"><button class="imgbtn" aria-label="換插圖或背景" title="換插圖或背景">🖼</button><div class="imgmenu" hidden><button data-img="pick">選擇圖片…</button><button data-img="side">作插圖</button><button data-img="bg">作背景</button><button data-img="none">不要圖片</button></div></div>';
