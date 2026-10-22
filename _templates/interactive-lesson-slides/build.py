@@ -4,6 +4,7 @@ m=json.load(open('meta.json',encoding='utf-8'))
 # 沒有 lesson1.json 時是不帶課文的課件（例如單元導入），只有 extras 等頁面，標題寫在 meta.title
 d=json.load(open('lesson1.json',encoding='utf-8')) if os.path.exists('lesson1.json') else {'title':m['title'],'paras':[]}
 blocks=[{'type':'title','text':d['title']}] if d['paras'] else []
+if d.get('dateline'): blocks.append({'type':'dateline','text':d['dateline'],'tag':m.get('dateTag','日期・星期・天氣')})
 if d.get('salutation'): blocks.append({'type':'flush','text':d['salutation'],'tag':'稱呼'})
 for i,p in enumerate(d['paras']): blocks.append({'type':'p','text':p,'tag':m['paraTags'][i]})
 c=d.get('closing') or []
@@ -22,14 +23,15 @@ def durl(p):
     ext=os.path.splitext(p)[1].lower().lstrip('.').replace('jpg','jpeg')
     return f'data:image/{ext};base64,'+base64.b64encode(open(p,'rb').read()).decode()
 for s in m.get('slides',[]):
-    if s.get('img') and not s['img'].startswith('data:'): s['img']=durl(s['img'])
+    if s.get('img') and not s['img'].startswith('data:'):
+        if os.path.exists(s['img']): s['img']=durl(s['img'])
+        else: del s['img']  # 圖還沒到就先不放
 for x in m.get('extras',[]):
     for k in ('poster','img','src'):
         if x.get(k) and not x[k].startswith('data:') and not os.path.exists(x[k]): del x[k]  # 圖還沒到就先不放
         if x.get(k) and not x[k].startswith('data:'): x[k]=durl(x[k])
     if x.get('imgs'): x['imgs']=[s if s.startswith('data:') else durl(s) for s in x['imgs']]
-for k,v in m.get('bgs',{}).items():
-    if not v.startswith('data:'): m['bgs'][k]=durl(v)
+m['bgs']={k:(v if v.startswith('data:') else durl(v)) for k,v in m.get('bgs',{}).items() if v.startswith('data:') or os.path.exists(v)}
 if any('segs' in s for s in m.get('slides',[])):
     seq=[(b,j) for s in m['slides'] for b,a,e in s['segs'] for j in range(a,e+1)]
     assert seq==[(b,j) for b,x in enumerate(blocks) for j in range(len(sp(x['text'])))],'slides.segs 沒有按順序覆蓋每一句'
