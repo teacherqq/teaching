@@ -137,6 +137,7 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2cqh;background:var(--paper2);border:1px solid var(--rule);border-radius:8px;padding:5cqh 6cqw;text-align:center;overflow:hidden}
 .face.back{transform:rotateY(180deg);gap:3cqh}
 .vw{font-size:min(28cqh,18cqw,calc(86cqw / var(--n,2)));white-space:nowrap;letter-spacing:.06em;line-height:1.1}
+.vblank{display:inline-block;min-width:3.2em;border-bottom:.09em solid var(--accent);margin:0 .15em;text-align:center;cursor:pointer;line-height:1.2}.vblank .vb-a{visibility:hidden;color:var(--accent)}.vblank.show .vb-a{visibility:visible}
 .vsl{color:var(--muted);font-weight:400;margin:0 .12em}
 .vws{font-size:min(12cqh,8cqw);color:var(--ink2);font-weight:500;letter-spacing:.08em}
 .vpy{font-family:var(--latin);font-style:italic;font-size:min(13cqh,8cqw);color:var(--accent);font-weight:500}
@@ -314,7 +315,7 @@ function gHTML(pg){const F=LESSON.format,P=F.parts;
 function vHTML(pg){const n=pg.ids.length,c=n<=2?n:n<=4?2:3;
   return `<div class="vgrid" style="--vc:${c}">${pg.ids.map(k=>{const v=LESSON.vocab[k];return `<div class="vcell"><div class="vcard" data-k="${k}" role="button" tabindex="0" aria-label="${esc(v.w)}，點擊翻面">
     <div class="face front">${v.key?'<span class="vkey">★</span>':''}<span class="vsay" data-do="vsay" title="讀詞語">🔊</span>${(()=>{const two=v.ws&&v.ws!==v.w,n=two?v.w.length*2+1.2:v.w.length;return `<div class="vw nodual" style="--n:${n}">${esc(v.w)}${two?`<span class="vsl">/</span>${esc(v.ws)}`:''}</div>`})()}<div class="vpy">${esc(v.py)}</div></div>
-    <div class="face back"><span class="vsay" data-do="vex" title="讀例句">🔊</span><div class="ven">${esc(v.en)}</div><div class="vex nodual">${D2(v.ex,v.exS||v.ex)}</div></div></div></div>`}).join('')}</div>
+    <div class="face back"><span class="vsay" data-do="vex" title="讀例句">🔊</span><div class="ven">${esc(v.en)}</div><div class="vex nodual">${D2B(v.ex,v.w,v.exS||v.ex,v.ws||v.w)}</div></div></div></div>`}).join('')}</div>
     <div class="vtools"><button class="mini" data-do="vall">全部翻面</button></div>`}
 const IMGCTL='<div class="imgctl"><button class="imgbtn" aria-label="換插圖或背景" title="換插圖或背景">🖼</button><div class="imgmenu" hidden><button data-img="pick">選擇圖片…</button><button data-img="side">作插圖</button><button data-img="bg">作背景</button><button data-img="none">不要圖片</button></div></div>';
 const QS=[];
@@ -353,7 +354,7 @@ function show(p){p=Math.max(0,Math.min(DECK.length-1,p));if(p===pg)return;stopAl
   slides.forEach((s,k)=>s.classList.toggle('on',k==p));
   document.querySelectorAll('#dots button').forEach((d,k)=>d.classList.toggle('on',k==p));
   $('pgno').textContent=`${p+1} / ${DECK.length}`;$('sprev').disabled=p==0;$('snext').disabled=p==DECK.length-1;
-  slides[p].querySelectorAll('.vcard').forEach(c=>c.classList.remove('flip'));fit(slides[p])}
+  slides[p].querySelectorAll('.vcard').forEach(c=>c.classList.remove('flip'));slides[p].querySelectorAll('.vblank').forEach(x=>x.classList.remove('show'));fit(slides[p])}
 $('sprev').onclick=()=>show(pg-1);$('snext').onclick=()=>show(pg+1);
 $('dots').onclick=e=>{const b=e.target.closest('button');if(b)show(+b.dataset.p)};
 
@@ -421,9 +422,10 @@ $('letter').addEventListener('click',e=>{const box=e.target.closest('.fill');if(
 /* 詞彙卡：點卡片翻面，🔊 讀詞語（正面）或例句（背面） */
 $('letter').addEventListener('click',e=>{const sl=e.target.closest('.vs');if(!sl)return;
   const c=e.target.closest('.vcard'),d=e.target.closest('[data-do]');
-  if(d&&d.dataset.do=='vall'){const cs=[...sl.querySelectorAll('.vcard')],f=!cs.every(x=>x.classList.contains('flip'));cs.forEach(x=>x.classList.toggle('flip',f));return}
+  if(d&&d.dataset.do=='vall'){const cs=[...sl.querySelectorAll('.vcard')],f=!cs.every(x=>x.classList.contains('flip'));cs.forEach(x=>x.classList.toggle('flip',f));if(!f)sl.querySelectorAll('.vblank').forEach(x=>x.classList.remove('show'));return}
   if(d&&c){const k=+c.dataset.k,v=LESSON.vocab[k];stopAll();if(d.dataset.do=='vsay')speak({t:v.w,key:'v'+k},()=>{});else speak({t:v.ex,key:'x'+k},()=>{});return}
-  if(c)c.classList.toggle('flip')});
+  const vb=e.target.closest('.vblank');if(vb){vb.closest('.vcard').querySelectorAll('.vblank').forEach(x=>x.classList.toggle('show'));return}
+  if(c){c.classList.toggle('flip');if(!c.classList.contains('flip'))c.querySelectorAll('.vblank').forEach(x=>x.classList.remove('show'))}});
 $('letter').addEventListener('keydown',e=>{const c=e.target.closest('.vcard');if(c&&(e.key=='Enter')){e.preventDefault();c.classList.toggle('flip')}});
 
 /* 插圖與背景：LESSON.slides[i].img / mode（side|bg）為內建；老師可在頁面上換圖，存在本機 IndexedDB */
@@ -522,6 +524,8 @@ slides.forEach((_,p)=>anPaint(p));
 /* 繁簡切換：題目、格式、詞彙頁的文字節點一律做成 <span class=zt>繁</span><span class=zs>简</span>；課文頁本來就上繁下簡，不動 */
 const C2=LESSON.c2||{},X2=Object.entries(LESSON.x2||{}).sort((a,b)=>b[0].length-a[0].length);
 function T(t){for(const [k,v] of X2)if(t.includes(k))t=t.split(k).join(v);let o='';for(const ch of t)o+=C2[ch]||ch;return o}
+function BL(t,w){const i=t.indexOf(w);if(i<0)return esc(t);return esc(t.slice(0,i))+`<span class="vblank" role="button" tabindex="0" title="點一下看答案"><span class="vb-a">${esc(w)}</span></span>`+esc(t.slice(i+w.length))}
+function D2B(a,aw,b,bw){return a===b?BL(a,aw):`<span class="zt">${BL(a,aw)}</span><span class="zs">${BL(b,bw)}</span>`}
 function D2(a,b){return a===b?esc(a):`<span class="zt">${esc(a)}</span><span class="zs">${esc(b)}</span>`}
 function dual(root){const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),ns=[];let n;
   while(n=w.nextNode()){const pe=n.parentElement;if(pe.closest('.zt,.zs,.nodual,textarea,script,style'))continue;if(/[㐀-鿿]/.test(n.data)&&T(n.data)!==n.data)ns.push(n)}
