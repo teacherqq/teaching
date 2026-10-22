@@ -57,6 +57,39 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .plabel{position:absolute;top:clamp(18px,1.8vw,28px);left:clamp(22px,3.4vw,64px);right:70px;z-index:2;font-size:clamp(13px,1vw,16px);letter-spacing:.14em;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .plabel i{font-style:normal;margin:0 .7em;color:var(--rule)}
 .plabel b{color:var(--ink2);font-weight:700}
+/* 擴充頁（LESSON.extras）：導入、講解卡、對照表、討論、影片、圖片討論、資源連結 */
+.qbox.xbox{justify-content:center}
+.xlead{color:var(--ink2);line-height:1.5}
+.xbig{font-size:3em;letter-spacing:.2em;color:var(--ink);line-height:1.1}.xbig small{font-size:.3em;color:var(--muted);letter-spacing:.1em;margin-left:.6em;font-weight:500}
+.xpts{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.45em}
+.xpts li{display:flex;gap:.6em;align-items:baseline;line-height:1.4}
+.xpts li>b{flex:0 0 auto;width:1.7em;height:1.7em;display:inline-grid;place-items:center;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:.8em}
+.xpts li small{display:block;font-size:.72em;color:var(--muted);font-weight:500;line-height:1.4}
+.xtags{display:flex;flex-wrap:wrap;gap:.5em}.xtags span{border:.1em solid var(--accent);color:var(--accent);border-radius:999px;padding:.05em .9em}
+.xcards{display:grid;grid-template-columns:repeat(var(--xc,3),minmax(0,1fr));gap:.7em}
+.xcard{background:color-mix(in srgb,var(--paper2) 92%,transparent);border:1px solid var(--rule);border-radius:8px;padding:.55em .8em;display:flex;flex-direction:column;gap:.25em}
+.xcard h3{margin:0;font-size:1.05em;color:var(--accent);letter-spacing:.06em}.xcard .xsub{font-size:.68em;color:var(--muted);font-weight:500;font-family:var(--latin)}
+.xcard ul{margin:0;padding-left:1.1em;font-size:.8em;line-height:1.45}
+.xcmp{display:grid;grid-template-columns:1fr 1fr;gap:.3em 1em}
+.xcmp .xh{text-align:center;padding:.15em;border-radius:6px;color:#fff;letter-spacing:.1em}.xcmp .xh.ok{background:var(--ok)}.xcmp .xh.no{background:var(--no)}
+.xcmp .xc{padding:.25em .6em;border-bottom:1px dashed var(--rule);line-height:1.35;cursor:pointer;border-radius:4px}
+.xcmp .xc.hid{background:var(--paper2)}.xcmp .xc.hid span{visibility:hidden}
+.xrow{display:flex;gap:.6em;flex-wrap:wrap;align-items:center}
+.xdq{margin:0;padding:0;list-style:none;counter-reset:dq;display:flex;flex-direction:column;gap:.6em}
+.xdq li{counter-increment:dq;display:flex;gap:.6em;line-height:1.4}.xdq li::before{content:counter(dq);flex:0 0 auto;width:1.6em;height:1.6em;display:inline-grid;place-items:center;border-radius:50%;background:var(--accent);color:#fff;font-size:.8em;margin-top:.15em}
+.xbox .ref{white-space:pre-line}
+.xvid,.xpics{flex:1 0 55%!important;min-height:0}
+.xvid{position:relative;border-radius:6px;overflow:hidden;background:#000;display:grid;place-items:center;cursor:pointer}
+.xvid img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:.75}
+.xvid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.xvid .xplay{position:relative;font:inherit;font-size:1em;padding:.4em 1.2em;border-radius:999px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+.xvlink{font-size:.6em;color:var(--muted)}.xvlink a{color:var(--accent)}
+.xpics{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:.5em}
+.xpics img{width:100%;height:100%;object-fit:cover;border-radius:4px;cursor:zoom-in}
+.xpics.zoom{grid-auto-flow:row}.xpics.zoom img{object-fit:contain;cursor:zoom-out}.xpics.zoom img:not(.big){display:none}
+.xlinks{display:flex;flex-direction:column;gap:.45em}.xlinks .xg{display:flex;gap:.5em;flex-wrap:wrap;align-items:center}.xlinks .xg b{min-width:7em}
+.xlinks a{font-size:.8em;text-decoration:none;color:var(--accent);border:1px solid var(--rule);background:var(--paper2);border-radius:999px;padding:.1em .8em}
+@media (max-width:600px),(max-width:900px) and (orientation:portrait){.xcards{grid-template-columns:1fr}.xvid,.xpics{flex:none!important;aspect-ratio:16/9}.xpics{grid-auto-flow:row}}
 /* 課文頁：上繁下簡 */
 .duo{grid-column:1;grid-row:1;display:grid;grid-template-rows:minmax(0,1fr) auto minmax(0,1fr);min-height:0;position:relative;z-index:1}
 .half{position:relative;min-height:0;display:flex;align-items:center;padding-left:clamp(34px,3vw,52px)}
@@ -271,14 +304,23 @@ const PARTS=LESSON.parts||[];
 const partOf=b=>{let r=null;PARTS.forEach(x=>{if(b>=x.from)r=x.name});return r};
 const DECK=[];let qn=0;
 if(LESSON.cover)DECK.push({type:'c'});
+/* 擴充頁 LESSON.extras[i].at：'start' 封面後、數字 N 第 N 頁課文（從 0 算）和它的練習之後、'beforeFormat'、'afterFormat'、'afterVocab'、'end'（預設）。
+   有 q 的項目是一道練習題（qHTML 題型），其餘按 kind 畫頁面。 */
+const XS=(LESSON.extras||[]).map((x,xi)=>Object.assign({xi},x));
+function XP(at){XS.filter(x=>(x.at===undefined?'end':x.at)===at).forEach(x=>DECK.push(x.q?{type:'q',qs:[x.q],x}:{type:'x',x}))}
+XP('start');
 /* 每道題一頁，字號放大到佔滿整頁，方便投影 */
-PAGES.forEach((pg,ti)=>{pg.ti=ti;DECK.push(pg);if(pg.qs.length){qn++;pg.qs.forEach((q,j)=>DECK.push({type:'q',ti,qs:[q],n:qn,j,m:pg.qs.length}))}});
+PAGES.forEach((pg,ti)=>{pg.ti=ti;DECK.push(pg);if(pg.qs.length){qn++;pg.qs.forEach((q,j)=>DECK.push({type:'q',ti,qs:[q],n:qn,j,m:pg.qs.length}))}XP(ti)});
+XP('beforeFormat');
 /* 書信格式講解：課文讀完後，先看格式圖、再看寫法表，接着做格式練習 */
 if(LESSON.format){DECK.push({type:'g',kind:'map'});(LESSON.format.tablePages||[LESSON.format.parts.map((_,i)=>i)]).forEach(rows=>DECK.push({type:'g',kind:'table',rows}));const fq=LESSON.format.qs||[];fq.forEach((q,j)=>DECK.push({type:'q',fmt:1,qs:[q],j,m:fq.length}))}
+XP('afterFormat');
 {const V=LESSON.vocab||[],N=LESSON.vocabPerPage||6,M=Math.ceil(V.length/N);for(let j=0;j<M;j++)DECK.push({type:'v',ids:V.map((_,i)=>i).slice(j*N,j*N+N),j,m:M})}
+XP('afterVocab');
 /* 選詞填空分幾頁，每頁都放完整詞庫；LESSON.fill.pages 可指定每頁的題號，否則每頁 3 題 */
 if(LESSON.fill){const F=LESSON.fill,P=F.pages||F.items.map((_,i)=>i).reduce((a,i)=>{if(i%3==0)a.push([]);a[a.length-1].push(i);return a},[]);
   P.forEach((ids,j)=>DECK.push({type:'f',ids,j,m:P.length}))}
+XP('end');
 
 /* 課文頁 */
 function segHTML([bi,s0,s1],p,simp){const b=LESSON.blocks[bi],ts=split(b.text),zs=b.textS?split(b.textS):ts,src=simp?zs:ts;
@@ -292,6 +334,7 @@ function textHTML(pg,p){const hant=pg.segs.map(sg=>segHTML(sg,p,false)).join('')
   const hans=pg.segs.map((sg,k)=>{SEGG=g0+k;SEGBASE=SEGS[SEGG].from;return segHTML(sg,p,true)}).join('');
   return `<div class="duo"><div class="half hant"><span class="hl">繁體</span><div class="ptext" lang="zh-Hant">${hant}</div></div><div class="sep">◆</div><div class="half hans"><span class="hl">简体</span><div class="ptext" lang="zh-Hans">${hans}</div></div></div>`}
 function plabel(pg){let pt=null,l=null;if(pg.type=='c')return '';
+  if(pg.x){pt=pg.x.part;l=pg.x.label||(pg.type=='q'?TN[pg.qs[0].t]:pg.x.h)}else
   if(pg.type=='text'){pt=partOf(pg.segs[0][0]);l=pg.label}
   else if(pg.type=='q'&&pg.fmt){pt='書信格式';l='格式練習'+(pg.m>1?` · 第 ${pg.j+1} / ${pg.m} 題`:'')}
   else if(pg.type=='q'){pt=partOf(PAGES[pg.ti].segs[0][0]);l='練習 '+pg.n+(pg.m>1?` · 第 ${pg.j+1} / ${pg.m} 題`:'')}
@@ -317,16 +360,30 @@ function vHTML(pg){const n=pg.ids.length,c=n<=2?n:n<=4?2:3;
     <div class="face front">${v.key?'<span class="vkey">★</span>':''}<span class="vsay" data-do="vsay" title="讀詞語">🔊</span>${(()=>{const two=v.ws&&v.ws!==v.w,n=two?v.w.length*2+1.2:v.w.length;return `<div class="vw nodual" style="--n:${n}">${esc(v.w)}${two?`<span class="vsl">/</span>${esc(v.ws)}`:''}</div>`})()}<div class="vpy">${esc(v.py)}</div></div>
     <div class="face back"><span class="vsay" data-do="vex" title="讀例句">🔊</span><div class="ven">${esc(v.en)}</div><div class="vex nodual">${D2B(v.ex,v.w,v.exS||v.ex,v.ws||v.w)}</div></div></div></div>`}).join('')}</div>
     <div class="vtools"><button class="mini" data-do="vall">全部翻面</button></div>`}
+/* 擴充頁 */
+function xHTML(x){const H=x.h?`<h2>${esc(x.h)}</h2>`:'',L=x.lead?`<div class="xlead">${esc(x.lead)}</div>`:'';
+  const pts=a=>`<ul class="xpts">${a.map((p,i)=>{const o=typeof p=='string'?{t:p}:p;return `<li><b>${o.n||i+1}</b><span>${esc(o.t)}${o.d?`<small>${esc(o.d)}</small>`:''}</span></li>`}).join('')}</ul>`;
+  const hint=x.hint?`<div class="xrow"><button class="mini" data-do="xhint">${esc(x.hintBtn||'老師提示')}</button></div><div class="ref" hidden>${esc(x.hint)}</div>`:'';
+  const k=x.kind||'info';let b='';
+  if(k=='info')b=(x.big?`<div class="xbig">${esc(x.big)}${x.bigSub?`<small>${esc(x.bigSub)}</small>`:''}</div>`:'')+H+L+(x.points?pts(x.points):'')+(x.tags?`<div class="xtags">${x.tags.map(t=>`<span>${esc(t)}</span>`).join('')}</div>`:'')+(x.foot?`<div class="xlead">${esc(x.foot)}</div>`:'');
+  else if(k=='cards')b=H+L+`<div class="xcards" style="--xc:${x.cols||Math.min(3,x.cards.length)}">${x.cards.map(c=>`<div class="xcard"><h3>${esc(c.t)}</h3>${c.sub?`<div class="xsub">${esc(c.sub)}</div>`:''}${c.items?`<ul>${c.items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`:''}</div>`).join('')}</div>`+(x.foot?`<div class="xlead">${esc(x.foot)}</div>`:'');
+  else if(k=='compare')b=H+L+`<div class="xcmp"><div class="xh ok">${esc(x.cols[0])}</div><div class="xh no">${esc(x.cols[1])}</div>${x.rows.map(r=>r.map(c=>`<div class="xc${x.reveal?' hid':''}" role="button" tabindex="0"><span>${esc(c)}</span></div>`).join('')).join('')}</div>`+(x.reveal?'<div class="xrow"><button class="mini" data-do="xall">全部顯示</button></div>':'');
+  else if(k=='discuss')b=H+L+`<ol class="xdq">${x.qs.map(q=>`<li><span>${esc(q)}</span></li>`).join('')}</ol>`+hint;
+  else if(k=='video')b=H+L+`<div class="xvid" data-yt="${esc(x.yt)}" role="button" tabindex="0" aria-label="播放影片">${x.poster?`<img src="${x.poster}" alt="">`:''}<button class="xplay">▶ 播放影片</button></div><div class="xvlink">播放不了？<a href="https://www.youtube.com/watch?v=${esc(x.yt)}" target="_blank" rel="noopener">在 YouTube 打開</a></div>`+(x.qs?`<ol class="xdq">${x.qs.map(q=>`<li><span>${esc(q)}</span></li>`).join('')}</ol>`:'')+hint;
+  else if(k=='pics')b=H+`<div class="xpics">${x.imgs.map(s=>`<img src="${s}" alt="">`).join('')}</div>`+L+(x.qs?`<ol class="xdq">${x.qs.map(q=>`<li><span>${esc(q)}</span></li>`).join('')}</ol>`:'')+hint;
+  else if(k=='links')b=H+L+`<div class="xlinks">${x.groups.map(g=>`<div class="xg"><b>${esc(g.name)}</b>${g.links.map(l=>`<a href="${esc(l.u)}" target="_blank" rel="noopener">${esc(l.t)}</a>`).join('')}</div>`).join('')}</div>`;
+  const cap=k=='video'||k=='pics'?` data-max="${x.max||46}"`:x.max?` data-max="${x.max}"`:'';
+  return `<div class="qbox xbox x-${k}"${cap}>${b}</div>`}
 const IMGCTL='<div class="imgctl"><button class="imgbtn" aria-label="換插圖或背景" title="換插圖或背景">🖼</button><div class="imgmenu" hidden><button data-img="pick">選擇圖片…</button><button data-img="side">作插圖</button><button data-img="bg">作背景</button><button data-img="none">不要圖片</button></div></div>';
 const QS=[];
-$('letter').innerHTML=DECK.map((pg,p)=>{const cls={text:'text',q:'qs',v:'vs',f:'qs',g:'qs gs',c:'qs cs'}[pg.type];let body;
+$('letter').innerHTML=DECK.map((pg,p)=>{const cls={text:'text',q:'qs',v:'vs',f:'qs',g:'qs gs',c:'qs cs',x:'qs xs'}[pg.type];let body;
   if(pg.type=='text')body=textHTML(pg,p);
   else if(pg.type=='q')body=`<div class="qbox one">${pg.qs.map(q=>qHTML(q,QS.push(q)-1)).join('')}</div>`;
   else if(pg.type=='c')body=`<div class="qbox cover"><div class="ceb">${esc(LESSON.eyebrow||'')}</div><h2>${esc(LESSON.title)}</h2><div class="csub">按「下一頁」或 → 開始</div></div>`;
-  else if(pg.type=='v')body=vHTML(pg);else if(pg.type=='g')body=gHTML(pg);else body=fillHTML(pg);
+  else if(pg.type=='v')body=vHTML(pg);else if(pg.type=='g')body=gHTML(pg);else if(pg.type=='x')body=xHTML(pg.x);else body=fillHTML(pg);
   return `<section class="slide ${cls}" data-p="${p}">${plabel(pg)}<img class="media" alt="">${body}${IMGCTL}</section>`}).join('');
 const slides=[...document.querySelectorAll('.slide')];
-$('dots').innerHTML=DECK.map((pg,p)=>`<button data-p="${p}" class="${pg.type=='text'?'':pg.type}" aria-label="${pg.type=='c'?'封面':pg.type=='text'?'課文 '+(pg.ti+1):pg.type=='q'?(pg.fmt?'格式練習':'練習 '+pg.n):pg.type=='g'?'書信格式':pg.type=='v'?'詞彙 '+(pg.j+1):'選詞填空'}"></button>`).join('');
+$('dots').innerHTML=DECK.map((pg,p)=>`<button data-p="${p}" class="${pg.type=='text'?'':pg.type}" aria-label="${pg.x?esc(pg.x.label||pg.x.h||''):pg.type=='c'?'封面':pg.type=='text'?'課文 '+(pg.ti+1):pg.type=='q'?(pg.fmt?'格式練習':'練習 '+pg.n):pg.type=='g'?'書信格式':pg.type=='v'?'詞彙 '+(pg.j+1):'選詞填空'}"></button>`).join('');
 if(LESSON.blocks.some(b=>b.tag))$('tag-tog').hidden=false;
 
 /* 字號：上下兩半用同一字號，剛好都放得下 */
@@ -336,7 +393,7 @@ function fit(sl){if(!sl||!sl.offsetParent)return;const qb=sl.querySelector('.qbo
   for(let k=0;k<14;k++){const m=(lo+hi)/2;ts.forEach(t=>t.style.fontSize=m+'px');if(ts.every(t=>t.scrollHeight<=t.clientHeight+1))lo=m;else hi=m}
   ts.forEach(t=>{t.style.fontSize=(lo*Z)+'px';t.style.overflowY=Z>1?'auto':''})}
 function fitQ(t){if(MOB.matches){t.style.fontSize=Z!=1?(19*Z)+'px':'';return}
-  let lo=14,hi=110;t.style.overflow='hidden';
+  let lo=14,hi=+t.dataset.max||110;t.style.overflow='hidden';
   for(let k=0;k<16;k++){const m=(lo+hi)/2;t.style.fontSize=m+'px';if(t.scrollHeight<=t.clientHeight+1&&t.scrollWidth<=t.clientWidth+1)lo=m;else hi=m}
   t.style.fontSize=(lo*Z)+'px';t.style.overflow=Z>1?'auto':'hidden'}
 function layout(){if(MOB.matches){document.documentElement.style.removeProperty('--slideH');return}
@@ -350,7 +407,7 @@ addEventListener('resize',fitCur);if(document.fonts)document.fonts.ready.then(fi
 
 /* 翻頁 */
 let pg=-1;
-function show(p){p=Math.max(0,Math.min(DECK.length-1,p));if(p===pg)return;stopAll();pg=p;
+function show(p){p=Math.max(0,Math.min(DECK.length-1,p));if(p===pg)return;stopAll();xStop();pg=p;
   slides.forEach((s,k)=>s.classList.toggle('on',k==p));
   document.querySelectorAll('#dots button').forEach((d,k)=>d.classList.toggle('on',k==p));
   $('pgno').textContent=`${p+1} / ${DECK.length}`;$('sprev').disabled=p==0;$('snext').disabled=p==DECK.length-1;
@@ -428,13 +485,25 @@ $('letter').addEventListener('click',e=>{const sl=e.target.closest('.vs');if(!sl
   if(c){c.classList.toggle('flip');if(!c.classList.contains('flip'))c.querySelectorAll('.vblank').forEach(x=>x.classList.remove('show'))}});
 $('letter').addEventListener('keydown',e=>{const c=e.target.closest('.vcard');if(c&&(e.key=='Enter')){e.preventDefault();c.classList.toggle('flip')}});
 
+/* 擴充頁：對照表逐格顯示、老師提示、影片（點了才載入，翻頁就停）、圖片放大 */
+function xStop(){document.querySelectorAll('.xvid iframe').forEach(f=>{const v=f.parentElement;f.remove();v.querySelectorAll('img,.xplay').forEach(e=>e.hidden=false)})}
+$('letter').addEventListener('click',e=>{const box=e.target.closest('.xbox');if(!box)return;const d=e.target.closest('[data-do]');
+  const c=e.target.closest('.xc');if(c){c.classList.toggle('hid');return}
+  if(d&&d.dataset.do=='xall'){const cs=[...box.querySelectorAll('.xc')],h=cs.some(x=>x.classList.contains('hid'));cs.forEach(x=>x.classList.toggle('hid',!h));d.textContent=h?'全部隱藏':'全部顯示';return}
+  if(d&&d.dataset.do=='xhint'){const r=box.querySelector('.ref');r.hidden=!r.hidden;fitCur();return}
+  const v=e.target.closest('.xvid');if(v&&!v.querySelector('iframe')){v.querySelectorAll('img,.xplay').forEach(x=>x.hidden=true);const f=document.createElement('iframe');
+    f.src=`https://www.youtube-nocookie.com/embed/${v.dataset.yt}?autoplay=1&rel=0`;f.allow='autoplay; encrypted-media; fullscreen; picture-in-picture';f.allowFullscreen=true;v.appendChild(f);return}
+  const im=e.target.closest('.xpics img');if(im){const g=im.parentElement,z=!g.classList.contains('zoom');g.classList.toggle('zoom',z);g.querySelectorAll('img').forEach(x=>x.classList.toggle('big',z&&x===im))}});
+$('letter').addEventListener('keydown',e=>{const t=e.target.closest('.xc,.xvid');if(t&&e.key=='Enter'){e.preventDefault();t.click()}});
+if(!PAGES.length){['follow-tog','ann-tog','stopbtn','nowtxt'].forEach(i=>$(i).hidden=true);$('rate').parentElement.hidden=true;document.querySelectorAll('.hint').forEach(h=>{if(h.textContent.startsWith('點任一段'))h.textContent='← → 或翻頁筆換頁。影片點了才載入，換頁就停。每頁右上角 🖼 可換背景。'})}
+
 /* 插圖與背景：LESSON.slides[i].img / mode（side|bg）為內建；老師可在頁面上換圖，存在本機 IndexedDB */
 const IDB=(()=>{let d;const db=()=>d||(d=new Promise((res,rej)=>{try{const r=indexedDB.open('lesson-slides',1);r.onupgradeneeded=()=>r.result.createObjectStore('img');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);setTimeout(()=>rej('timeout'),2000)}catch(e){rej(e)}}));
   const tx=(m,f)=>db().then(x=>new Promise(res=>{try{const t=x.transaction('img',m);const q=f(t.objectStore('img'));t.oncomplete=()=>res(q&&q.result);t.onerror=()=>res(null)}catch(e){res(null)}})).catch(()=>null);
   const MEM={};/* 瀏覽器不給存時，本次打開仍然有效 */
   return{get:k=>k in MEM?Promise.resolve(MEM[k]):tx('readonly',s=>s.get(k)),set:(k,v)=>{MEM[k]=v;tx('readwrite',s=>s.put(v,k));return Promise.resolve()}}})();
-const KEY=p=>LESSON.title+'#'+DECK[p].type+(DECK[p].type=='text'?DECK[p].ti:DECK[p].type=='q'?'q'+DECK[p].ti:DECK[p].type=='v'?DECK[p].j:'');
-function builtin(p){const pgx=DECK[p];if(pgx.type!='text'){const B=LESSON.bgs||{},k={c:'cover',g:'format',v:'vocab',f:'question'}[pgx.type]||(pgx.type=='q'?(pgx.fmt?'format':'question'):'');return B[k]?{src:B[k],mode:'bg',clean:1}:null}const s=(LESSON.slides||[])[pgx.ti]||{};
+const KEY=p=>LESSON.title+'#'+DECK[p].type+(DECK[p].x?'x'+DECK[p].x.xi:DECK[p].type=='text'?DECK[p].ti:DECK[p].type=='q'?'q'+DECK[p].ti:DECK[p].type=='v'?DECK[p].j:'');
+function builtin(p){const pgx=DECK[p];if(pgx.type!='text'){const B=LESSON.bgs||{},k=(pgx.x&&pgx.x.bg)||{c:'cover',g:'format',v:'vocab',f:'question',x:'question'}[pgx.type]||(pgx.type=='q'?(pgx.fmt?'format':'question'):'');return B[k]?{src:B[k],mode:'bg',clean:1}:null}const s=(LESSON.slides||[])[pgx.ti]||{};
   if(s.img)return{src:s.img,mode:s.mode||'side',o:{imgw:s.w,imgh:s.h,imgpos:s.pos,panelw:s.panelw,frame:s.frame}};if(pgx.ti==0&&LESSON.image&&!LESSON.noAutoImage)return{src:LESSON.image,mode:'side',alt:LESSON.imageAlt};return null}
 const urls={};
 function setImg(p,src,mode,alt,clean,o){const sl=slides[p],im=sl.querySelector('.media');o=o||{};sl.classList.toggle('clean',!!clean&&!!src);

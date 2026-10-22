@@ -1,7 +1,9 @@
 import json,base64,os,re
 from opencc import OpenCC
-d=json.load(open('lesson1.json',encoding='utf-8'));m=json.load(open('meta.json',encoding='utf-8'))
-blocks=[{'type':'title','text':d['title']}]
+m=json.load(open('meta.json',encoding='utf-8'))
+# 沒有 lesson1.json 時是不帶課文的課件（例如單元導入），只有 extras 等頁面，標題寫在 meta.title
+d=json.load(open('lesson1.json',encoding='utf-8')) if os.path.exists('lesson1.json') else {'title':m['title'],'paras':[]}
+blocks=[{'type':'title','text':d['title']}] if d['paras'] else []
 if d.get('salutation'): blocks.append({'type':'flush','text':d['salutation'],'tag':'稱呼'})
 for i,p in enumerate(d['paras']): blocks.append({'type':'p','text':p,'tag':m['paraTags'][i]})
 c=d.get('closing') or []
@@ -21,6 +23,10 @@ def durl(p):
     return f'data:image/{ext};base64,'+base64.b64encode(open(p,'rb').read()).decode()
 for s in m.get('slides',[]):
     if s.get('img') and not s['img'].startswith('data:'): s['img']=durl(s['img'])
+for x in m.get('extras',[]):
+    for k in ('poster',):
+        if x.get(k) and not x[k].startswith('data:'): x[k]=durl(x[k])
+    if x.get('imgs'): x['imgs']=[s if s.startswith('data:') else durl(s) for s in x['imgs']]
 for k,v in m.get('bgs',{}).items():
     if not v.startswith('data:'): m['bgs'][k]=durl(v)
 if any('segs' in s for s in m.get('slides',[])):
@@ -39,7 +45,7 @@ def walk(o):
     elif isinstance(o,dict):[walk(v) for v in o.values()]
     elif isinstance(o,list):[walk(v) for v in o]
 walk(m);m['c2']=C2;m['x2']=X2
-L=dict(title=d['title'],blocks=blocks,audio=AUD,**{k:v for k,v in m.items() if k!='paraTags'})
+L=dict(title=d['title'],blocks=blocks,audio=AUD,**{k:v for k,v in m.items() if k not in ('paraTags','title')})
 if os.path.exists('img/illus.webp'): L['image']=durl('img/illus.webp')
 t=tpl.replace('__TITLE__',d['title']).replace('__LESSON_JSON__',json.dumps(L,ensure_ascii=False))
 open('index.html','w',encoding='utf-8').write(t);print(len(t))
