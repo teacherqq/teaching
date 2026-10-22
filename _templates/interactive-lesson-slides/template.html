@@ -86,6 +86,8 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .xvlink{font-size:.6em;color:var(--muted)}.xvlink a{color:var(--accent)}
 .xpics{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:.5em}
 .xpics img{width:100%;height:100%;object-fit:cover;border-radius:4px;cursor:zoom-in}
+.slide.xfull{padding:0}.slide.xfull::before,.slide.xfull .plabel{display:none}
+.xfullimg{position:absolute;inset:0;overflow:hidden}.xfullimg img{position:absolute;inset:0;width:100%;height:100%}.xfullimg .blur{object-fit:cover;filter:blur(28px) saturate(1.1);transform:scale(1.15)}.xfullimg .fg{object-fit:contain}
 .xpics.one img{object-fit:contain;cursor:default}.xpics.zoom{grid-auto-flow:row}.xpics.zoom img{object-fit:contain;cursor:zoom-out}.xpics.zoom img:not(.big){display:none}
 .xlinks{display:flex;flex-direction:column;gap:.45em}.xlinks .xg{display:flex;gap:.5em;flex-wrap:wrap;align-items:center}.xlinks .xg b{min-width:7em}
 .xlinks a{font-size:.8em;text-decoration:none;color:var(--accent);border:1px solid var(--rule);background:var(--paper2);border-radius:999px;padding:.1em .8em}
@@ -373,12 +375,13 @@ function xHTML(x){const H=x.h?`<h2>${esc(x.h)}</h2>`:'',L=x.lead?`<div class="xl
   else if(k=='discuss')b=H+L+`<ol class="xdq">${x.qs.map(q=>`<li><span>${esc(q)}</span></li>`).join('')}</ol>`+hint;
   else if(k=='video')b=H+L+`<div class="xvid"${x.qs?' style="flex:1 0 40%!important"':''} data-yt="${esc(x.yt)}" role="button" tabindex="0" aria-label="播放影片">${x.poster?`<img src="${x.poster}" alt="">`:''}<button class="xplay">▶ 播放影片</button></div><div class="xvlink">播放不了？<a href="https://www.youtube.com/watch?v=${esc(x.yt)}" target="_blank" rel="noopener">在 YouTube 打開</a></div>`+(x.qs?`<ol class="xdq">${x.qs.map(q=>`<li><span>${esc(q)}</span></li>`).join('')}</ol>`:'')+hint;
   else if(k=='pics')b=H+`<div class="xpics${x.imgs.length==1?' one':''}">${x.imgs.map(s=>`<img src="${s}" alt="">`).join('')}</div>`+L+(x.qs?`<ol class="xdq">${x.qs.map(q=>`<li><span>${esc(q)}</span></li>`).join('')}</ol>`:'')+hint;
+  else if(k=='full')return `<div class="xfullimg"><img class="blur" src="${x.img2||x.src}" alt=""><img class="fg" src="${x.src}" alt="${esc(x.alt||x.label||'')}"></div>`;
   else if(k=='links')b=H+L+`<div class="xlinks">${x.groups.map(g=>`<div class="xg"><b>${esc(g.name)}</b>${g.links.map(l=>`<a href="${esc(l.u)}" target="_blank" rel="noopener">${esc(l.t)}</a>`).join('')}</div>`).join('')}</div>`;
   const cap=k=='video'||k=='pics'?` data-max="${x.max||46}"`:x.max?` data-max="${x.max}"`:'';
   return `<div class="qbox xbox x-${k}"${cap}>${b}</div>`}
 const IMGCTL='<div class="imgctl"><button class="imgbtn" aria-label="換插圖或背景" title="換插圖或背景">🖼</button><div class="imgmenu" hidden><button data-img="pick">選擇圖片…</button><button data-img="side">作插圖</button><button data-img="bg">作背景</button><button data-img="none">不要圖片</button></div></div>';
 const QS=[];
-$('letter').innerHTML=DECK.map((pg,p)=>{const cls={text:'text',q:'qs',v:'vs',f:'qs',g:'qs gs',c:'qs cs',x:'qs xs'}[pg.type];let body;
+$('letter').innerHTML=DECK.map((pg,p)=>{const cls={text:'text',q:'qs',v:'vs',f:'qs',g:'qs gs',c:'qs cs',x:'qs xs'}[pg.type]+(pg.x&&pg.x.kind=='full'?' xfull':'');let body;
   if(pg.type=='text')body=textHTML(pg,p);
   else if(pg.type=='q')body=`<div class="qbox one">${pg.qs.map(q=>qHTML(q,QS.push(q)-1)).join('')}</div>`;
   else if(pg.type=='c')body=`<div class="qbox cover"><div class="ceb">${esc(LESSON.eyebrow||'')}</div><h2>${esc(LESSON.title)}</h2><div class="csub">按「下一頁」或 → 開始</div></div>`;
