@@ -84,9 +84,9 @@ button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .xvid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .xvid .xplay{position:relative;font:inherit;font-size:1em;padding:.4em 1.2em;border-radius:999px;border:0;background:var(--accent);color:#fff;cursor:pointer}
 .xvlink{font-size:.6em;color:var(--muted)}.xvlink a{color:var(--accent)}
-.xpics{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:.5em}
+.xpics{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:.5em}
 .xpics img{width:100%;height:100%;object-fit:cover;border-radius:4px;cursor:zoom-in}
-.xpics.zoom{grid-auto-flow:row}.xpics.zoom img{object-fit:contain;cursor:zoom-out}.xpics.zoom img:not(.big){display:none}
+.xpics.one img{object-fit:contain;cursor:default}.xpics.zoom{grid-auto-flow:row}.xpics.zoom img{object-fit:contain;cursor:zoom-out}.xpics.zoom img:not(.big){display:none}
 .xlinks{display:flex;flex-direction:column;gap:.45em}.xlinks .xg{display:flex;gap:.5em;flex-wrap:wrap;align-items:center}.xlinks .xg b{min-width:7em}
 .xlinks a{font-size:.8em;text-decoration:none;color:var(--accent);border:1px solid var(--rule);background:var(--paper2);border-radius:999px;padding:.1em .8em}
 @media (max-width:600px),(max-width:900px) and (orientation:portrait){.xcards{grid-template-columns:1fr}.xvid,.xpics{flex:none!important;aspect-ratio:16/9}.xpics{grid-auto-flow:row}}
@@ -281,6 +281,8 @@ const MOB=matchMedia('(max-width:600px),(max-width:900px) and (orientation:portr
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const on=id=>$(id).getAttribute('aria-pressed')=='true';
 document.title=LESSON.title;
+/* LESSON.theme 換淺色主題的顏色，例如 {bg:'#dff1ec',paper:'#fbfefc'}；深色模式不受影響 */
+if(LESSON.theme){const s=document.createElement('style');s.textContent=':root{'+Object.entries(LESSON.theme).map(([k,v])=>`--${k}:${v}`).join(';')+'}';document.head.appendChild(s)}
 $('eyebrow').textContent=LESSON.eyebrow||'';$('h1').textContent=LESSON.title;
 if(LESSON.guide)$('guide').innerHTML='<h3>'+esc(LESSON.guide.title)+'</h3><div class="hint">'+esc(LESSON.guide.text)+'</div>';
 
@@ -369,8 +371,8 @@ function xHTML(x){const H=x.h?`<h2>${esc(x.h)}</h2>`:'',L=x.lead?`<div class="xl
   else if(k=='cards')b=H+L+`<div class="xcards" style="--xc:${x.cols||Math.min(3,x.cards.length)}">${x.cards.map(c=>`<div class="xcard"><h3>${esc(c.t)}</h3>${c.sub?`<div class="xsub">${esc(c.sub)}</div>`:''}${c.items?`<ul>${c.items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`:''}</div>`).join('')}</div>`+(x.foot?`<div class="xlead">${esc(x.foot)}</div>`:'');
   else if(k=='compare')b=H+L+`<div class="xcmp"><div class="xh ok">${esc(x.cols[0])}</div><div class="xh no">${esc(x.cols[1])}</div>${x.rows.map(r=>r.map(c=>`<div class="xc${x.reveal?' hid':''}" role="button" tabindex="0"><span>${esc(c)}</span></div>`).join('')).join('')}</div>`+(x.reveal?'<div class="xrow"><button class="mini" data-do="xall">全部顯示</button></div>':'');
   else if(k=='discuss')b=H+L+`<ol class="xdq">${x.qs.map(q=>`<li><span>${esc(q)}</span></li>`).join('')}</ol>`+hint;
-  else if(k=='video')b=H+L+`<div class="xvid" data-yt="${esc(x.yt)}" role="button" tabindex="0" aria-label="播放影片">${x.poster?`<img src="${x.poster}" alt="">`:''}<button class="xplay">▶ 播放影片</button></div><div class="xvlink">播放不了？<a href="https://www.youtube.com/watch?v=${esc(x.yt)}" target="_blank" rel="noopener">在 YouTube 打開</a></div>`+(x.qs?`<ol class="xdq">${x.qs.map(q=>`<li><span>${esc(q)}</span></li>`).join('')}</ol>`:'')+hint;
-  else if(k=='pics')b=H+`<div class="xpics">${x.imgs.map(s=>`<img src="${s}" alt="">`).join('')}</div>`+L+(x.qs?`<ol class="xdq">${x.qs.map(q=>`<li><span>${esc(q)}</span></li>`).join('')}</ol>`:'')+hint;
+  else if(k=='video')b=H+L+`<div class="xvid"${x.qs?' style="flex:1 0 40%!important"':''} data-yt="${esc(x.yt)}" role="button" tabindex="0" aria-label="播放影片">${x.poster?`<img src="${x.poster}" alt="">`:''}<button class="xplay">▶ 播放影片</button></div><div class="xvlink">播放不了？<a href="https://www.youtube.com/watch?v=${esc(x.yt)}" target="_blank" rel="noopener">在 YouTube 打開</a></div>`+(x.qs?`<ol class="xdq">${x.qs.map(q=>`<li><span>${esc(q)}</span></li>`).join('')}</ol>`:'')+hint;
+  else if(k=='pics')b=H+`<div class="xpics${x.imgs.length==1?' one':''}">${x.imgs.map(s=>`<img src="${s}" alt="">`).join('')}</div>`+L+(x.qs?`<ol class="xdq">${x.qs.map(q=>`<li><span>${esc(q)}</span></li>`).join('')}</ol>`:'')+hint;
   else if(k=='links')b=H+L+`<div class="xlinks">${x.groups.map(g=>`<div class="xg"><b>${esc(g.name)}</b>${g.links.map(l=>`<a href="${esc(l.u)}" target="_blank" rel="noopener">${esc(l.t)}</a>`).join('')}</div>`).join('')}</div>`;
   const cap=k=='video'||k=='pics'?` data-max="${x.max||46}"`:x.max?` data-max="${x.max}"`:'';
   return `<div class="qbox xbox x-${k}"${cap}>${b}</div>`}
@@ -493,7 +495,7 @@ $('letter').addEventListener('click',e=>{const box=e.target.closest('.xbox');if(
   if(d&&d.dataset.do=='xhint'){const r=box.querySelector('.ref');r.hidden=!r.hidden;fitCur();return}
   const v=e.target.closest('.xvid');if(v&&!v.querySelector('iframe')){v.querySelectorAll('img,.xplay').forEach(x=>x.hidden=true);const f=document.createElement('iframe');
     f.src=`https://www.youtube-nocookie.com/embed/${v.dataset.yt}?autoplay=1&rel=0`;f.allow='autoplay; encrypted-media; fullscreen; picture-in-picture';f.allowFullscreen=true;v.appendChild(f);return}
-  const im=e.target.closest('.xpics img');if(im){const g=im.parentElement,z=!g.classList.contains('zoom');g.classList.toggle('zoom',z);g.querySelectorAll('img').forEach(x=>x.classList.toggle('big',z&&x===im))}});
+  const im=e.target.closest('.xpics:not(.one) img');if(im){const g=im.parentElement,z=!g.classList.contains('zoom');g.classList.toggle('zoom',z);g.querySelectorAll('img').forEach(x=>x.classList.toggle('big',z&&x===im))}});
 $('letter').addEventListener('keydown',e=>{const t=e.target.closest('.xc,.xvid');if(t&&e.key=='Enter'){e.preventDefault();t.click()}});
 if(!PAGES.length){['follow-tog','ann-tog','stopbtn','nowtxt'].forEach(i=>$(i).hidden=true);$('rate').parentElement.hidden=true;document.querySelectorAll('.hint').forEach(h=>{if(h.textContent.startsWith('點任一段'))h.textContent='← → 或翻頁筆換頁。影片點了才載入，換頁就停。每頁右上角 🖼 可換背景。'})}
 
@@ -503,7 +505,7 @@ const IDB=(()=>{let d;const db=()=>d||(d=new Promise((res,rej)=>{try{const r=ind
   const MEM={};/* 瀏覽器不給存時，本次打開仍然有效 */
   return{get:k=>k in MEM?Promise.resolve(MEM[k]):tx('readonly',s=>s.get(k)),set:(k,v)=>{MEM[k]=v;tx('readwrite',s=>s.put(v,k));return Promise.resolve()}}})();
 const KEY=p=>LESSON.title+'#'+DECK[p].type+(DECK[p].x?'x'+DECK[p].x.xi:DECK[p].type=='text'?DECK[p].ti:DECK[p].type=='q'?'q'+DECK[p].ti:DECK[p].type=='v'?DECK[p].j:'');
-function builtin(p){const pgx=DECK[p];if(pgx.type!='text'){const B=LESSON.bgs||{},k=(pgx.x&&pgx.x.bg)||{c:'cover',g:'format',v:'vocab',f:'question',x:'question'}[pgx.type]||(pgx.type=='q'?(pgx.fmt?'format':'question'):'');return B[k]?{src:B[k],mode:'bg',clean:1}:null}const s=(LESSON.slides||[])[pgx.ti]||{};
+function builtin(p){const pgx=DECK[p];if(pgx.x&&pgx.x.img){const x=pgx.x;return{src:x.img,mode:x.mode||'side',o:{imgw:x.w,imgh:x.h,imgpos:x.pos,panelw:x.panelw,frame:x.frame}}}if(pgx.type!='text'){const B=LESSON.bgs||{},k=(pgx.x&&pgx.x.bg)||{c:'cover',g:'format',v:'vocab',f:'question',x:'question'}[pgx.type]||(pgx.type=='q'?(pgx.fmt?'format':'question'):'');return B[k]?{src:B[k],mode:'bg',clean:1}:null}const s=(LESSON.slides||[])[pgx.ti]||{};
   if(s.img)return{src:s.img,mode:s.mode||'side',o:{imgw:s.w,imgh:s.h,imgpos:s.pos,panelw:s.panelw,frame:s.frame}};if(pgx.ti==0&&LESSON.image&&!LESSON.noAutoImage)return{src:LESSON.image,mode:'side',alt:LESSON.imageAlt};return null}
 const urls={};
 function setImg(p,src,mode,alt,clean,o){const sl=slides[p],im=sl.querySelector('.media');o=o||{};sl.classList.toggle('clean',!!clean&&!!src);

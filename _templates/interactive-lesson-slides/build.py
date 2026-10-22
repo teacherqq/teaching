@@ -24,7 +24,8 @@ def durl(p):
 for s in m.get('slides',[]):
     if s.get('img') and not s['img'].startswith('data:'): s['img']=durl(s['img'])
 for x in m.get('extras',[]):
-    for k in ('poster',):
+    for k in ('poster','img'):
+        if x.get(k) and not x[k].startswith('data:') and not os.path.exists(x[k]): del x[k]  # 圖還沒到就先不放
         if x.get(k) and not x[k].startswith('data:'): x[k]=durl(x[k])
     if x.get('imgs'): x['imgs']=[s if s.startswith('data:') else durl(s) for s in x['imgs']]
 for k,v in m.get('bgs',{}).items():
