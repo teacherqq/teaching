@@ -84,6 +84,43 @@
     .card{padding:20px 18px 18px}
     .card-zh{font-size:20px}
   }
+  /* ---------- admin（管理：加入 / 刪除頁面） ---------- */
+  .admin-link{background:none;border:0;padding:0;color:#b5bec8;font-size:12px;cursor:pointer;text-decoration:underline dotted}
+  .admin-link:hover{color:var(--blue)}
+  .btn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:9px;padding:9px 14px;font-size:14px;cursor:pointer;white-space:nowrap}
+  .btn:hover{border-color:var(--blue)}
+  .btn:disabled{opacity:.5;cursor:default}
+  .btn-primary{background:var(--blue);border-color:var(--blue);color:#fff}
+  .btn-danger{background:#b4473a;border-color:#b4473a;color:#fff}
+  .admin-bar{position:sticky;top:76px;z-index:5;display:none;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 14px;margin-top:6px;border:1px solid #f0d6d1;background:#fdf3f1;border-radius:12px;font-size:14px;color:#7a3a31}
+  .admin-bar.on{display:flex}
+  .admin-bar .grow{flex:1;min-width:140px}
+  body.picking .card{cursor:pointer}
+  body.picking .card::after{content:"";position:absolute;top:14px;right:14px;width:22px;height:22px;border:2px solid #c9d2db;border-radius:6px;background:#fff}
+  body.picking .card.picked{border-color:#b4473a;box-shadow:0 0 0 2px #b4473a}
+  body.picking .card.picked::after{background:#b4473a;border-color:#b4473a;content:"✓";color:#fff;font:700 15px/18px Arial;text-align:center}
+  body.picking .card:hover{transform:none}
+
+  .modal{position:fixed;inset:0;z-index:20;display:none;align-items:flex-start;justify-content:center;background:rgba(23,33,43,.38);padding:40px 16px;overflow:auto}
+  .modal.on{display:flex}
+  .panel{width:100%;max-width:620px;background:#fff;border-radius:16px;box-shadow:0 30px 70px rgba(0,0,0,.2);padding:24px 26px 26px;font-size:14px;line-height:1.6}
+  .panel h3{margin:0 0 4px;font:600 20px -apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",Arial,sans-serif}
+  .panel h4{margin:22px 0 10px;font-size:15px;color:var(--blue)}
+  .panel .hint{color:var(--muted);font-size:12.5px;margin:4px 0 0}
+  .panel label{display:block;margin-top:12px;font-weight:600;font-size:13px}
+  .panel input,.panel select,.panel textarea{width:100%;margin-top:5px;border:1px solid var(--line);border-radius:9px;padding:9px 12px;font:14px -apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",Arial,sans-serif;color:var(--ink);background:#fff}
+  .panel textarea{min-height:70px;resize:vertical}
+  .panel .row{display:flex;gap:8px;align-items:center;margin-top:14px;flex-wrap:wrap}
+  .panel .check{display:flex;gap:6px;align-items:center;font-weight:400;margin-top:10px}
+  .panel .check input{width:auto;margin:0}
+  .panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .x{background:none;border:0;font-size:24px;line-height:1;color:var(--muted);cursor:pointer}
+  .msg{margin-top:12px;padding:9px 12px;border-radius:9px;font-size:13px;display:none}
+  .msg.ok{display:block;background:#eaf5ee;color:#24613a}
+  .msg.err{display:block;background:#fdf0ee;color:#9b3a2e}
+  .msg.info{display:block;background:var(--blue-soft);color:var(--blue)}
+  .token-state{font-size:13px;color:var(--muted)}
+  .token-state b{color:#24613a}
 </style>
 </head>
 <body>
@@ -106,146 +143,104 @@
     <span id="count" class="count"></span>
   </div>
 
+  <div id="adminBar" class="admin-bar ui">
+    <span class="grow">刪除模式：點卡片勾選要從首頁移除的頁面（頁面檔案仍保留在倉庫）。已選 <b id="pickCount">0</b> 個</span>
+    <button class="btn btn-danger" id="delGo" disabled>刪除所選</button>
+    <button class="btn" id="delCancel">取消</button>
+  </div>
+
   <main id="sections"></main>
 
   <footer>
     <div class="footer-note">
-      新增工具：把 HTML 放到 <code>/&lt;工具名&gt;/index.html</code>，再到本頁 <code>DOCS</code> 陣列登記一筆即可。
+      新增工具：把 HTML 放到 <code>/&lt;工具名&gt;/index.html</code>，再到 <code>docs.json</code> 登記一筆即可。
     </div>
     <div class="footer-note">
-      © <span id="year"></span> teacherqq · GitHub Pages
+      © <span id="year"></span> teacherqq · GitHub Pages　<button class="admin-link" id="adminOpen">管理</button>
     </div>
   </footer>
 
 </div>
 
+<div id="adminModal" class="modal ui" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+  <div class="panel">
+    <div class="panel-head">
+      <h3 id="adminTitle">管理首頁</h3>
+      <button class="x" id="adminClose" aria-label="關閉">×</button>
+    </div>
+    <p class="hint">只有老師使用。改動會直接寫回 GitHub 倉庫，約 1 分鐘後所有人都能看到。</p>
+
+    <div id="tokenBox">
+      <h4>① GitHub 密鑰</h4>
+      <div id="tokenState" class="token-state"></div>
+      <div id="tokenForm">
+        <label for="tokenIn">貼上密鑰（github_pat_ 開頭）</label>
+        <input id="tokenIn" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…">
+        <label class="check"><input type="checkbox" id="tokenRemember" checked> 記住在這台電腦（公用電腦請取消勾選，關掉瀏覽器就會忘記）</label>
+        <div class="row"><button class="btn btn-primary" id="tokenSave">驗證並保存</button></div>
+      </div>
+      <div id="tokenMsg" class="msg"></div>
+    </div>
+
+    <div id="manageBox">
+      <h4>② 加入新頁面</h4>
+      <label for="fUrl">頁面連結</label>
+      <input id="fUrl" type="url" placeholder="https://teacherqq.github.io/teaching/…">
+      <p class="hint">貼上連結後會自動讀取標題和簡介，可再修改。</p>
+      <label for="fZh">標題</label>
+      <input id="fZh" placeholder="例如：金大奶奶｜作品分析">
+      <label for="fCat">分類</label>
+      <select id="fCat"></select>
+      <input id="fCatNew" placeholder="新分類名稱" style="display:none">
+      <label for="fEn">英文副標題（可不填）</label>
+      <input id="fEn">
+      <label for="fDesc">簡介（可不填）</label>
+      <textarea id="fDesc"></textarea>
+      <label for="fTags">標籤（可不填，用逗號或頓號分開）</label>
+      <input id="fTags" placeholder="白先勇、章節分析">
+      <div class="row"><button class="btn btn-primary" id="addGo">加入首頁</button></div>
+      <div id="addMsg" class="msg"></div>
+
+      <h4>③ 刪除頁面</h4>
+      <p class="hint" style="margin-top:0">進入刪除模式後，在首頁點選要移除的卡片，再按「刪除所選」。</p>
+      <div class="row"><button class="btn" id="delStart">進入刪除模式</button></div>
+    </div>
+  </div>
+</div>
+
 <script>
 /* =========================================================
-   工具清單 —— 新增工具只需在這裡加一筆
-   slug  = 子資料夾名稱（也是網址末端）
-   cat   = 所屬分類（分類順序由 CATS 決定）
+   工具清單存在 docs.json（cats = 分類順序，docs = 卡片）。
+   可在首頁底部「管理」直接加入 / 刪除，也可手動編輯 docs.json。
+   slug = 子資料夾名稱（也是網址末端）；abs = 站外完整網址
 ========================================================= */
-const CATS = ['課堂互動 · 分組比賽', '語文學習', '評估與練習', '文學分析 · 口試'];
-
-const DOCS = [
-  {
-    slug: 'y9b3u2',
-    cat:  '語文學習',
-    zh:   '給媽媽的一封信｜互動課文',
-    en:   'A Letter to Mom · Interactive Reading',
-    desc: 'Y9B3 Unit 2 第一課幻燈片：上繁下簡、點哪段讀哪段（真人中文配音），每段後接選擇、多選、是非、問答題，書信格式講解，詞彙翻卡；水彩插圖，投影大字、可調字號，課堂標註（螢光、改色、加粗、底線、批註）。',
-    tags: ['Unit 2', '書信', '上繁下簡', '點段朗讀', '多題型練習', '課堂標註'],
-    date: '2026-10'
-  },
-  {
-    slug: 'silk-road',
-    cat:  '語文學習',
-    zh:   '絲綢之路｜動畫',
-    en:   'The Silk Roads · Animated Lesson',
-    desc: '九個場景的楷體動畫：張騫出使、絲路城市接力地圖、往來商品、文化交流、海上絲路與今日絲路。全程真人風格中文配音與五聲音階背景音樂，最後是有語音的四題小測驗。',
-    tags: ['絲綢之路', '動畫', '楷體', '中文配音', '地圖', '小測驗'],
-    date: '2026-10'
-  },
-  {
-    slug: 'bhl/anlexiangyiri',
-    cat:  '文學分析 · 口試',
-    zh:   '安樂鄉一日｜作品分析',
-    en:   'One Day in Annex Hill · Close Reading',
-    desc: '白先勇《安樂鄉》深度閱讀引導：四個章節分層解讀，涵蓋小說表面秩序與精神牢籠、聚焦式人物描寫、原生概念對照（故鄉／祖居／家／安樂鄉）、中美文化價值衝突，以及原文朗讀與人物關係圖。',
-    tags: ['白先勇', '安樂鄉', '章節分析', '人物描寫', '文化衝突', '原文朗讀'],
-    date: '2026-10'
-  },
-  {
-    slug: 'bhl/jindanainai',
-    cat:  '文學分析 · 口試',
-    zh:   '金大奶奶｜作品分析',
-    en:   'Old Mrs. Chin · Close Reading',
-    desc: '白先勇《金大奶奶》閱讀引導：從孩子的旁觀視角，讀出傳統大家庭中的權力、沉默與女性悲劇。四個部分分層解讀（金家秩序、被排斥者、權力衝突、悲劇餘波），附作品背景、人物介紹、IB 主題連結、CAPS 口試整理、詞彙表與自我檢查，可繁簡切換。',
-    tags: ['白先勇', '金大奶奶', '章節分析', '女性悲劇', 'CAPS 口試', '繁簡切換'],
-    date: '2026-10'
-  },
-  {
-    slug: 'classroom-challenge',
-    cat:  '課堂互動 · 分組比賽',
-    zh:   '課堂挑戰賽',
-    en:   'Classroom Challenge',
-    desc: '分組搶答計分板：按課文難度自訂 100 / 200 / 300 分題板，全屏楷體題卡點一下翻面看答案，加分減分有真人語音鼓勵，支援半分計分、多套題板存檔，題目可從 Excel 直接貼上導入。',
-    tags: ['分組搶答', '計分板', '題卡翻面', '音效語音', '題庫存檔'],
-    date: '2026-09'
-  },
-  {
-    slug: 'y9b3u2-choice-communication',
-    cat:  '語文學習',
-    zh:   'Y9B3 Unit 2 選擇與溝通',
-    en:   'Y9 Band 3 Unit 2 · Choice & Communication',
-    desc: '四課：《給媽媽的一封信》《日記一篇》《抉擇》《給表哥的電子郵件》。拓展詞＋重點詞（田字格筆畫動畫）＋成語／句式知識，另有選詞填空、成語選詞填空、詞義選擇、句式練習與詞卡，繁簡切換＋植物積分系統。',
-    tags: ['Unit 2', '繁簡切換', '田字格筆畫', '成語句式', '積分系統', '詞卡'],
-    date: '2026-10'
-  },
-  {
-    slug: 'y9-chinese-unit3',
-    cat:  '語文學習',
-    zh:   'Y9 Unit 3 詞語學習網站',
-    en:   'Y9 Unit 3 · Chinese Vocabulary',
-    desc: 'Y9 中文詞語學習：田字格筆畫動畫配神經語音朗讀，選詞填空與重點詞練習，適合課堂與課後自修複習。',
-    tags: ['Unit 3', '田字格筆畫', '神經語音', '選詞填空'],
-    date: '2026-10'
-  },
-  {
-    slug: 'y9gcsb3',
-    cat:  '評估與練習',
-    zh:   'Y9 GCS Band 3 備課資源',
-    en:   'Y9 GCS Band 3 · Teaching Materials',
-    desc: 'Y9 GCS Band 3 課程備課頁面與 lesson1 教學資源，供課堂講解與學生練習使用。',
-    tags: ['GCS', 'Band 3', '備課', 'Lesson 1'],
-    date: '2026-08'
-  },
-  {
-    slug: 'ibdp-bhl-resources',
-    cat:  '文學分析 · 口試',
-    zh:   'IBDP / BHL 教材資源',
-    en:   'IBDP / BHL Resources',
-    desc: 'IBDP 與 BHL 課程教材資源：主題探討、寫作框架與課堂可用材料，配合 BHL 文學分析與口試工作站使用。',
-    tags: ['IBDP', 'BHL', '教材', '主題探討'],
-    date: '2026-07'
-  },
-  {
-    slug: 'y9gcs',
-    cat:  '評估與練習',
-    zh:   'Y9 GCS 課程專區',
-    en:   'Y9 GCS · Course Hub',
-    desc: 'Y9 GCS 課程專區（待建），預留作為 Y9 GCS 各單元課程資源的匯集入口。',
-    tags: ['Y9 GCS', '課程', '待建'],
-    date: '2026-08'
-  },
-  {
-    slug: '',
-    abs:   'https://teacherqq.github.io/working/bhl-literature/',
-    cat:  '文學分析 · 口試',
-    zh:   'BHL 文學分析與口試工作站',
-    en:   'BHL Literary Analysis & Individual Oral Hub',
-    desc: '文學分析基本思路、常用寫作手法與人物描寫術語、五大主題分析框架、常用分析句型，以及「3–4 分鐘完整分析」的範例拆解與口試注意事項。',
-    tags: ['文學分析', '個人口試', '術語工具箱', '分析句型', '五大主題'],
-    date: '2026-09'
-  }
-];
+const REPO = 'teacherqq/teaching', BRANCH = 'main', DATA = 'docs.json';
+const SITE = 'https://teacherqq.github.io/teaching/';
+let CATS = [], DOCS = [];
 
 /* =========================================================
    渲染
 ========================================================= */
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const keyOf = d => d.abs || d.slug;
+
+function absMeta(u){
+  if (u.includes('teacherqq.github.io/working/')) return '工作文檔集';
+  try { return new URL(u).hostname; } catch(e) { return '外部連結'; }
+}
 
 function card(d){
   const tags = (d.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join('');
   const href   = d.abs || `${d.slug}/`;
-  const meta   = d.abs ? `${esc(d.date)} · 工作文檔集` : `${esc(d.date)} · /${esc(d.slug)}/`;
+  const meta   = d.abs ? `${esc(d.date)} · ${esc(absMeta(d.abs))}` : `${esc(d.date)} · /${esc(d.slug)}/`;
   const extCls = d.abs ? ' card-ext' : '';
+  const picked = picks.has(keyOf(d)) ? ' picked' : '';
   return `
-    <a class="card${extCls}" href="${esc(href)}"${d.abs ? ' target="_blank" rel="noopener"' : ''}>
+    <a class="card${extCls}${picked}" data-key="${esc(keyOf(d))}" href="${esc(href)}"${d.abs ? ' target="_blank" rel="noopener"' : ''}>
       <div>
         <h3 class="card-zh">${esc(d.zh)}</h3>
-        <p class="card-en">${esc(d.en)}</p>
-        <p class="card-desc">${esc(d.desc)}</p>
+        ${d.en ? `<p class="card-en">${esc(d.en)}</p>` : ''}
+        ${d.desc ? `<p class="card-desc">${esc(d.desc)}</p>` : ''}
         <div class="tags">${tags}</div>
       </div>
       <div class="card-foot">
@@ -255,11 +250,13 @@ function card(d){
     </a>`;
 }
 
+function allCats(list){
+  return CATS.concat(list.map(d => d.cat).filter((c, i, a) => !CATS.includes(c) && a.indexOf(c) === i));
+}
+
 function render(list){
   const box = document.getElementById('sections');
-  const cats = CATS.concat(
-    list.map(d => d.cat).filter(c => !CATS.includes(c))
-  );
+  const cats = allCats(list);
 
   let html = '';
   cats.forEach(cat => {
@@ -289,9 +286,235 @@ function filter(){
   ));
 }
 
+function useData(data){
+  CATS = data.cats || [];
+  DOCS = data.docs || [];
+  filter();
+}
+
+async function load(){
+  try {
+    const r = await fetch(`${DATA}?t=${Date.now()}`, {cache: 'no-store'});
+    if (!r.ok) throw new Error(r.status);
+    useData(await r.json());
+  } catch(e) {
+    document.getElementById('sections').innerHTML = '<p class="empty">工具清單載入失敗，請重新整理頁面。</p>';
+  }
+}
+
+/* =========================================================
+   管理：GitHub 密鑰只存在老師自己的瀏覽器
+========================================================= */
+const TOKEN_KEY = 'teaching-admin-token';
+const $ = id => document.getElementById(id);
+const picks = new Set();
+
+function store(fn){ try { return fn(); } catch(e) { return null; } }
+function getToken(){ return store(() => localStorage.getItem(TOKEN_KEY)) || store(() => sessionStorage.getItem(TOKEN_KEY)) || ''; }
+function setToken(t, remember){
+  store(() => localStorage.removeItem(TOKEN_KEY));
+  store(() => sessionStorage.removeItem(TOKEN_KEY));
+  if (t) store(() => (remember ? localStorage : sessionStorage).setItem(TOKEN_KEY, t));
+}
+
+function say(id, text, kind){ const m = $(id); m.className = 'msg ' + (kind || ''); m.textContent = text || ''; }
+
+async function gh(path, opts = {}){
+  const r = await fetch(`https://api.github.com/repos/${REPO}${path}`, {
+    ...opts,
+    headers: {
+      'Accept': 'application/vnd.github+json',
+      'Authorization': `Bearer ${getToken()}`,
+      ...(opts.body ? {'Content-Type': 'application/json'} : {})
+    }
+  });
+  if (!r.ok) {
+    const err = new Error(r.status === 401 ? '密鑰無效或已過期，請重新貼上。'
+      : r.status === 403 || r.status === 404 ? '密鑰沒有寫入 teaching 倉庫的權限。'
+      : `GitHub 回應錯誤（${r.status}）。`);
+    err.status = r.status;
+    throw err;
+  }
+  return r.json();
+}
+
+const b64decode = s => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g, '')), c => c.charCodeAt(0)));
+const b64encode = s => { let b = ''; new TextEncoder().encode(s).forEach(x => b += String.fromCharCode(x)); return btoa(b); };
+
+/* 讀取倉庫裡最新的 docs.json → 修改 → 寫回；別人剛好也改過就重試一次 */
+async function commit(mutate, message, retry = true){
+  const file = await gh(`/contents/${DATA}?ref=${BRANCH}&t=${Date.now()}`);
+  const data = JSON.parse(b64decode(file.content));
+  mutate(data);
+  try {
+    await gh(`/contents/${DATA}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        message, branch: BRANCH, sha: file.sha,
+        content: b64encode(JSON.stringify(data, null, 2) + '\n')
+      })
+    });
+  } catch(e) {
+    if (retry && (e.status === 409 || e.status === 422)) return commit(mutate, message, false);
+    throw e;
+  }
+  useData(data);
+  return data;
+}
+
+function refreshAdmin(){
+  const has = !!getToken();
+  $('tokenState').innerHTML = has
+    ? '<b>✓ 已保存密鑰</b>　<button class="btn" id="tokenClear" style="padding:4px 10px;font-size:12px">清除密鑰</button>'
+    : '還沒有密鑰。第一次使用請貼上 GitHub 密鑰。';
+  $('tokenForm').style.display = has ? 'none' : '';
+  $('manageBox').style.display = has ? '' : 'none';
+  if (has) $('tokenClear').onclick = () => { setToken(''); say('tokenMsg', '已清除。', 'info'); refreshAdmin(); };
+
+  const cats = allCats(DOCS);
+  $('fCat').innerHTML = cats.map(c => `<option>${esc(c)}</option>`).join('') + '<option value="__new">＋ 新分類…</option>';
+  $('fCatNew').style.display = 'none';
+}
+
+function openAdmin(){ refreshAdmin(); $('adminModal').classList.add('on'); }
+function closeAdmin(){ $('adminModal').classList.remove('on'); if (location.hash === '#admin') history.replaceState(null, '', location.pathname + location.search); }
+
+$('adminOpen').onclick = openAdmin;
+$('adminClose').onclick = closeAdmin;
+$('adminModal').addEventListener('click', e => { if (e.target.id === 'adminModal') closeAdmin(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAdmin(); });
+
+$('tokenSave').onclick = async () => {
+  const t = $('tokenIn').value.trim();
+  if (!t) return say('tokenMsg', '請先貼上密鑰。', 'err');
+  setToken(t, $('tokenRemember').checked);
+  say('tokenMsg', '驗證中…', 'info');
+  try {
+    const repo = await gh('');
+    if (!repo.permissions || !repo.permissions.push) throw new Error('密鑰沒有寫入 teaching 倉庫的權限。');
+    $('tokenIn').value = '';
+    say('tokenMsg', '密鑰有效，已保存。', 'ok');
+    refreshAdmin();
+  } catch(e) {
+    setToken('');
+    say('tokenMsg', e.message, 'err');
+  }
+};
+
+/* ---------- 加入 ---------- */
+function parseLink(raw){
+  let u;
+  try { u = new URL(raw.trim()); } catch(e) { return null; }
+  const base = new URL(SITE);
+  if (u.host === base.host && u.pathname.startsWith(base.pathname)) {
+    const slug = decodeURIComponent(u.pathname.slice(base.pathname.length))
+      .replace(/index\.html?$/, '').replace(/\/+$/, '');
+    if (slug) return {slug};
+  }
+  return {abs: u.href};
+}
+
+$('fCat').onchange = () => { $('fCatNew').style.display = $('fCat').value === '__new' ? '' : 'none'; };
+
+$('fUrl').addEventListener('change', async () => {
+  const link = parseLink($('fUrl').value);
+  if (!link) return say('addMsg', '這不是有效的網址。', 'err');
+  if (DOCS.some(d => keyOf(d) === keyOf(link))) return say('addMsg', '首頁上已經有這個頁面了。', 'err');
+  say('addMsg', '');
+  try {
+    const r = await fetch(link.abs || new URL(link.slug + '/', SITE).href);
+    const doc = new DOMParser().parseFromString(await r.text(), 'text/html');
+    const title = (doc.title || '').trim();
+    const desc = doc.querySelector('meta[name="description"]');
+    if (title && !$('fZh').value) $('fZh').value = title;
+    if (desc && !$('fDesc').value) $('fDesc').value = desc.content.trim();
+  } catch(e) { /* 站外網頁通常讀不到標題，手動填寫即可 */ }
+});
+
+$('addGo').onclick = async () => {
+  const link = parseLink($('fUrl').value);
+  const zh = $('fZh').value.trim();
+  const cat = $('fCat').value === '__new' ? $('fCatNew').value.trim() : $('fCat').value;
+  if (!link) return say('addMsg', '請貼上頁面連結。', 'err');
+  if (!zh) return say('addMsg', '請填寫標題。', 'err');
+  if (!cat) return say('addMsg', '請填寫新分類名稱。', 'err');
+
+  const now = new Date();
+  const entry = {
+    slug: link.slug || '',
+    ...(link.abs ? {abs: link.abs} : {}),
+    cat, zh,
+    en: $('fEn').value.trim(),
+    desc: $('fDesc').value.trim(),
+    tags: $('fTags').value.split(/[,，、]/).map(s => s.trim()).filter(Boolean),
+    date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+  };
+
+  $('addGo').disabled = true;
+  say('addMsg', '保存中…', 'info');
+  try {
+    await commit(data => {
+      if (data.docs.some(d => keyOf(d) === keyOf(entry))) throw new Error('首頁上已經有這個頁面了。');
+      data.docs.unshift(entry);
+      if (!data.cats.includes(cat)) data.cats.push(cat);
+    }, `首頁加入：${zh}`);
+    ['fUrl', 'fZh', 'fEn', 'fDesc', 'fTags', 'fCatNew'].forEach(id => $(id).value = '');
+    refreshAdmin();
+    say('addMsg', `已加入「${zh}」。約 1 分鐘後所有人都能看到。`, 'ok');
+  } catch(e) {
+    say('addMsg', e.message, 'err');
+  } finally {
+    $('addGo').disabled = false;
+  }
+};
+
+/* ---------- 刪除 ---------- */
+function setPicking(on){
+  picks.clear();
+  document.body.classList.toggle('picking', on);
+  $('adminBar').classList.toggle('on', on);
+  updatePicks();
+  filter();
+}
+function updatePicks(){
+  $('pickCount').textContent = picks.size;
+  $('delGo').disabled = !picks.size;
+}
+
+$('delStart').onclick = () => { closeAdmin(); setPicking(true); window.scrollTo({top: 0, behavior: 'smooth'}); };
+$('delCancel').onclick = () => setPicking(false);
+
+$('sections').addEventListener('click', e => {
+  if (!document.body.classList.contains('picking')) return;
+  const c = e.target.closest('.card');
+  if (!c) return;
+  e.preventDefault();
+  const k = c.dataset.key;
+  picks.has(k) ? picks.delete(k) : picks.add(k);
+  c.classList.toggle('picked', picks.has(k));
+  updatePicks();
+});
+
+$('delGo').onclick = async () => {
+  const names = DOCS.filter(d => picks.has(keyOf(d))).map(d => '・' + d.zh).join('\n');
+  if (!confirm(`從首頁移除以下 ${picks.size} 個頁面？\n\n${names}\n\n（頁面檔案仍保留在倉庫，之後可以再加回來。）`)) return;
+  $('delGo').disabled = true;
+  try {
+    const gone = new Set(picks);
+    await commit(data => { data.docs = data.docs.filter(d => !gone.has(keyOf(d))); }, `首頁移除 ${gone.size} 個頁面`);
+    setPicking(false);
+    alert('已移除。約 1 分鐘後所有人都能看到。');
+  } catch(e) {
+    alert(e.message);
+    updatePicks();
+  }
+};
+
 document.getElementById('q').addEventListener('input', filter);
 document.getElementById('year').textContent = new Date().getFullYear();
-render(DOCS);
+if (location.hash === '#admin') openAdmin();
+load();
 </script>
+
 </body>
 </html>
