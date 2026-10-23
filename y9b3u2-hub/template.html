@@ -130,6 +130,13 @@ h1{font-family:var(--kai);font-weight:700;font-size:clamp(40px,7vw,76px);line-he
 .hint{font-size:12px;color:var(--muted);letter-spacing:.08em}
 .fade{animation:fade 360ms ease both}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.fs{position:fixed;z-index:20;top:calc(14px + env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px));
+  display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;cursor:pointer;
+  font:500 13px/1 var(--sans);letter-spacing:.12em;color:var(--text);background:rgba(255,255,255,.07);
+  border:1px solid var(--line);backdrop-filter:blur(8px);transition:background 200ms,transform 200ms}
+.fs:hover{background:rgba(255,255,255,.14);transform:translateY(-1px)}
+.fs:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.fs svg{width:16px;height:16px}
 footer{font-size:12px;color:#6f6a64;letter-spacing:.12em;margin-top:8px;text-align:center}
 @media (max-width:560px){
   .detail{grid-template-columns:1fr;padding:16px}
@@ -147,6 +154,7 @@ footer{font-size:12px;color:#6f6a64;letter-spacing:.12em;margin-top:8px;text-ali
 <div class="aura" id="aura"></div>
 <canvas id="dust" aria-hidden="true"></canvas>
 
+<button class="fs" id="fs" type="button" hidden aria-label="全螢幕"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path id="fsi" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span id="fst">全螢幕</span></button>
 <main class="wrap">
   <header>
     <div class="eyebrow">九年級 · 第三組 · 第二單元</div>
@@ -273,6 +281,20 @@ slots.forEach((el,i)=>{
 addEventListener('resize',()=>{measure();layout()});
 if(!matchMedia('(hover:hover)').matches)hot=0;
 measure();layout();
+
+// fullscreen toggle (button + F key); hidden where the browser has no Fullscreen API, e.g. iPhone Safari
+(()=>{
+  const de=document.documentElement,b=document.getElementById('fs'),t=document.getElementById('fst'),ic=document.getElementById('fsi');
+  const req=de.requestFullscreen||de.webkitRequestFullscreen,exit=document.exitFullscreen||document.webkitExitFullscreen;
+  if(!req)return;b.hidden=false;
+  const on=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
+  const sync=()=>{const f=on();t.textContent=f?'退出全螢幕':'全螢幕';b.setAttribute('aria-label',t.textContent);
+    ic.setAttribute('d',f?'M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5':'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5')};
+  const toggle=()=>{try{const r=on()?exit.call(document):req.call(de);r&&r.catch&&r.catch(()=>{})}catch(e){}};
+  b.addEventListener('click',toggle);
+  addEventListener('keydown',e=>{if((e.key==='f'||e.key==='F')&&!e.metaKey&&!e.ctrlKey&&!e.altKey)toggle()});
+  document.addEventListener('fullscreenchange',sync);document.addEventListener('webkitfullscreenchange',sync);
+})();
 
 // drifting dust
 (()=>{
