@@ -308,6 +308,10 @@ const TONES = [
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const keyOf = d => d.abs || d.slug;
 const pad = n => String(n).padStart(2, '0');
+/* 在正式網站用相對連結；在預覽等其他地方打開時改成完整網址並開新分頁 */
+const ON_SITE = location.href.startsWith(SITE);
+const hrefOf = d => d.abs || (ON_SITE ? `${d.slug}/` : new URL(`${d.slug}/`, SITE).href);
+const newTab = d => d.abs || !ON_SITE;
 
 function absMeta(u){
   if (u.includes('teacherqq.github.io/working/')) return '工作文檔集';
@@ -334,12 +338,12 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let cards = [], pos = 0, target = 0, raf = 0, shown = -1;
 
 function cardHTML(d, i){
-  const href = d.abs || `${d.slug}/`;
+  const href = hrefOf(d);
   const glyph = (d.zh.replace(/^Y9\S*\s*/, '').match(/[一-鿿]/) || [d.zh[0]])[0];
   const foot = d.abs ? absMeta(d.abs) : `/${d.slug}/`;
   const cv = coverOf(d);
   return `
-    <a class="card${picks.has(keyOf(d)) ? ' picked' : ''}" data-i="${i}" data-key="${esc(keyOf(d))}" href="${esc(href)}"${d.abs ? ' target="_blank" rel="noopener"' : ''} draggable="false">
+    <a class="card${picks.has(keyOf(d)) ? ' picked' : ''}" data-i="${i}" data-key="${esc(keyOf(d))}" href="${esc(href)}"${newTab(d) ? ' target="_blank" rel="noopener"' : ''} draggable="false">
       <div class="ph" style="background:${phBg(d)}">${esc(glyph)}</div>
       ${cv ? `<img src="${esc(cv)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : ''}
       <div class="shade"></div>
@@ -413,14 +417,14 @@ function sync(){
   if (shown === i) return;
   shown = i;
   const tags = (d.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join('');
-  const href = d.abs || `${d.slug}/`;
+  const href = hrefOf(d);
   $('info').innerHTML = `
     <div class="info-fade">
       <h2>${esc(d.zh)}</h2>
       ${d.en ? `<p class="i-en">${esc(d.en)}</p>` : ''}
       ${d.desc ? `<p class="i-desc">${esc(d.desc)}</p>` : ''}
       <div class="tags">${tags}</div>
-      <a class="cta" href="${esc(href)}"${d.abs ? ' target="_blank" rel="noopener"' : ''}>進入${d.abs ? '（新分頁）' : ''} <i>→</i></a>
+      <a class="cta" href="${esc(href)}"${newTab(d) ? ' target="_blank" rel="noopener"' : ''}>進入${newTab(d) ? '（新分頁）' : ''} <i>→</i></a>
     </div>`;
 }
 
