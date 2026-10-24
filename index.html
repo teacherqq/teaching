@@ -48,6 +48,7 @@
   .snd:hover{background:#fff;transform:translateY(-1px)}
   .snd:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   .snd svg{width:15px;height:15px}
+  .snd[hidden]{display:none}
 
   /* ---------- 標題區 ---------- */
   .hero{text-align:center;padding:28px 0 6px}
@@ -199,7 +200,7 @@
   <div class="top">
     <a class="brand" href="./"><i></i>TEACHING</a>
     <nav class="nav" id="nav" aria-label="分類"></nav>
-    <div class="top-r"><span class="site">teacherqq.github.io/teaching</span><button class="snd" id="snd" type="button" aria-pressed="true" aria-label="卡片音效"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path id="sndw" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg><span id="sndt">音效</span></button></div>
+    <div class="top-r"><span class="site">teacherqq.github.io/teaching</span><button class="snd" id="snd" type="button" aria-pressed="true" aria-label="卡片音效"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path id="sndw" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg><span id="sndt">音效</span></button><button class="snd" id="fs" type="button" hidden aria-label="全螢幕"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path id="fsi" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span id="fst">全螢幕</span></button></div>
   </div>
 
   <section class="hero">
@@ -816,6 +817,29 @@ const SFX = "SUQzBAAAAAAtTVRTU0UAAAAPAAADTGF2ZjYwLjE2LjEwMABHRU9CAAAtKgAAA2FwcGx
     if (now - last < 50) return;
     last = now; tick(speed);
   };
+})();
+
+/* 全螢幕：按鈕或 F 鍵切換，Esc 退出；瀏覽器不支援（例如 iPhone Safari）就不顯示按鈕 */
+(() => {
+  const de = document.documentElement, b = $('fs'), t = $('fst'), ic = $('fsi');
+  const req = de.requestFullscreen || de.webkitRequestFullscreen, exit = document.exitFullscreen || document.webkitExitFullscreen;
+  if (!req) return;
+  b.hidden = false;
+  const isOn = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+  const sync = () => {
+    const f = isOn();
+    t.textContent = f ? '退出全螢幕' : '全螢幕';
+    b.setAttribute('aria-label', t.textContent);
+    ic.setAttribute('d', f ? 'M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5' : 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5');
+  };
+  const toggle = () => { try { const r = isOn() ? exit.call(document) : req.call(de); r && r.catch && r.catch(() => {}); } catch(e) {} };
+  b.addEventListener('click', toggle);
+  addEventListener('keydown', e => {
+    if ((e.key === 'f' || e.key === 'F') && !e.metaKey && !e.ctrlKey && !e.altKey
+        && !e.target.closest('input,textarea,select') && !$('adminModal').classList.contains('on')) toggle();
+  });
+  document.addEventListener('fullscreenchange', sync);
+  document.addEventListener('webkitfullscreenchange', sync);
 })();
 
 $('q').addEventListener('input', filter);
