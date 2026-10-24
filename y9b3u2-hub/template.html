@@ -21,6 +21,9 @@
   color-scheme:dark;
 }
 html,body{background:var(--ink);color:var(--text)}
+/* indigo night ground */
+:root{--bg-a:#1d2350;--bg-b:#0c0f24;--bg-glow:rgba(110,130,255,.30)}
+html,body{background:radial-gradient(120% 80% at 50% 0%,var(--bg-a) 0%,var(--bg-b) 70%) fixed var(--bg-b)}
 body{font-family:var(--sans);min-height:100%;overflow-x:hidden}
 .wrap{position:relative;max-width:1180px;margin:0 auto;padding-block:clamp(28px,6vw,64px) 48px;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
@@ -29,7 +32,7 @@ body{font-family:var(--sans);min-height:100%;overflow-x:hidden}
 #dust{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
 .aura{position:fixed;inset:-20%;pointer-events:none;z-index:0;
   background:radial-gradient(40% 35% at 50% 58%,color-mix(in srgb,var(--glow) 34%,transparent),transparent 70%),
-             radial-gradient(60% 50% at 50% 110%,rgba(120,90,200,.18),transparent 70%);
+             radial-gradient(60% 50% at 50% 110%,var(--bg-glow),transparent 70%);
   transition:background 600ms ease}
 .wrap>*{position:relative;z-index:1}
 
@@ -131,7 +134,8 @@ h1{font-family:var(--kai);font-weight:700;font-size:clamp(40px,7vw,76px);line-he
 .hint{font-size:12px;color:var(--muted);letter-spacing:.08em}
 .fade{animation:fade 360ms ease both}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.fs{position:fixed;z-index:20;top:calc(14px + env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px));
+.tools{position:fixed;z-index:20;top:calc(14px + env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px));display:flex;gap:8px}
+.fs{
   display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;cursor:pointer;
   font:500 13px/1 var(--sans);letter-spacing:.12em;color:var(--text);background:rgba(255,255,255,.07);
   border:1px solid var(--line);backdrop-filter:blur(8px);transition:background 200ms,transform 200ms}
@@ -140,6 +144,7 @@ h1{font-family:var(--kai);font-weight:700;font-size:clamp(40px,7vw,76px);line-he
 .fs svg{width:16px;height:16px}
 footer{font-size:12px;color:#6f6a64;letter-spacing:.12em;margin-top:8px;text-align:center}
 @media (max-width:560px){
+  .wrap{padding-top:64px}
   .detail{grid-template-columns:1fr;padding:16px}
   .detail .num{grid-row:auto;text-align:left;font-size:34px}
   .detail .row{grid-column:1}
@@ -155,7 +160,7 @@ footer{font-size:12px;color:#6f6a64;letter-spacing:.12em;margin-top:8px;text-ali
 <div class="aura" id="aura"></div>
 <canvas id="dust" aria-hidden="true"></canvas>
 
-<button class="fs" id="fs" type="button" hidden aria-label="全螢幕"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path id="fsi" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span id="fst">全螢幕</span></button>
+<div class="tools"><button class="fs" id="snd" type="button" aria-pressed="true" aria-label="齒輪音效"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path id="sndw" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg><span id="sndt">音效</span></button><button class="fs" id="fs" type="button" hidden aria-label="全螢幕"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path id="fsi" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span id="fst">全螢幕</span></button></div>
 <main class="wrap">
   <header>
     <div class="eyebrow">九年級 · 第三組 · 第二單元</div>
@@ -299,6 +304,41 @@ measure();layout();
   b.addEventListener('click',toggle);
   addEventListener('keydown',e=>{if((e.key==='f'||e.key==='F')&&!e.metaKey&&!e.ctrlKey&&!e.altKey)toggle()});
   document.addEventListener('fullscreenchange',sync);document.addEventListener('webkitfullscreenchange',sync);
+})();
+
+// hover ticks: one wooden-ratchet click made with ElevenLabs sound effects (sfx/wood-tick*.mp3, inlined by build.py),
+// replayed with a little pitch/volume variation. One click per 26–34px of pointer travel, at most one every 50ms.
+// Browsers allow sound only after a click or key press, so the first one anywhere unlocks it.
+const SFX=__SFX__;
+(()=>{
+  const AC=window.AudioContext||window.webkitAudioContext,btn=document.getElementById('snd'),txt=document.getElementById('sndt'),wave=document.getElementById('sndw');
+  if(!AC){btn.hidden=true;return}
+  let ctx=null,buf=null,on=true;
+  try{on=localStorage.getItem('hub-snd')!=='off'}catch(e){}
+  const show=()=>{btn.setAttribute('aria-pressed',on);txt.textContent=on?'音效':'靜音';wave.style.display=on?'':'none'};show();
+  const bytes=b64=>{const s=atob(b64),u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u.buffer};
+  const decode=b64=>new Promise(r=>ctx.decodeAudioData(bytes(b64),r,()=>r(null)));
+  function unlock(){
+    if(!ctx){ctx=new AC();decode(SFX).then(b=>buf=b)}
+    if(ctx.state==='suspended')ctx.resume();
+  }
+  addEventListener('pointerdown',unlock,{capture:true});addEventListener('keydown',unlock,{capture:true});
+  function play(buf,rate,vol){
+    if(!on||!ctx||ctx.state!=='running'||!buf)return;
+    const src=ctx.createBufferSource(),g=ctx.createGain();src.buffer=buf;src.playbackRate.value=rate;g.gain.value=vol;
+    src.connect(g).connect(ctx.destination);src.start();
+  }
+  const tick=speed=>play(buf,(.95+Math.random()*.1)*(1+Math.min(speed,2)*.05),.24+Math.min(speed,2)*.05);
+  btn.addEventListener('click',()=>{on=!on;show();try{localStorage.setItem('hub-snd',on?'on':'off')}catch(e){};if(on)setTimeout(()=>tick(0),60)});
+  let lx=null,ly=null,lt=0,acc=0,last=0,need=30;
+  stage.addEventListener('pointermove',e=>{
+    const now=performance.now();
+    if(hot===null||lx===null){lx=e.clientX;ly=e.clientY;lt=now;return}
+    const d=Math.hypot(e.clientX-lx,e.clientY-ly),speed=d/Math.max(now-lt,1);  // px per ms
+    lx=e.clientX;ly=e.clientY;lt=now;acc+=d;
+    if(acc>=need&&now-last>=50){acc=0;last=now;need=26+Math.random()*8;tick(speed)}
+  });
+  stage.addEventListener('pointerleave',()=>{lx=null});
 })();
 
 // drifting dust
