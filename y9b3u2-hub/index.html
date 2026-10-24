@@ -46,13 +46,14 @@ h1{font-family:var(--kai);font-weight:700;font-size:clamp(40px,7vw,76px);line-he
 .lede{font-family:var(--kai);font-size:clamp(16px,2.2vw,20px);color:#cfc6b8;margin:0;letter-spacing:.06em}
 
 /* stage */
-.stage{position:relative;width:100%;height:calc(var(--ch)*1.62);perspective:1500px;perspective-origin:50% 30%;touch-action:pan-y;outline:none}
+.stage{position:relative;width:100%;height:calc(var(--ch)*1.62);touch-action:pan-y;outline:none}
 .ghost{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);font-family:var(--kai);font-weight:700;white-space:nowrap;
   font-size:clamp(110px,24vw,300px);letter-spacing:.2em;color:transparent;-webkit-text-stroke:1.5px rgba(239,233,223,.08);
   user-select:none;pointer-events:none;line-height:1}
 .floor{position:absolute;left:50%;bottom:4%;width:min(100%,900px);height:34%;transform:translateX(-50%);pointer-events:none;
   background:radial-gradient(50% 50% at 50% 50%,rgba(255,240,220,.10),transparent 70%);filter:blur(4px)}
-.fan{position:absolute;left:50%;top:50%;transform-style:preserve-3d}
+/* the fan is flat on purpose: each card is its own 3D scene, stacked by z-index, so neighbours never slice through each other */
+.fan{position:absolute;left:50%;top:50%;perspective:1500px;perspective-origin:0 calc(var(--ch)*-.32)}
 .slot{position:absolute;left:0;top:0;width:var(--cw);height:var(--ch);margin:calc(var(--ch)/-2) 0 0 calc(var(--cw)/-2);
   transform-style:preserve-3d;transition:transform 300ms var(--ease);will-change:transform;text-decoration:none;color:inherit;
   -webkit-tap-highlight-color:transparent;outline:none}
@@ -238,11 +239,12 @@ function layout(){
   const push=[0,1,.62,.38,.24];
   slots.forEach((el,i)=>{
     const d0=i-MID;
-    let x=d0*sp,y=d0*d0*7,rz=d0*3.6,ry=-d0*6,z=-Math.abs(d0)*14,s=1,zi=20-Math.abs(i-MID)|0;
+    let x=d0*sp,y=d0*d0*7,rz=d0*3.6,ry=-d0*6,z=-Math.abs(d0)*14,s=1,zi=10+i;  // each card sits on its left neighbour, so the left card's title (bottom-left) stays visible
+
     if(hot!==null){
       const d=i-hot;
       if(d===0){y=-38;rz=0;ry=0;z=60;s=1.14;zi=50}
-      else{x+=Math.sign(d)*P*push[Math.min(Math.abs(d),4)];rz+=Math.sign(d)*2;ry+=-Math.sign(d)*4;y+=6;zi=30-Math.abs(d)}
+      else{x+=Math.sign(d)*P*push[Math.min(Math.abs(d),4)];rz+=Math.sign(d)*2;ry+=-Math.sign(d)*4;y+=6}
     }
     el.style.zIndex=zi;
     el.style.transform=`translate3d(${x}px,${y}px,${z}px) rotateZ(${rz}deg) rotateY(${ry}deg) scale(${s})`;
