@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>寂寞的十七歲｜文學探索</title>
+<style>
+:root{--ink:#142236;--night:#0d1727;--paper:#f5f0e5;--mist:#dce6ea;--gold:#d8a54b;--rust:#a54e42;--green:#496d61;--line:#aeb9bd;--shadow:0 18px 50px #07101c55}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--night);color:var(--paper);font-family:"Kaiti TC","STKaiti","BiauKai",serif;font-size:20px;line-height:1.65}button,input,select,textarea{font:inherit}button{cursor:pointer}.shell{width:min(1180px,92vw);margin:auto}.hero{min-height:92vh;display:grid;align-items:end;position:relative;overflow:hidden;background:linear-gradient(90deg,#08121fea 0%,#0b1624b8 42%,#0b162430),url('assets/scene-01.webp') center/cover}.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--night),transparent 46%);pointer-events:none}.hero-copy{position:relative;z-index:1;padding:15vh 0 10vh;max-width:760px}.kicker{color:#f0c56d;letter-spacing:.16em;font-size:.84rem}.hero h1{font-size:clamp(3.5rem,9vw,7.6rem);line-height:.95;margin:.2em 0}.hero p{max-width:34em;color:#e5e9e7}.actions{display:flex;gap:14px;flex-wrap:wrap}.btn{border:1px solid #f5f0e588;background:var(--paper);color:var(--ink);padding:.65em 1.15em;border-radius:99px;font-weight:700}.btn.alt{background:transparent;color:var(--paper)}.btn:focus-visible,.answer:focus-visible,.scene:focus-visible{outline:4px solid #ffd477;outline-offset:3px}.topbar{position:sticky;top:0;z-index:20;background:#0d1727e8;backdrop-filter:blur(10px);border-bottom:1px solid #ffffff20}.topin{height:74px;display:flex;align-items:center;gap:18px}.brand{font-weight:800;margin-right:auto}.progressline{width:min(240px,28vw);height:8px;border-radius:8px;background:#fff2;overflow:hidden}.progressline i{display:block;height:100%;background:var(--gold);width:0}.small{font-size:.82rem;color:#c7d0d3}.section{padding:90px 0}.section h2{font-size:clamp(2.2rem,5vw,4.8rem);line-height:1.1;margin:.1em 0 .5em}.lead{max-width:720px;color:#c7d0d3}.introgrid{display:grid;grid-template-columns:1.05fr .95fr;gap:34px;align-items:center}.quote{font-size:clamp(1.45rem,3vw,2.35rem);border-left:5px solid var(--gold);padding-left:1em}.frame{border:1px solid #ffffff33;padding:10px;background:#ffffff08;box-shadow:var(--shadow)}.frame img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover}.caption{font-size:.75rem;color:#aebac0;margin-top:8px}.scene-strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(280px,38%);gap:18px;overflow:auto;scroll-snap-type:x mandatory;padding:16px 2px 30px}.scene{border:0;padding:0;color:white;background:#172438;text-align:left;scroll-snap-align:start;position:relative;overflow:hidden;min-height:310px}.scene img{width:100%;height:310px;object-fit:cover;display:block;opacity:.77;transition:.3s}.scene:hover img{transform:scale(1.025);opacity:.92}.scene span{position:absolute;left:18px;right:18px;bottom:16px;text-shadow:0 2px 10px #000;font-weight:700}.chapters{display:grid;grid-template-columns:repeat(5,1fr);gap:13px;margin-top:34px}.chapter{min-height:260px;border:1px solid #ffffff28;background:linear-gradient(145deg,#19283c,#111c2e);color:white;text-align:left;padding:22px;position:relative;transition:.2s}.chapter:hover{transform:translateY(-5px);border-color:var(--gold)}.chapter b{font-size:2.6rem;color:var(--gold)}.chapter h3{font-size:1.25rem;margin:.4em 0}.chapter meter{width:100%;position:absolute;bottom:22px;left:22px;width:calc(100% - 44px)}.task-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.task{background:var(--paper);color:var(--ink);padding:24px;min-height:260px}.task h3{font-size:1.5rem;margin-top:0}.task select,.task input,.task textarea{width:100%;padding:.65em;border:1px solid #86939b;background:#fff;margin:.35em 0}.oral{display:grid;grid-template-columns:1fr 1fr;gap:20px}.oral textarea{min-height:160px}.footer{padding:50px 0 80px;color:#9aa9b0;border-top:1px solid #ffffff20}.modal{position:fixed;inset:0;z-index:50;background:#07101cee;display:none;align-items:center;justify-content:center;padding:24px}.modal.open{display:flex}.panel{width:min(920px,100%);max-height:92vh;overflow:auto;background:var(--paper);color:var(--ink);box-shadow:var(--shadow);padding:clamp(24px,5vw,54px);position:relative}.panel h2{font-size:clamp(1.8rem,4vw,3.2rem);line-height:1.18}.close{position:absolute;right:18px;top:14px;border:0;background:transparent;font-size:2rem;color:var(--ink)}.qmeta{display:flex;justify-content:space-between;color:#6e7b82;font-size:.8rem;gap:12px}.answers{display:grid;gap:12px;margin:24px 0}.answer{display:flex;gap:14px;text-align:left;padding:16px;border:1px solid #8b969a;background:white;color:var(--ink)}.answer:hover{border-color:var(--gold)}.answer.correct{background:#d8eadf;border-color:#3c7d5a}.answer.wrong{background:#f2d5d0;border-color:#a54e42}.feedback{display:none;background:#fff;border-left:5px solid var(--gold);padding:18px;margin:20px 0}.feedback.show{display:block}.navrow{display:flex;justify-content:space-between;gap:12px}.scene-panel img{width:100%;max-height:55vh;object-fit:cover}.badge{display:inline-block;background:#ead59e;padding:.2em .6em;border-radius:99px;font-size:.75rem}.toast{position:fixed;right:20px;bottom:20px;background:#f5f0e5;color:#142236;padding:15px 20px;z-index:80;transform:translateY(120px);transition:.3s}.toast.show{transform:none}
+@media(max-width:850px){body{font-size:18px}.introgrid,.oral{grid-template-columns:1fr}.chapters{grid-template-columns:1fr 1fr}.task-grid{grid-template-columns:1fr}.scene-strip{grid-auto-columns:82%}.hero{min-height:78vh}.progressline{display:none}}@media(max-width:520px){.chapters{grid-template-columns:1fr}.chapter{min-height:190px}.topin .small{display:none}.panel{padding:22px 16px}.answer{padding:13px}.section{padding:65px 0}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="hero" id="home"><div class="shell hero-copy"><div class="kicker">白先勇・第一人稱成長敘事</div><h1>寂寞的<br>十七歲</h1><p>沿著雨、黑暗與城市燈光留下的線索，走進楊雲峰的自白。每一道題，都要回到文本找證據。</p><div class="actions"><button class="btn" data-scroll="journey">開始探索</button><button class="btn alt" data-scroll="scenes">觀看場景</button></div></div></header>
+<nav class="topbar"><div class="shell topin"><div class="brand">寂寞的十七歲</div><div class="progressline"><i id="bar"></i></div><div class="small" id="progressText">已掌握 0／50</div><button class="btn alt" id="resetBtn">重設</button></div></nav>
+<main>
+<section class="section"><div class="shell introgrid"><div><span class="badge">閱讀入口</span><h2>一個清晨，<br>一年的記憶。</h2><p class="lead">小說從楊雲峰雨夜後回家寫起，再讓他回看十六歲以來的家庭、學校與人際經驗，最後回到清晨。第一人稱讓讀者貼近他的恐懼與自我辯解，但敘述者的理解不等於作者的判斷。</p><p class="quote">「好多事情我得慢慢拼湊才想得起來。」</p></div><div class="frame"><img src="assets/scene-12.webp" alt="雨後清晨，少年回到房間"><div class="caption">氛圍插畫；年代與地景不作考證，閱讀判斷以原文為準。</div></div></div></section>
+<section class="section" id="scenes"><div class="shell"><span class="badge">場景地圖</span><h2>城市是他的心理地圖</h2><p class="lead">點擊場景，讀取原文線索。插畫支援氣氛理解，不代替文本細節。</p><div class="scene-strip" id="sceneStrip"></div></div></section>
+<section class="section" id="journey"><div class="shell"><span class="badge">五個閱讀關卡</span><h2>從情節走向詮釋</h2><p class="lead">每類 10 題。答錯會指出誤讀方向，可立即重答；答對後解鎖文本證據與分析。</p><div class="chapters" id="chapters"></div></div></section>
+<section class="section"><div class="shell"><span class="badge">3–4 分鐘口語準備</span><h2>證據不是終點，<br>觀點才是。</h2><p class="lead">回答：作者如何透過第一人稱敘事、環境描寫與人物自白，表現楊雲峰的孤獨與身分焦慮？草稿會自動保存在本機。</p><div class="oral"><textarea id="evidence" placeholder="文本證據：引用準確詞句……"></textarea><textarea id="choice" placeholder="寫作選擇：敘事視角、意象、對比……"></textarea><textarea id="effect" placeholder="表達效果：讀者如何感受人物狀態……"></textarea><textarea id="meaning" placeholder="人物／主題意義：這說明了什麼……"></textarea></div><div class="actions" style="margin-top:18px"><button class="btn" id="copyOral">複製口語提綱</button><button class="btn alt" id="clearOral">清除草稿</button></div></div></section>
+</main><footer class="footer"><div class="shell">《寂寞的十七歲》文學互動學習網站 · 插畫為課堂氛圍輔助 · 所有判斷回到文本</div></footer>
+<div class="modal" id="questionModal" role="dialog" aria-modal="true"><div class="panel"><button class="close" data-close aria-label="關閉">×</button><div class="qmeta"><span id="qCategory"></span><span id="qCount"></span></div><h2 id="qText"></h2><div class="answers" id="answers"></div><div class="feedback" id="feedback"></div><div class="navrow"><button class="btn" id="prevQ">上一題</button><button class="btn" id="nextQ">下一題</button></div></div></div>
+<div class="modal" id="sceneModal" role="dialog" aria-modal="true"><div class="panel scene-panel"><button class="close" data-close aria-label="關閉">×</button><img id="sceneImg" alt=""><h2 id="sceneTitle"></h2><p class="quote" id="sceneQuote"></p><p id="sceneNote"></p></div></div><div class="toast" id="toast"></div>
+<script>
+const scenes=[
+['天台與校園','assets/scene-01.webp','「我避到樓上，倚著石欄曬太陽去。」','冬日陽光與白日夢形成短暫庇護，也寫出他退出群體後的自我封閉。'],
+['陰雨中的學校','assets/scene-02.webp','「才是四點多鍾，天色烏沉沉的。」','陰寒、空校舍與黑洞般的窗，把即將發生的不安具體化。'],
+['雨夜翻牆回家','assets/scene-03.webp','「大門緊閉著，我只得翻過圍牆爬進去。」','翻牆、犬吠與濕冷身體，把回家寫成一次膽怯的闖入。'],
+['新公園雨夜','assets/scene-04.webp','「雨不停的下著，將葉子上發出沙沙的響聲來。」','黑暗與冷雨包圍人物，陪伴的渴望與危險感同時存在。'],
+['博物館石階','assets/scene-05.webp','「新公園裡面冷清清的，沒有幾個人影子。」','冷清空間外化他的孤立，也讓城市成為無處可去的迴圈。'],
+['下班後的街道','assets/scene-06.webp','「路上人來人往，剛好是下班放學的時候。」','人群越密集，他越顯得無處歸屬。'],
+['戲院對面','assets/scene-07.webp','「館子裡暖和，外面冷，我呆坐著混時間。」','內暖外冷的空間對照，反襯他仍無法獲得情感安定。'],
+['街燈與人群','assets/scene-08.webp','「我真不知道去哪兒好，我覺得好無聊。」','明亮城市與人物內在空洞構成反差。'],
+['逃出教室','assets/scene-09.webp','「外面在下冷雨，我的頭燒得直發暈。」','冷雨與發燙的身體並置，強化羞惶與失控。'],
+['播音台與日晷','assets/scene-10.webp','「我豎起那根石針，來迴轉著玩。」','反覆撥弄日晷，是無聊的動作細節，也暗示時間無法前進。'],
+['鐵軌旁','assets/scene-11.webp','「路燈發著紫光，照在皮膚上，死人顏色一般。」','異樣光色把厭煩與絕望推至危機；課堂討論應避免把痛苦浪漫化。'],
+['清晨的房間','assets/scene-12.webp','「小房裡卻整潔得使我難受。」','整潔空間與泥濘身體對比，顯示他與家庭秩序的疏離。'],
+['空蕩的公園','assets/scene-13.webp','「其餘的地方都是黑壓壓的。」','稀少人影、黑暗與空椅共同構成孤獨意象。']];
+const C=['文本基本理解','人物心理分析','文學手法分析','敘事結構與視角','主題探究'];
+const Q=[
+// 文本理解
+['楊雲峰清晨回家時，天氣狀況如何？',['雨還未停，晨風冰冷','陽光強烈，天氣炎熱','大雪紛飛','乾燥無風'],0,'「昨天晚上的雨還沒有停，早上的風吹得人難耐得很，冰浸的。」','雨與寒風首先建立了人物疲憊、受寒的處境。'],
+['楊雲峰為什麼翻牆回家？',['他想冒險','大門緊閉','來富擋住正門','他遺失鑰匙'],1,'「大門緊閉著，我只得翻過圍牆爬進去。」','直接原因是大門緊閉；不要把推測當作文本明說。'],
+['楊雲峰進屋後先去哪裡？',['廚房','父親書房','浴室照鏡子','母親房間'],2,'「我先到浴室照了照鏡子。」','照鏡子的動作引出他的自我審視。'],
+['他照鏡子主要擔心什麼？',['髮型凌亂','臉上留下「墮落之痕」','被狗抓傷','衣服不合身'],1,'他想看臉上是否「刻下一條墮落之痕」。','這不是實際傷痕，而是羞恥與自我審判。'],
+['父親評價兒子時最看重什麼？',['音樂興趣','體育能力','成績與家族體面','交友數量'],2,'「我們楊家沒有這種人！」','責罵把學業失敗上升為家族羞恥。'],
+['楊雲峰在班上的主要狀態是？',['活躍領袖','獨來獨往','老師助手','運動健將'],1,'他「一有空，就伏在桌子上打瞌睡」，又避到樓上。','動作顯示他從同儕群體中退開。'],
+['他為何曾冒充建國中學學生？',['真的轉學','替朋友保密','掩飾自卑並塑造理想身分','校服相同'],2,'「不要笑我，我怕人家瞧不起。」','謊言是防衛，也是身分焦慮的表現。'],
+['他以什麼方式排遣極端無聊？',['打空電話','參加球賽','整理房間','與父親談心'],0,'「那天晚上，我又一個人在打空電話了。」','電話沒有真正對象，反而凸顯交流的缺席。'],
+['魏伯颺對楊雲峰有何特殊意義？',['競爭對手','少數令他不必扯謊的人','補習老師','親哥哥'],1,'「在他面前，我不必扯謊。」','這是難得的安全關係，也反襯其他關係中的偽裝。'],
+['他為何沒有參加大考？',['生病住院','忘記日期','公開受辱後逃離學校','父親阻止'],2,'信被釘上黑板後，他「頭也沒回，跑出了學校」。','羞辱事件直接觸發逃離。'],
+// 心理
+['臉「像是抽過了血」表現什麼？',['興奮','恐懼、羞愧與疲憊','驕傲','喜悅'],1,'鏡中蒼白的臉與下頦哆嗦相連。','身體反應把內在驚惶外化。'],
+['「整潔得使我難受」揭示什麼？',['他愛清潔','房間太小','整潔加深自身狼狽與疏離','母親不准整理'],2,'整潔小房與濕髮、泥漿袖口並置。','外部秩序使他的混亂更加刺眼。'],
+['他不敢抬頭看父親，主要因為什麼？',['光線刺眼','害怕責罵與否定','正在背公式','不認識父親'],1,'「我沒抬起頭來，我怕看爸爸的臉色。」','視線迴避具體呈現恐懼。'],
+['他對母親的感情較準確的是？',['完全冷漠','既依戀又害怕她哭與責備','只有憤怒','只想利用她'],1,'童年「心中就只有媽媽」，此刻卻受不了她流淚。','依戀與疲憊並存，呈現親情隔閡。'],
+['他為何常與自己說話？',['練演講','缺少能真實交流的人','準備演戲','討厭語言'],1,'「我跟我自己真的說得有滋有味呢。」','自言自語填補關係空缺，也加深封閉。'],
+['他想出家當和尚，主要反映什麼？',['成熟宗教選擇','想逃離家庭、學校與人際壓力','想討好父親','喜愛山景'],1,'他想「獨生獨死，過一輩子」。','這是逃避性的想像，不宜簡化為宗教志向。'],
+['他羨慕敢打扮的同學，原因是？',['他們成績最好','他們敢表現自己，而他拘謹自卑','他們送他禮物','他們家庭貧窮'],1,'他稱自己「臉皮太薄」。','羨慕指向他欠缺的自信與社交能力。'],
+['寫信給唐愛麗時，他的核心願望是？',['報復她','道歉並獲得理解與安慰','炫耀文筆','斷絕關係'],1,'「我好寂寞，好需要人安慰。」','信把防衛暫時放下，直接說出情感需要。'],
+['信件被公開後，他為何逃離？',['厭惡考試內容','無法承受公開羞辱與情感暴露','想看電影','要找老師'],1,'他「全身在發抖」，隨後跑出學校。','群體嘲笑使私人情感變成公開表演。'],
+['父親打罵時，他為何強忍眼淚？',['毫無痛感','不願在父親面前顯露脆弱','想激怒父親','忘了哭'],1,'「在爸爸面前，我不想哭。」','克制是防衛，也顯示父子間缺乏安全感。'],
+// 手法
+['「天已經蒙蒙亮了，雨還沒有停」屬於什麼描寫？',['人物描寫','環境描寫','語言描寫','肖像描寫'],1,'「蒙蒙亮」「雨還沒有停」「冰浸的」。','冷、暗、濕的環境烘托疲憊與不安。'],
+['「走廊一片渾黑」除交代光線外還有何效果？',['增添喜劇感','烘托恐懼、迷惘與孤立','讚美建築','表現視力不好'],1,'「渾黑」與他躡足、溜走的動作相連。','環境與動作共同建立緊張感。'],
+['整齊鐵床與泥濘身體並置，主要是什麼手法？',['對比','排比','擬人','借代'],0,'床「整整齊齊」，袖口卻「裹滿了泥漿」。','外部秩序反襯人物狼狽與內在混亂。'],
+['「墮落之痕」的想像有何作用？',['證明臉受傷','呈現道德焦慮與自我審判','說明愛幻想','交代父親打他'],1,'他怕臉會洩露昨夜發生的事。','不存在的痕跡顯示羞恥已內化。'],
+['「我愛說謊」這類句子屬於什麼？',['直接心理自白','第三人稱旁白','景物描寫','側面描寫'],0,'敘述者直接承認自己的行為與原因。','自白拉近讀者與人物內心的距離。'],
+['「無聊」反覆出現，主要效果是？',['製造押韻','突出精神空虛與無所歸屬','說明天氣','交代交通'],1,'「我覺得無聊到了極點」等語多次出現。','詞語反覆形成情緒回環。'],
+['父親反覆拿兄弟作比較，形成什麼效果？',['突出雲峰的失敗感與孤立','顯示兄弟親密','顯示父親公平','製造幽默'],0,'比較把雲峰固定在「不成材」的位置。','他逐漸把成績失敗內化為自我無價值。'],
+['「我在為爸爸讀」有何深層含義？',['熱愛閱讀','學習缺少自主目標，只為滿足父親期待','父親陪讀','報答老師'],1,'句子把「我」與學習動機分開。','簡短自白揭示外在期待取代內在意義。'],
+['「楊雲峰，你完蛋了！」屬於什麼？',['老師批語','自我喊話與自我審判','父親原話','同學玩笑'],1,'他把句子寫在自己的日記本。','外界否定已轉化為對自己的宣判。'],
+['雨、寒冷、黑暗多次出現，整體作用是？',['只記錄氣象','形成氛圍線索，映照孤獨與精神困境','展示地理知識','美化城市'],1,'冷雨從開端、學校、公園延續到回家。','重複意象把分散事件連成壓抑的心理景觀。'],
+// 敘事
+['小說主要採用什麼敘事視角？',['第一人稱','第二人稱','全知第三人稱','多線第三人稱'],0,'全文由「我」回憶與自述。','讀者貼近雲峰，但只能透過他的有限理解看事件。'],
+['「從我去年剛搭上十七歲講起」有何作用？',['轉入環境描寫','由現在轉入過去回憶','結束全文','介紹父親職業'],1,'這句是明確的時間轉折。','清晨的現在成為回憶框架。'],
+['全文主要時間結構是？',['完全順敘','現在場景—過去回憶—回到現在','完全倒敘且不返回','書信體'],1,'開頭回家，回憶一年，末尾再到「天已經大亮」。','首尾的清晨包住中段回憶。'],
+['開頭先呈現結果，再回溯一年，較準確的說法是？',['倒敘框架中穿插回憶','純順敘','補敘一段','戲劇獨白'],0,'現在時刻先出現，再回到較早經歷。','它不是從頭到尾完全依時間順序。'],
+['「慢慢拼湊」顯示敘事怎樣展開？',['依檔案編年','隨人物記憶與意識連接','毫無邏輯','由父親講述'],1,'「拼湊」直接指出回憶的形成方式。','片段感貼近人物疲憊、混亂的精神狀態。'],
+['作者先寫狼狽回家，產生什麼結構效果？',['先建立懸念與危機感','先說明結局一切圓滿','刪除人物','只為交代時間'],0,'讀者先看到後果，卻不知道昨夜發生什麼。','疑問推動讀者進入回憶尋找原因。'],
+['開頭「回家」場景的結構功能是？',['單純換地點','建立首尾框架並引出回憶','介紹狗的故事','結束衝突'],1,'結尾再回到同一清晨與母親腳步聲。','首尾呼應，但人物困境尚未解除。'],
+['大量「我想」「我覺得」體現什麼？',['新聞客觀性','強烈主觀的心理敘事','科學說明','多人視角'],1,'敘述由人物感受與判斷組織。','這提高親近感，也要求讀者辨別有限視角。'],
+['回憶有時跳躍、不完全連貫，主要因為？',['圍繞人物聯想與情緒展開','作者寫錯','情節被隨機刪去','事件不存在'],0,'他說要「慢慢拼湊」。','結構模擬記憶運作，不等於文本沒有邏輯。'],
+['從開頭到結尾，敘述的心理軌跡是？',['平靜到興奮','疲憊恐懼—回看孤獨—仍想逃避現實','自信到成功','快樂到滿足'],1,'結尾他蒙頭、摟枕，決意不回學校。','回憶解釋困境，卻沒有立即解決困境。'],
+// 主題
+['最能概括核心主題的是？',['財富與成功','青少年孤獨、身分焦慮與家庭壓力','自然保育','旅行冒險'],1,'家庭比較、學業失敗、同儕羞辱與撒謊相互連結。','主題來自多組文本證據，而非單一事件。'],
+['下列哪項不是造成他孤獨的主要因素？',['家庭比較','學業失敗','同儕排斥','喜愛自然旅行'],3,'文本持續呈現家庭、學校與人際壓力。','「旅行」不是造成孤獨的關鍵證據。'],
+['他難以建立穩定關係的原因是？',['不需要朋友','以謊言保護自己，難以真實相處','所有人天生討厭他','沒有任何感情'],1,'「我撒謊從不費心機，隨口就出來了。」','防衛短期保護自尊，長期阻隔理解。'],
+['父親在成長衝突中主要代表什麼？',['無條件理解','成績標準、家族體面與權威期待','自由冒險','藝術創造'],1,'「我們楊家沒有這種人！」','父親把個人成績與家族價值綁在一起。'],
+['「撒謊」的主題意義是？',['證明人物邪惡','呈現理想自我與真實自我的矛盾','證明智力超群','只為傷害朋友'],1,'他明說是怕人「瞧不起」。','謊言是一種身分表演與脆弱防衛。'],
+['「我在為爸爸讀」說明什麼？',['教育成為外在控制與評價的工具','他熱愛學習','父親替他作答','他想當老師'],0,'學習目標由父親期待主導。','缺少自主意義使他更難投入。'],
+['信被釘上黑板反映什麼？',['同儕互相尊重','群體嘲笑對個人尊嚴的傷害','學校保護隱私','同學協助交友'],1,'私人信件被公開抄寫與模仿取笑。','群體把他的情感需要變成羞辱材料。'],
+['他反覆逃離家庭與學校，因為什麼？',['已找到更好生活','這些空間不斷強化失敗感與羞恥','熱愛旅遊','準備留學'],1,'他從學校、公園到街道不斷移動。','空間移動並未消除內在困境。'],
+['「鏡子」可如何理解？',['只關乎外貌','人物對身分與行為的自我審視','家庭財富','學校紀律'],1,'他照鏡子尋找想像中的「墮落之痕」。','鏡子把外貌檢查轉成道德與身分焦慮。'],
+['作品呈現的「成長」較接近哪一項？',['只等於好成績','伴隨孤獨、自我懷疑與家庭期待衝突','只等於離校','學會更多謊言'],1,'十七歲不是明亮的成熟儀式，而是衝突集中爆發。','作品呈現成長的疼痛與身分建構困難。']];
+const state=JSON.parse(localStorage.getItem('lonely17-progress')||'{"done":[]}');let cat=0,idx=0;
+const save=()=>{localStorage.setItem('lonely17-progress',JSON.stringify(state));renderProgress()};
+function renderScenes(){sceneStrip.innerHTML=scenes.map((s,i)=>`<button class="scene" data-scene="${i}"><img loading="lazy" src="${s[1]}" alt="${s[0]}"><span>${s[0]}</span></button>`).join('')}
+function renderChapters(){chapters.innerHTML=C.map((c,i)=>{let n=state.done.filter(x=>Math.floor(x/10)===i).length;return `<button class="chapter" data-cat="${i}"><b>0${i+1}</b><h3>${c}</h3><p class="small">${n}／10 已掌握</p><meter min="0" max="10" value="${n}"></meter></button>`}).join('')}
+function renderProgress(){let n=new Set(state.done).size;bar.style.width=(n*2)+'%';progressText.textContent=`已掌握 ${n}／50`;renderChapters()}
+function openQ(c,i){cat=c;idx=i;let q=Q[c*10+i],qid=c*10+i;qCategory.textContent=C[c];qCount.textContent=`第 ${i+1}／10 題`;qText.textContent=q[0];answers.innerHTML=q[1].map((o,j)=>`<button class="answer" data-answer="${j}"><b>${String.fromCharCode(65+j)}</b><span>${o}</span></button>`).join('');feedback.className='feedback';feedback.innerHTML='';questionModal.classList.add('open');questionModal.querySelector('.panel').scrollTop=0;prevQ.disabled=i===0;nextQ.textContent=i===9?'完成本類':'下一題';answers.querySelectorAll('button').forEach(b=>b.onclick=()=>answer(+b.dataset.answer,q,qid,b))}
+function answer(a,q,id,b){answers.querySelectorAll('button').forEach(x=>x.classList.remove('wrong','correct'));if(a===q[2]){b.classList.add('correct');if(!state.done.includes(id))state.done.push(id);save();feedback.innerHTML=`<b>答對了。</b><br><strong>文本證據：</strong>${q[3]}<br><strong>分析：</strong>${q[4]}`;feedback.classList.add('show')}else{b.classList.add('wrong');feedback.innerHTML='<b>再讀一次。</b> 這個選項忽略了直接文本證據；你可以重新選擇。';feedback.classList.add('show')}}
+function closeAll(){document.querySelectorAll('.modal').forEach(m=>m.classList.remove('open'))}
+document.addEventListener('click',e=>{let t=e.target.closest('[data-scroll],[data-cat],[data-scene],[data-close],[data-check]');if(!t)return;if(t.dataset.scroll)document.getElementById(t.dataset.scroll).scrollIntoView();if(t.dataset.cat!==undefined)openQ(+t.dataset.cat,0);if(t.dataset.scene!==undefined){let s=scenes[+t.dataset.scene];sceneImg.src=s[1];sceneImg.alt=s[0];sceneTitle.textContent=s[0];sceneQuote.textContent=s[2];sceneNote.textContent=s[3];sceneModal.classList.add('open')}if(t.hasAttribute('data-close'))closeAll();if(t.dataset.check){let id=t.dataset.check,ok=id==='blank'?blank.value.trim()==='自尊':document.getElementById(id).value==='ok';toast(ok?'答對了，線索已連接。':'再想想：回到句中的關鍵詞。')}});nextQ.onclick=()=>idx<9?openQ(cat,idx+1):closeAll();prevQ.onclick=()=>idx>0&&openQ(cat,idx-1);document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
+function toast(s){const x=document.getElementById('toast');x.textContent=s;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),1800)}
+['evidence','choice','effect','meaning'].forEach(id=>{let el=document.getElementById(id);el.value=localStorage.getItem('lonely17-'+id)||'';el.oninput=()=>localStorage.setItem('lonely17-'+id,el.value)});copyOral.onclick=()=>{let s=`文本證據：${evidence.value}\n寫作選擇：${choice.value}\n表達效果：${effect.value}\n人物／主題意義：${meaning.value}`;navigator.clipboard?.writeText(s);toast('已複製口語提綱')};clearOral.onclick=()=>{['evidence','choice','effect','meaning'].forEach(id=>{document.getElementById(id).value='';localStorage.removeItem('lonely17-'+id)});toast('草稿已清除')};resetBtn.onclick=()=>{if(confirm('要清除全部答題進度與口語草稿嗎？')){localStorage.removeItem('lonely17-progress');['evidence','choice','effect','meaning'].forEach(id=>localStorage.removeItem('lonely17-'+id));location.reload()}};
+renderScenes();renderProgress();
+</script>
+</body></html>
