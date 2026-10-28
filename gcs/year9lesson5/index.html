@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>宋朝社會經濟與發展</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Cormorant+Garamond:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f3ead6; --paper2:#e9dcc0; --ink:#2b2420; --ink2:#5a4a3c;
+  --celadon:#8fb3ab; --celadon-d:#4f7f78; --ochre:#a8672f; --cinnabar:#b23a2e; --gold:#c9a24a;
+  --kai:"Kaiti TC","Kaiti SC","STKaiti","BiauKai","DFKai-SB","KaiTi","楷体","LXGW WenKai TC",serif;
+  --en:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#1d1915;color:var(--ink);font-family:var(--kai);font-weight:700;overflow:hidden}
+#wrap{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:8px}
+#stage{position:relative;width:min(100%,1680px,calc((100vh - 76px)*16/9));aspect-ratio:16/9;background:var(--paper);
+  border-radius:10px;overflow:hidden;container-type:inline-size;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+#stage::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;opacity:.35;
+  background:radial-gradient(ellipse at 20% 10%,rgba(255,255,255,.6),transparent 60%),radial-gradient(ellipse at 90% 90%,rgba(168,103,47,.18),transparent 60%)}
+i,.en{font-family:var(--en);font-style:italic;font-weight:600;color:var(--ink2)}
+
+/* scenes */
+.scene{position:absolute;left:0;right:0;top:0;bottom:21%;opacity:0;visibility:hidden;transition:opacity .8s,visibility .8s;z-index:2}
+.scene.on{opacity:1;visibility:visible}
+.bgimg{position:absolute;inset:0;background-size:cover;background-position:center}
+.kb{animation:kb 40s ease-in-out infinite alternate}
+@keyframes kb{from{transform:scale(1.04) translate(0,0)}to{transform:scale(1.16) translate(-3%,-2%)}}
+.dim::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(243,234,214,.55),rgba(243,234,214,.8))}
+.dark::after{content:"";position:absolute;inset:0;background:rgba(20,16,12,.55)}
+
+.pop{opacity:0;transform:translateY(1.6cqw) scale(.97);transition:opacity .7s,transform .7s;pointer-events:none}
+.pop.show{opacity:1;transform:none;pointer-events:auto}
+.pop.gone{opacity:0!important;transform:translateY(-1cqw) scale(.98)!important;pointer-events:none!important}
+.panel{position:absolute;inset:4% 4% 3% 4%;display:flex;align-items:center;justify-content:center;gap:3cqw}
+.panel.right{left:24%}
+
+.ph{background:#fff;padding:.6cqw;border-radius:.6cqw;box-shadow:0 .5cqw 1.6cqw rgba(60,40,20,.25);position:relative}
+.ph img{display:block;max-width:100%;max-height:100%;border-radius:.3cqw}
+.ph figcaption{font-size:2.35cqw;text-align:center;padding:.5cqw .3cqw .1cqw;line-height:1.25}
+.ph figcaption i{display:block;font-size:2.08cqw}
+.card{background:rgba(255,250,238,.94);border:.18cqw solid var(--ochre);border-radius:1cqw;padding:1.4cqw 1.8cqw;box-shadow:0 .4cqw 1.4cqw rgba(60,40,20,.2)}
+#tl h3{font-size:2.6cqw}#tl .card p{font-size:2.4cqw;line-height:1.3}#tl .card p i,#tl h3 i{font-size:1.7cqw}#tl .card{padding:.8cqw 1cqw}
+.card h3{font-size:3.20cqw;color:var(--cinnabar);margin-bottom:.4cqw}
+.card p{font-size:2.70cqw;line-height:1.45}
+.card p i,.card h3 i{display:block;font-size:2.13cqw;line-height:1.3;color:var(--ink2)}
+.title{position:absolute;top:3%;left:0;right:0;text-align:center;font-size:3.20cqw;color:var(--ink);z-index:3}
+.title i{display:block;font-size:1.95cqw}
+.seal{display:inline-block;background:var(--cinnabar);color:#fff6e8;border-radius:.4cqw;padding:.2cqw .7cqw;font-size:2.24cqw;transform:rotate(-4deg);box-shadow:0 .2cqw .6cqw rgba(0,0,0,.25)}
+.big{font-size:5.40cqw;color:var(--cinnabar);letter-spacing:.3cqw;text-shadow:0 .2cqw 0 rgba(255,255,255,.7)}
+
+/* subtitles */
+#subs{position:absolute;left:0;right:0;bottom:0;height:21%;z-index:5;background:linear-gradient(rgba(43,36,32,.88),rgba(30,25,22,.95));
+  color:#fbf3e2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 5%;text-align:center}
+#subZh{font-size:2.63cqw;line-height:1.3}
+#subs.long #subZh{font-size:2.3cqw;line-height:1.25}
+#subs.long #subEn{font-size:1.75cqw;line-height:1.2}
+#subs.xlong #subZh{font-size:2.1cqw}
+#subs.xlong #subEn{font-size:1.55cqw}
+#subEn{font-family:var(--en);font-style:italic;font-weight:500;font-size:2.08cqw;color:#e6d3ae;margin-top:.3cqw;line-height:1.25}
+
+/* Lao Zhang */
+.lz{position:absolute;width:15%;bottom:0;left:2%;z-index:4;filter:drop-shadow(0 .3cqw .4cqw rgba(0,0,0,.25))}
+.lz img{width:100%;display:block;animation:bob 2.6s ease-in-out infinite}
+.lz.flip img{transform:scaleX(-1)}
+@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -.6cqw}}
+.lz.shake img{animation:shake .35s linear infinite}
+@keyframes shake{0%,100%{translate:0 0;rotate:0deg}25%{translate:-.4cqw .3cqw;rotate:-3deg}75%{translate:.4cqw .3cqw;rotate:3deg}}
+.bubble{position:absolute;background:#fffdf6;border:.18cqw solid var(--ink);border-radius:2cqw;padding:1cqw 1.6cqw;font-size:2.24cqw;line-height:1.35;z-index:4;box-shadow:0 .3cqw 1cqw rgba(0,0,0,.15)}
+.bubble i{display:block;font-size:1.76cqw}
+.bubble::after{content:"";position:absolute;left:12%;bottom:-1.3cqw;border:.7cqw solid transparent;border-top:.9cqw solid var(--ink)}
+
+#hud{position:absolute;top:1.2%;right:1.2%;z-index:6;background:rgba(255,250,238,.92);border:.15cqw solid var(--gold);border-radius:3cqw;
+  padding:.35cqw 1.1cqw;font-size:1.89cqw;display:none}
+#hud i{font-size:1.52cqw}
+
+/* choice overlay */
+#choice{position:absolute;left:0;right:0;top:0;bottom:21%;z-index:7;display:none;align-items:center;justify-content:center;background:rgba(40,30,20,.45);backdrop-filter:blur(2px)}
+#choice.on{display:flex}
+.cbox{position:relative;width:92%;background:var(--paper);border:.3cqw solid var(--ochre);border-radius:1.6cqw;padding:2cqw 2.4cqw 2cqw 14%;box-shadow:0 1cqw 3cqw rgba(0,0,0,.4)}
+.cbox .lz{width:14%;left:-1%;bottom:-.3cqw}
+.cbox .tag{position:absolute;top:-1.6cqw;left:14%;background:var(--cinnabar);color:#fff;font-size:2.08cqw;padding:.2cqw 1cqw;border-radius:.5cqw}
+.cq{font-size:3.30cqw;line-height:1.3}
+.cq i{display:block;font-size:2.24cqw;margin-top:.2cqw}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2cqw;margin-top:1.4cqw}
+.opt{font-family:var(--kai);font-weight:700;background:#fffaf0;border:.2cqw solid var(--celadon-d);border-radius:1cqw;padding:1.2cqw .8cqw;cursor:pointer;font-size:3.40cqw;color:var(--ink);transition:transform .15s,background .2s;line-height:1.25}
+.opt .ico{display:block;font-size:3.60cqw}
+.opt i{display:block;font-size:2.35cqw;margin-top:.2cqw}
+#g3opts .opt{font-size:4.00cqw;padding:1.8cqw 1cqw}
+#g3opts .opt i{font-size:2.58cqw}
+.opt:hover{transform:translateY(-.3cqw);background:#f1f7f4}
+.opt.wrong{background:#f6d6cf;border-color:var(--cinnabar);animation:no .4s}
+.opt.right{background:#d5ecd9;border-color:#3d8a55}
+.opt:disabled{cursor:default}
+@keyframes no{25%{transform:translateX(-.6cqw)}75%{transform:translateX(.6cqw)}}
+.fb{margin-top:1.2cqw;min-height:4.6cqw;font-size:2.58cqw;line-height:1.35}
+.fb i{display:block;font-size:1.76cqw}
+.fb.ok{color:#2f6f43}.fb.no{color:var(--cinnabar)}
+.cont{margin-top:.6cqw;display:none}
+
+/* buttons */
+.btn{font-family:var(--kai);font-weight:700;background:var(--cinnabar);color:#fff6e8;border:none;border-radius:3cqw;padding:.8cqw 2.4cqw;font-size:2.24cqw;cursor:pointer;box-shadow:0 .3cqw .8cqw rgba(0,0,0,.25)}
+.btn i{color:#ffe7c4;font-size:1.69cqw;display:block}
+.btn:hover{filter:brightness(1.08)}
+
+/* games */
+.gwrap{position:absolute;inset:3% 3% 2% 3%;display:flex;flex-direction:column;align-items:center}
+.gtitle{font-size:2.80cqw;color:var(--cinnabar)}
+.gtitle i{font-size:1.82cqw;display:block;text-align:center}
+.slots{display:grid;gap:1.2cqw;width:100%;margin-top:1.4cqw}
+.slot{border:.2cqw dashed var(--ochre);border-radius:1cqw;background:rgba(255,250,238,.85);min-height:12cqw;padding:.8cqw;text-align:center;cursor:pointer;transition:background .2s}
+.slot .lab{font-size:3.20cqw;color:var(--ink)}
+.slot .lab i{display:block;font-size:2.13cqw}
+.slot.hot{background:#eef6f2}
+.slot.done{border-style:solid;border-color:#3d8a55;background:#e3f2e6}
+.slot.bad{animation:no .4s;background:#f6d6cf}
+.pool{display:flex;flex-wrap:wrap;gap:1cqw;justify-content:center;margin-top:1.4cqw;min-height:7cqw}
+.gcard{background:#fffdf6;border:.2cqw solid var(--celadon-d);border-radius:.9cqw;padding:.8cqw 1.2cqw;font-size:2.80cqw;cursor:grab;user-select:none;max-width:44cqw;line-height:1.25;box-shadow:0 .2cqw .6cqw rgba(0,0,0,.12)}
+.gcard i{display:block;font-size:2.34cqw}
+.gcard.sel{outline:.3cqw solid var(--gold);transform:translateY(-.3cqw)}
+.slot .gcard{cursor:default;margin:.5cqw auto 0;border-color:#3d8a55}
+.gfb{margin-top:1cqw;font-size:2.50cqw;min-height:4.2cqw;text-align:center;line-height:1.3}
+.gfb i{display:block;font-size:2.13cqw}
+.gfb.ok{color:#2f6f43}.gfb.no{color:var(--cinnabar)}
+.qnum{font-size:2.58cqw;color:var(--ink2)}
+
+/* controls */
+#bar{width:min(100%,1680px,calc((100vh - 76px)*16/9));display:flex;align-items:center;gap:10px;color:#f3ead6;font-family:var(--kai);font-size:15px;flex-wrap:wrap}
+#bar button{background:#3a322b;color:#f3ead6;border:1px solid #5b4f44;border-radius:8px;height:34px;min-width:38px;padding:0 10px;font-size:16px;cursor:pointer;font-family:inherit}
+#bar button:hover{background:#4a4037}
+#bar button.off{opacity:.45}
+#prog{flex:1;min-width:120px;height:12px;background:#3a322b;border-radius:6px;position:relative;cursor:pointer;overflow:hidden}
+#fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--celadon),var(--gold));width:0;transition:width .4s}
+.tick{position:absolute;top:0;bottom:0;width:2px;background:#1d1915}
+#count{min-width:54px;text-align:center}
+
+/* start */
+#start{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5cqw;background:linear-gradient(rgba(243,234,214,.55),rgba(243,234,214,.35)),url(img/cover2.webp) center/cover}
+#start h1,#start small{background:rgba(251,244,228,.88);padding:.6cqw 2cqw;border-radius:1cqw;box-shadow:0 .3cqw 1cqw rgba(0,0,0,.15)}
+#start h1{font-size:5.00cqw;color:var(--ink)}
+#start h1 i{display:block;font-size:2.24cqw;text-align:center}
+#start .btn{font-size:2.60cqw;padding:1cqw 3cqw}
+#start small{font-size:1.82cqw;color:var(--ink2)}
+
+@media (prefers-reduced-motion:reduce){.kb,.lz img{animation:none!important}.pop{transition:none}}
+
+/* English same size as Chinese */
+.scene i,#choice i,#hud i,#start i,.gwrap i{font-size:1em!important;line-height:1.2!important}
+#subEn{font-size:2.63cqw!important}
+#subs.long #subEn{font-size:2.3cqw!important}
+#subs.xlong #subEn{font-size:2.1cqw!important}
+
+.title{font-size:2.8cqw!important;top:2%!important}
+.title i{font-size:.85em!important}
+#stage:has(#choice.on) #subs,#stage:has(#g1.on) #subs,#stage:has(#g2.on) #subs,#stage:has(#g3.on) #subs,#stage:has(#end.on) #subs{display:none}
+#choice{bottom:0!important}
+#g1,#g2,#g3,#end{bottom:0!important}
+
+html:fullscreen #stage{width:min(100%,calc((100vh - 60px)*16/9))}
+html:fullscreen #bar{width:min(100%,calc((100vh - 60px)*16/9))}
+
+#subEn{font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif!important;font-style:normal!important;font-weight:600!important;color:#2b2420!important;
+ background:#f6e7b8;padding:.25cqw 1.2cqw;border-radius:.6cqw;margin-top:.5cqw!important;box-shadow:0 .15cqw .4cqw rgba(0,0,0,.3);display:inline-block}
+#subEn:empty{display:none}
+#start h1{text-align:center}
+#start h1 i{font-size:.5em!important;margin-top:.4cqw}
+</style>
+</head>
+<body>
+<div id="wrap">
+<div id="stage">
+
+<!-- S0 cover -->
+<section class="scene" id="s0">
+  <div class="bgimg kb" style="background-image:url(img/cover2.webp)"></div>
+  <div class="pop" data-at="01-4" style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(243,234,214,.95) 0%,rgba(243,234,214,.75) 45%,rgba(243,234,214,0) 75%)"></div>
+  <div class="card pop" data-at="01-2" data-hide="01-4" style="position:absolute;left:3%;top:6%;max-width:40%"><h3>北宋 張擇端《清明上河圖》<i>Zhang Zeduan, "Along the River During the Qingming Festival"</i></h3></div>
+  <span class="seal pop" data-at="01-3" data-hide="01-4" style="position:absolute;left:30%;top:52%">挑夫 <i style="color:#ffe7c4;font-size:1.74cqw">porters</i></span>
+  <span class="seal pop" data-at="01-3" data-hide="01-4" style="position:absolute;left:58%;top:30%">船夫 <i style="color:#ffe7c4;font-size:1.74cqw">boatmen</i></span>
+  <span class="seal pop" data-at="01-3" data-hide="01-4" style="position:absolute;left:12%;top:70%">商人 <i style="color:#ffe7c4;font-size:1.74cqw">merchants</i></span>
+  <span class="seal pop" data-at="01-3" data-hide="01-4" style="position:absolute;left:76%;top:62%">說書人 <i style="color:#ffe7c4;font-size:1.74cqw">storytellers</i></span>
+  <div class="pop" data-at="01-4" style="position:absolute;left:5%;top:20%;max-width:52%">
+    <div style="font-size:2.69cqw;color:var(--ochre)">第五課時 <i style="font-size:2.34cqw">Lesson 5</i></div>
+    <div style="font-size:5.60cqw;line-height:1.2;white-space:nowrap;color:var(--ink)">宋朝社會經濟與發展</div>
+    <div class="en" style="font-size:2.46cqw;margin-top:.6cqw">The Song Dynasty's Social Economy and Development</div>
+  </div>
+</section>
+
+<!-- S1 goals -->
+<section class="scene" id="s1">
+  <div class="bgimg dim" style="background-image:url(img/nightcity.webp)"></div>
+  <div class="title">學習目標 <i>Learning Goals</i></div>
+  <div class="panel" style="top:18%">
+    <div class="card pop" data-at="02-1" style="width:42%"><h3>一、經濟重心為什麼南移？<i>Why did the economic centre shift south?</i></h3><p>分析宋代經濟重心南移的原因<i>Analyse the causes of the southward shift</i></p></div>
+    <div class="card pop" data-at="02-2" style="width:42%"><h3>二、宋代經濟有多繁榮？<i>How prosperous was the Song economy?</i></h3><p>農業、手工業的發展，商業的繁榮<i>Agriculture, handicrafts and trade</i></p></div>
+  </div>
+</section>
+
+<!-- S2 shift -->
+<section class="scene" id="s2">
+  <div class="title">經濟重心南移 <i>The Southward Shift of the Economic Centre</i></div>
+  <figure class="ph pop" data-at="03-1" style="position:absolute;left:3%;top:17%;width:27%;height:80%;display:flex;flex-direction:column"><img src="img/migrate2.webp" style="flex:1;object-fit:contain;min-height:0"><figcaption>北方人口南遷 <i>Migration from north to south</i></figcaption></figure>
+  <div class="card pop" data-at="03-1" data-hide="03-5" style="position:absolute;left:33%;right:2.5%;top:17%"><p style="font-size:2.58cqw">黃河流域 <span style="color:var(--cinnabar)">➜</span> 長江流域<i>Yellow River valley ➜ Yangtze River valley</i></p></div>
+  <div id="tl" class="pop" data-at="03-2" data-hide="03-5" style="position:absolute;left:33%;right:2.5%;top:38%;display:grid;grid-template-columns:repeat(4,1fr);gap:1cqw">
+    <div class="card pop" data-at="03-2"><h3>兩漢<i>Han</i></h3><p>經濟重心在北方<i>Centre in the north</i></p></div>
+    <div class="card pop" data-at="03-3"><h3>魏晉南北朝<i>Wei–Jin, N. &amp; S.</i></h3><p>江南得到開發<i>The south is developed</i></p></div>
+    <div class="card pop" data-at="03-4"><h3>唐朝中期<i>Mid-Tang</i></h3><p>開始南移<i>Shift begins</i></p></div>
+    <div class="card pop" data-at="03-4" style="border-color:var(--cinnabar)"><h3>南宋<i>Southern Song</i></h3><p>完成南移<i>Shift complete</i></p></div>
+  </div>
+  <div style="position:absolute;left:33%;right:2.5%;top:25%;display:grid;grid-template-columns:repeat(3,1fr);gap:1.2cqw">
+    <div class="card pop" data-at="03-6"><h3>⚔️ 政治<i>Political</i></h3><p>南方戰亂少，社會安定<i>Fewer wars, more stability</i></p></div>
+    <div class="card pop" data-at="03-7"><h3>👨‍🌾 經濟<i>Economic</i></h3><p>北方人口南遷，帶來勞動力和技術<i>Migrants bring labour and skills</i></p></div>
+    <div class="card pop" data-at="03-8"><h3>🌧️ 自然<i>Natural</i></h3><p>氣候溫暖，雨水充足<i>Warm and rainy</i></p></div>
+  </div>
+  <div class="pop" data-at="03-5" style="position:absolute;left:33%;right:2.5%;top:17.5%;font-size:2.46cqw;color:var(--ochre)">三個原因 <i style="font-size:1.82cqw">Three reasons</i></div>
+</section>
+
+<!-- S3 cities -->
+<section class="scene" id="s3">
+  <div class="title">城市與商業 <i>Cities and Trade</i></div>
+  <div class="panel" style="top:16%">
+    <figure class="ph pop" data-at="04-1" data-hide="04-2" style="width:34%"><img src="img/nsmap.webp"><figcaption>北宋：東京開封<i>Northern Song: Dongjing (Kaifeng)</i></figcaption></figure>
+    <figure class="ph pop" data-at="04-1" data-hide="04-2" style="width:31%"><img src="img/ssmap.webp"><figcaption>南宋：臨安（今杭州）<i>Southern Song: Lin'an (Hangzhou)</i></figcaption></figure>
+  </div>
+  <div class="panel" style="top:16%">
+    <figure class="ph pop" data-at="04-2" data-hide="04-3" style="width:62%"><img src="img/cityplan.webp"><figcaption>唐長安（坊市分開）與北宋東京<i>Tang Chang'an (walled wards) and Song Dongjing</i></figcaption></figure>
+    <div class="card pop" data-at="04-2" data-hide="04-3" style="width:30%"><h3>唐朝<i>Tang</i></h3><p>坊、市分開<i>Homes and markets apart</i></p><p>晚上關門<i>Closed at night</i></p></div>
+  </div>
+  <div class="panel" style="top:16%">
+    <figure class="ph pop" data-at="04-3" data-hide="04-4" style="width:48%"><img src="img/market2.webp"><figcaption>宋代街市<i>A Song street market</i></figcaption></figure>
+    <div class="card pop" data-at="04-3" data-hide="04-4" style="width:36%"><h3>宋朝：打破限制<i>Song: limits broken</i></h3><p>🏮 大街小巷都能開店<i>Shops on any street</i></p><p>🌅 早市　🌙 夜市<i>Morning and night markets</i></p></div>
+  </div>
+  <div class="panel" style="top:16%">
+    <figure class="ph pop" data-at="04-4" style="height:96%;width:auto"><img src="img/grassmkt.webp" style="height:100%;width:auto"></figure>
+    <div class="card pop" data-at="04-4" style="width:40%"><h3>草市<i>Grass markets</i></h3><p>城市商業帶動鄉村，交通方便處形成新的小市場<i>City trade spread to the countryside, creating small new markets</i></p></div>
+  </div>
+</section>
+
+<!-- S4 Lao Zhang + rice -->
+<section class="scene" id="s4">
+  <div class="title">農業：老張種什麼？ <i>Agriculture: What Will Old Zhang Plant?</i></div>
+  <div class="lz pop" data-at="05-1"><img src="img/lz2.webp" alt="老張"></div>
+  <div class="card pop" data-at="05-1" data-hide="05-2" style="position:absolute;left:24%;top:22%;width:34%"><h3>人物檔案 <i>Profile</i></h3>
+    <p>姓名：老張 <i>Name: Old Zhang</i></p><p>時代：宋朝 <i>Era: Song Dynasty</i></p><p>身份：農民 <i>Job: Farmer</i></p></div>
+  <div class="panel right" style="top:16%">
+    <figure class="ph pop" data-at="05-2" data-hide="05-3" style="width:46%"><img src="img/fleemap.webp"><figcaption>澶州 ➜ 南方<i>From Chanzhou to the south</i></figcaption></figure>
+    <div class="bubble pop" data-at="05-2" data-hide="05-3" style="position:relative">南方安全，上南方去！<i>The south is safe. Let's go!</i></div>
+  </div>
+  <div class="panel right" style="top:16%">
+    <figure class="ph pop" data-at="05-3" data-hide="05-4" style="width:27%"><img src="img/ricefield.webp"><figcaption>春天插秧<i>Planting rice in spring</i></figcaption></figure>
+  </div>
+  <div class="panel right" style="top:16%">
+    <figure class="ph pop" data-at="05-4" data-hide="05-5" style="width:40%"><img src="img/rice.webp"><figcaption>占城稻<i>Champa rice</i></figcaption></figure>
+    <div class="card pop" data-at="05-4" data-hide="05-5" style="width:34%"><h3>占城稻<i>Champa rice</i></h3><p>🇻🇳 越南一帶傳入<i>From the Vietnam area</i></p><p>⏱ 成熟早<i>Ripens early</i></p><p>☀️ 耐旱<i>Drought-resistant</i></p></div>
+  </div>
+  <div class="panel right" style="top:18%">
+    <table class="card pop" data-at="05-5" data-hide="05-6" style="font-size:3.2cqw;border-collapse:separate;border-spacing:2cqw .9cqw;text-align:center">
+      <tr style="color:var(--ochre)"><th></th><th>嶺南收成<br><i style="font-size:2.1cqw">Harvests in the far south</i></th><th>遇到乾旱<br><i style="font-size:2.1cqw">In a drought</i></th></tr>
+      <tr style="color:var(--cinnabar)"><th>占城稻<br><i style="font-size:2.1cqw">Champa rice</i></th><td>一年兩收<br><i style="font-size:2.1cqw">twice a year</i></td><td>仍有收成<br><i style="font-size:2.1cqw">still a harvest</i></td></tr>
+      <tr><th>普通水稻<br><i style="font-size:2.1cqw">Ordinary rice</i></th><td>一年一收<br><i style="font-size:2.1cqw">once a year</i></td><td>嚴重減產<br><i style="font-size:2.1cqw">crop fails</i></td></tr>
+    </table>
+  </div>
+  <div class="panel right" style="top:16%">
+    <figure class="ph pop" data-at="05-6" data-hide="05-7" style="width:44%"><img src="img/harvest.webp"><figcaption>大豐收！<i>A bumper harvest!</i></figcaption></figure>
+    <div class="card pop" data-at="05-6" data-hide="05-7" style="width:30%"><h3>🌾 ➜ 蘇州糧倉<i>To the Suzhou granaries</i></h3><p>賣給國家<i>Sold to the state</i></p></div>
+  </div>
+  <div class="panel right pop" data-at="05-7" style="top:16%;flex-direction:column;gap:1cqw">
+    <div class="big">蘇湖熟，天下足</div>
+    <div class="en" style="font-size:2.24cqw">"When Suzhou and Huzhou ripen, the whole land has enough."</div>
+    <span class="seal">南方糧食產量超過北方 <i style="color:#ffe7c4;font-size:1.74cqw">Southern grain output exceeds the north's</i></span>
+  </div>
+</section>
+
+<!-- S5 cotton & textiles -->
+<section class="scene" id="s5">
+  <div class="title">經濟作物與紡織 <i>Cash Crops and Textiles</i></div>
+  <div class="lz flip pop" data-at="06-1"><img src="img/lz1.webp" alt="老張"></div>
+  <div class="panel right" style="top:18%">
+    <div class="card pop" data-at="06-1" data-hide="06-2" style="width:30%;text-align:center"><h3 style="font-size:5.00cqw">🍵</h3><p>茶葉<i>Tea</i></p></div>
+    <div class="pop" data-at="06-1" data-hide="06-2" style="font-size:3.00cqw">還是<i style="font-size:1.82cqw;display:block">or</i></div>
+    <div class="card pop" data-at="06-1" data-hide="06-2" style="width:30%;text-align:center"><h3 style="font-size:5.00cqw">☁️</h3><p>棉花<i>Cotton</i></p></div>
+  </div>
+  <div class="panel right" style="top:16%">
+    <figure class="ph pop" data-at="06-2" data-hide="06-3" style="width:40%"><img src="img/cottonmap.webp"><figcaption>宋代棉花和茶樹的種植<i>Cotton and tea in the Song</i></figcaption></figure>
+    <div class="card pop" data-at="06-2" data-hide="06-3" style="width:32%"><h3>棉花 ⬆️<i>Cotton spreads north</i></h3><p>由南向北推廣到江淮、川蜀<i>From the south to the Yangtze–Huai and Sichuan</i></p></div>
+  </div>
+  <div class="bubble pop" data-at="06-3" data-hide="06-4" style="left:18%;top:28%;width:36%;font-size:2.69cqw">我們忙時耕作，閒時經商，賺的錢越來越多！<i>We farm when busy and trade in our spare time, earning more and more!</i></div>
+  <figure class="ph pop" data-at="06-3" data-hide="06-4" style="position:absolute;right:3%;top:16%;width:40%"><img src="img/cottontea.webp"><figcaption>種棉花、採茶葉<i>Picking cotton and tea</i></figcaption></figure>
+  <div class="panel right" style="top:15%;flex-wrap:wrap;gap:1.4cqw">
+    <figure class="ph pop" data-at="06-4" data-hide="06-5" style="width:30%"><img src="img/silk1.webp"></figure>
+    <figure class="ph pop" data-at="06-4" data-hide="06-5" style="width:30%"><img src="img/silk2.webp"></figure>
+    <figure class="ph pop" data-at="06-4" data-hide="06-5" style="width:30%"><img src="img/silk4.webp"></figure>
+    <div class="card pop" data-at="06-4" data-hide="06-5" style="width:70%;text-align:center"><p>宋錦 · 雲錦 · 壯錦 · 蜀錦<i>Famous Song-era brocades. Southern silk surpassed the north.</i></p></div>
+  </div>
+  <div class="panel right pop" data-at="06-5" style="top:16%;flex-direction:column">
+    <div class="big" style="font-size:4.40cqw">棉布成為衣著原料</div>
+    <div class="en" style="font-size:2.24cqw">Cotton cloth became a main clothing material</div>
+    <span class="seal">南宋後期 · 海南島棉紡織 <i style="color:#ffe7c4;font-size:1.74cqw">Late Southern Song · Hainan cotton weaving</i></span>
+  </div>
+</section>
+
+<!-- S6 crafts -->
+<section class="scene" id="s6">
+  <div class="bgimg dim" style="background-image:url(img/kiln.webp)"></div>
+  <div class="title">手工業：製瓷與造船 <i>Handicrafts: Porcelain and Shipbuilding</i></div>
+  <div class="lz pop" data-at="07-1" data-hide="07-3"><img src="img/lz1.webp" alt="老張"></div>
+  <div class="bubble pop" data-at="07-1" data-hide="07-2" style="left:17%;top:22%">大兒子學什麼手藝好呢？<i>Which craft should my eldest son learn?</i></div>
+  <div class="panel right" style="top:20%">
+    <div class="card pop" data-at="07-2" data-hide="07-3" style="width:34%;text-align:center"><h3 style="font-size:5.00cqw">🏺</h3><p>製瓷業<i>Porcelain</i></p></div>
+    <div class="card pop" data-at="07-2" data-hide="07-3" style="width:34%;text-align:center"><h3 style="font-size:5.00cqw">⛵</h3><p>造船業<i>Shipbuilding</i></p></div>
+  </div>
+  <div class="panel pop" data-at="07-3" data-hide="07-4" style="top:18%;flex-wrap:wrap;gap:1cqw 1.5cqw;flex-wrap:nowrap;background:radial-gradient(#3e342a,#1e1914);border-radius:1cqw;color:#f3ead6">
+    <figure style="width:18%;text-align:center"><img src="img/pillow.webp" style="width:100%"><figcaption style="font-size:2.34cqw">定窯娃娃枕<i style="display:block;color:#d9c7a3;font-size:1.76cqw">Ding ware pillow</i></figcaption></figure>
+    <figure style="width:17%;text-align:center"><img src="img/narcissus.webp" style="width:100%"><figcaption style="font-size:2.34cqw">汝窯水仙盆<i style="display:block;color:#d9c7a3;font-size:1.76cqw">Ru ware basin</i></figcaption></figure>
+    <figure style="width:18%;text-align:center"><img src="img/jun.webp" style="width:100%"><figcaption style="font-size:2.34cqw">鈞窯花盆<i style="display:block;color:#d9c7a3;font-size:1.76cqw">Jun ware flowerpot</i></figcaption></figure>
+    <figure style="width:14%;text-align:center"><img src="img/guanvase.webp" style="width:100%"><figcaption style="font-size:2.34cqw">官窯貫耳瓶<i style="display:block;color:#d9c7a3;font-size:1.76cqw">Guan ware vase</i></figcaption></figure>
+    <figure style="width:17%;text-align:center"><img src="img/gebowl.webp" style="width:100%"><figcaption style="font-size:2.34cqw">哥窯葵花式洗<i style="display:block;color:#d9c7a3;font-size:1.76cqw">Ge ware washer</i></figcaption></figure>
+  </div>
+  <div class="panel" style="top:15%">
+    <figure class="ph pop" data-at="07-4" data-hide="07-5" style="width:28%"><img src="img/porcmap.webp"></figure>
+    <div class="card pop" data-at="07-4" data-hide="07-5" style="width:40%"><h3>製瓷中心<i>Porcelain centres</i></h3><p>北宋：江西景德鎮<i>Northern Song: Jingdezhen, Jiangxi</i></p><p>南宋：江南地區<i>Southern Song: the Jiangnan region</i></p></div>
+  </div>
+  <div class="panel" style="top:15%">
+    <figure class="ph pop" data-at="07-5" data-hide="07-6" style="width:38%"><img src="img/jinming.webp"><figcaption>《金明池爭標圖》<i>Dragon Boat Race on Jinming Lake</i></figcaption></figure>
+    <div class="card pop" data-at="07-5" data-hide="07-6" style="width:40%"><h3>⚓ 廣州 · 泉州 · 明州<i>Guangzhou · Quanzhou · Mingzhou</i></h3><p>北宋東京郊外：世界現存最早的船塢<i>Near Dongjing: the world's earliest known dry dock</i></p></div>
+  </div>
+  <div class="panel" style="top:15%">
+    <figure class="ph pop" data-at="07-6" style="width:46%"><img src="img/qzship.webp"><figcaption>泉州出土的宋代海船<i>Song ship excavated at Quanzhou</i></figcaption></figure>
+    <div class="card pop" data-at="07-6" style="width:34%"><p>📏 長 24.2 米 <i>24.2 m long</i></p><p>🚪 13 個船艙 <i>13 cabins</i></p><p>⚖️ 載重約 200 噸 <i>about 200 tonnes</i></p><p>🌿 香料木 4700 多斤 <i>over 2,300 kg of fragrant wood</i></p></div>
+  </div>
+</section>
+
+<!-- S7 sea trade -->
+<section class="scene" id="s7">
+  <div class="bgimg dim" style="background-image:url(img/port.webp)"></div>
+  <div class="title">海外貿易 <i>Overseas Trade</i></div>
+  <div class="panel" style="top:15%">
+    <figure class="ph pop" data-at="08-1" data-hide="08-2" style="width:56%"><img src="img/shipmodel.webp"><figcaption>宋代海船模型<i>Model of a Song ocean ship</i></figcaption></figure>
+  </div>
+  <div class="panel" style="top:14%">
+    <figure class="ph pop" data-at="08-2" data-hide="08-3" style="height:98%;width:auto"><img src="img/seamap.webp" style="height:100%;width:auto"></figure>
+    <div class="card pop" data-at="08-2" data-hide="08-3" style="width:28%"><p>⬅️ 阿拉伯半島、非洲東海岸<i>Arabia, East Africa</i></p><p>➡️ 朝鮮、日本<i>Korea, Japan</i></p><p>⚓ 廣州、泉州<i>Guangzhou, Quanzhou</i></p></div>
+  </div>
+  <div class="panel" style="top:16%">
+    <div class="card pop" data-at="08-3" data-hide="08-4" style="width:56%;text-align:center"><h3 style="font-size:4.00cqw">市舶司</h3><p>專門管理海上對外貿易 ≈ 今天的海關<i>The Maritime Trade Office: like customs today</i></p></div>
+  </div>
+  <div style="position:absolute;left:8%;right:8%;top:20%;display:grid;grid-template-columns:1fr 1fr;gap:1.4cqw">
+    <div class="card pop" data-at="08-4"><h3>① 造船業發達<i>Advanced shipbuilding</i></h3></div>
+    <div class="card pop" data-at="08-4"><h3>② 有聞名世界的大商港<i>World-famous ports</i></h3></div>
+    <div class="card pop" data-at="08-5"><h3>③ 政府鼓勵海外貿易<i>Government support</i></h3></div>
+    <div class="card pop" data-at="08-5"><h3>④ 陸路不便，更靠海路<i>Land routes blocked; the sea mattered more</i></h3></div>
+  </div>
+</section>
+
+<!-- S8 night market & jiaozi -->
+<section class="scene" id="s8">
+  <div class="bgimg kb" style="background-image:url(img/nightmkt.webp)"></div>
+  <div class="bgimg dark pop" data-at="09-3" style="background:none"></div>
+  <div class="title" style="color:#fbf3e2">進城：夜市與交子 <i style="color:#e6d3ae">Into the City: Night Markets and Jiaozi</i></div>
+  <div class="lz pop" data-at="09-1" data-hide="09-5"><img src="img/lz1.webp" alt="老張"></div>
+  <div class="lz pop" data-at="09-5" data-hide="09-6"><img src="img/lz3.webp" alt="老張"></div>
+  <div class="lz pop" data-at="09-6"><img src="img/lz4.webp" alt="老張"></div>
+  <div class="bubble pop" data-at="09-1" data-hide="09-2" style="left:17%;top:24%">去東京（開封）旅遊吧！<i>Let's visit Dongjing (Kaifeng)!</i></div>
+  <div class="bubble pop" data-at="09-2" data-hide="09-3" style="left:17%;top:24%">這麼晚了，還能吃飯嗎？<i>It's so late. Can we still eat?</i></div>
+  <div class="card pop" data-at="09-3" data-hide="09-4" style="position:absolute;left:26%;right:8%;top:24%"><h3>「夜市直至三更盡，才五更又復開張。」<i>"The night market ran till midnight, and opened again before dawn."</i></h3><p style="text-align:right">—— 孟元老《東京夢華錄》<i>Meng Yuanlao, Dreams of Splendour of the Eastern Capital</i></p></div>
+  <div class="card pop" data-at="09-4" data-hide="09-6" style="position:absolute;left:24%;top:22%;width:38%">
+    <p>一匹羅 = 20000 文<i>One bolt of silk = 20,000 coins</i></p>
+    <p>1 貫 = 1000 文 ≈ 6.5 斤<i>1,000 iron coins weigh about 3 kg</i></p>
+    <p class="pop" data-at="09-5" style="font-size:3.00cqw;color:var(--cinnabar)">20 貫 = 130 斤！<i>About 65 kg!</i></p></div>
+  <figure class="ph pop" data-at="09-5" data-hide="09-6" style="position:absolute;right:5%;top:20%;width:28%"><img src="img/coins.webp"><figcaption>一貫錢（1000 文）<i>A string of 1,000 coins</i></figcaption></figure>
+  <div class="panel right" style="top:16%">
+    <figure class="ph pop" data-at="09-6" style="width:18%"><img src="img/jiaozi.webp"><figcaption>北宋交子<i>Northern Song jiaozi</i></figcaption></figure>
+    <figure class="ph pop" data-at="09-7" style="width:17%"><img src="img/huizi.webp"><figcaption>南宋會子<i>Southern Song huizi</i></figcaption></figure>
+    <div class="card pop" data-at="09-6" style="width:46%"><h3>世界上最早的紙幣<i>The world's earliest paper money</i></h3><p>北宋 · 四川<i>Northern Song · Sichuan</i></p><p class="pop" data-at="09-7">輕便好帶 · 成本低<i>Light and cheap to make</i></p></div>
+  </div>
+</section>
+
+<!-- S9 summary -->
+<section class="scene" id="s9">
+  <div class="title">本課小結 <i>Summary</i></div>
+  <div class="panel" style="top:16%;gap:2cqw">
+    <div style="display:flex;flex-direction:column;gap:1.2cqw;width:38%">
+      <div class="card pop" data-at="10-1"><h3>🌾 農業的發展<i>Agriculture grew</i></h3></div>
+      <div class="card pop" data-at="10-1"><h3>🏺 手工業的興盛<i>Handicrafts flourished</i></h3></div>
+      <div class="card pop" data-at="10-1"><h3>⛵ 商業貿易繁榮<i>Trade boomed</i></h3></div>
+    </div>
+    <div class="pop big" data-at="10-2" style="font-size:4.00cqw">➜</div>
+    <div class="card pop" data-at="10-2" style="width:36%;text-align:center;border-color:var(--cinnabar)"><h3 style="font-size:3.20cqw">南宋時期<br>經濟重心南移完成<i>The shift south was complete in the Southern Song</i></h3></div>
+  </div>
+  <div class="pop" data-at="10-3" style="position:absolute;right:4%;bottom:1%;text-align:center"><button class="btn" onclick="P.next()">⚔️ 開始闖關！<i>Start the challenges!</i></button></div>
+</section>
+
+<!-- G1 timeline -->
+<section class="scene" id="g1">
+  <div class="bgimg dim" style="background-image:url(img/gamebg.webp)"></div>
+  <div class="gwrap">
+    <div class="gtitle">第一關 · 重心南移排排看<i>Level 1 · Put the Shift in Order</i></div>
+    <div class="qnum">點一張卡片，再點正確的朝代（也可以拖過去）<i>Tap a card, then tap the right period (or drag it)</i></div>
+    <div class="slots" id="g1slots" style="grid-template-columns:repeat(4,1fr)"></div>
+    <div class="pool" id="g1pool"></div>
+    <div class="gfb" id="g1fb"></div>
+    <button class="btn" id="g1next" style="display:none" onclick="P.next()">下一關 ➜<i>Next level</i></button>
+  </div>
+</section>
+
+<!-- G2 crafts map -->
+<section class="scene" id="g2">
+  <div class="bgimg" style="background-image:url(img/seamap.webp);opacity:.18"></div>
+  <div class="gwrap">
+    <div class="gtitle">第二關 · 手藝地圖配對<i>Level 2 · Match the Crafts to the Map</i></div>
+    <div class="qnum">把每一門手藝送回它的家鄉<i>Send each craft back to its home</i></div>
+    <div class="slots" id="g2slots" style="grid-template-columns:repeat(4,1fr)"></div>
+    <div class="pool" id="g2pool"></div>
+    <div class="gfb" id="g2fb"></div>
+    <button class="btn" id="g2next" style="display:none" onclick="P.next()">最後一關 ➜<i>Final level</i></button>
+  </div>
+</section>
+
+<!-- G3 quiz -->
+<section class="scene" id="g3">
+  <div class="bgimg dim" style="background-image:url(img/gamebg.webp)"></div>
+  <div class="gwrap">
+    <div class="gtitle">最後一關 · 總複習小測驗<i>Final Level · Review Quiz</i></div>
+    <div class="qnum" id="g3num"></div>
+    <div class="cq" id="g3q" style="margin-top:1.4cqw;text-align:center"></div>
+    <div class="opts" id="g3opts" style="width:96%"></div>
+    <div class="gfb" id="g3fb"></div>
+    <button class="btn" id="g3next" style="display:none" onclick="G3.next()">下一題 ➜<i>Next</i></button>
+  </div>
+</section>
+
+<!-- End -->
+<section class="scene" id="end">
+  <div class="bgimg dim" style="background-image:url(img/ending.webp)"></div>
+  <div class="gwrap" style="justify-content:center;gap:1.6cqw">
+    <div id="endIcon" style="font-size:7.00cqw">🏆</div>
+    <div class="card" style="text-align:center;min-width:50%">
+      <p>老張生活指數 <i>Old Zhang's life score</i></p><p id="endLife" style="font-size:3.00cqw;color:var(--cinnabar)"></p>
+      <p style="margin-top:.8cqw">總複習小測驗 <i>Review quiz</i></p><p id="endQuiz" style="font-size:3.00cqw;color:var(--cinnabar)"></p>
+    </div>
+    <button class="btn" onclick="P.go(0)">🔁 再看一次<i>Watch again</i></button>
+  </div>
+</section>
+
+<div id="hud">老張生活指數 ⭐ <span id="hudN">0</span>/6 <i>Life score</i></div>
+
+<div id="choice"><div class="cbox">
+  <div class="tag">幫老張做決定 · Help Old Zhang decide</div>
+  <div class="lz"><img src="img/lz1.webp" alt="老張"></div>
+  <div class="cq" id="cq"></div>
+  <div class="opts" id="copts"></div>
+  <div class="fb" id="cfb"></div>
+</div></div>
+
+<div id="subs"><div id="subZh"></div><div id="subEn"></div></div>
+
+<div id="start">
+  <h1>宋朝社會經濟與發展<i>The Song Dynasty's Social Economy and Development</i></h1>
+  <button class="btn" id="startBtn">🔊 開始上課<i>Start the lesson</i></button>
+  <small>← → 翻頁 · 空格 暫停 · F 全屏　Arrow keys to skip · Space to pause · F for fullscreen</small>
+</div>
+</div>
+
+<div id="bar">
+  <button id="bPrev" title="上一頁 Previous">⏮</button>
+  <button id="bPlay" title="暫停 Pause">⏸</button>
+  <button id="bNext" title="下一頁 Next">⏭</button>
+  <div id="prog"><div id="fill"></div></div>
+  <span id="count">1/14</span>
+  <button id="bVoice" title="配音 Voice">🔊 配音</button>
+  <button id="bMusic" title="音樂 Music">🎵 音樂</button>
+  <button id="bSub" title="字幕 Subtitles">字幕</button>
+  <button id="bFull" title="全屏 Fullscreen (F)">⛶ 全屏</button>
+</div>
+</div>
+
+<script>
+const LINES={"01-1": {"zh": "先來看一幅畫。河上船隻來來往往，橋上擠滿了人，街邊店鋪一家挨著一家。", "en": "Let's begin with a painting. Boats crowd the river, people pack the bridge, and shops line the street one after another."}, "01-2": {"zh": "這就是北宋畫家張擇端的《清明上河圖》，畫的是北宋都城東京的繁華景象。", "en": "This is \"Along the River During the Qingming Festival\" by Zhang Zeduan, showing the busy Northern Song capital, Dongjing (today's Kaifeng)."}, "01-3": {"zh": "你看到了哪些人？有挑夫、船夫、商人、說書的人……宋朝的經濟，到底有多繁榮呢？", "en": "Who do you see? Porters, boatmen, merchants, storytellers... Just how prosperous was the Song economy?"}, "01-4": {"zh": "今天這一課，我們就來學習：宋朝社會經濟與發展。", "en": "Today's lesson: The Song Dynasty's Social Economy and Development."}, "02-1": {"zh": "這節課有兩個目標。第一，分析宋代經濟重心南移的原因。", "en": "We have two goals. First, analyse why the economic centre shifted south in the Song Dynasty."}, "02-2": {"zh": "第二，了解宋代農業、手工業的發展和商業的繁榮。", "en": "Second, learn how agriculture, handicrafts and trade flourished in the Song."}, "03-1": {"zh": "什麼叫「經濟重心南移」？就是全國經濟最發達的地區，從黃河流域，轉移到了長江流域。", "en": "What is the \"southward shift of the economic centre\"? The richest region of China moved from the Yellow River valley to the Yangtze River valley."}, "03-2": {"zh": "兩漢的時候，經濟重心在北方。", "en": "In the Han dynasties, the economic centre was in the north."}, "03-3": {"zh": "魏晉南北朝時，江南地區得到開發，為南移打下了基礎。", "en": "During the Wei, Jin and Northern and Southern dynasties, the south was opened up, laying the foundation."}, "03-4": {"zh": "唐朝中期，經濟重心開始南移；到了南宋，南移終於完成。", "en": "From the mid-Tang, the centre began moving south; by the Southern Song, the shift was complete."}, "03-5": {"zh": "為什麼會南移呢？有三個原因。", "en": "Why did it move south? There are three reasons."}, "03-6": {"zh": "政治上，南方戰亂比較少，社會相對安定。", "en": "Politically, the south had fewer wars and was more stable."}, "03-7": {"zh": "經濟上，大批北方人口南遷，帶來了勞動力和先進的生產技術。", "en": "Economically, large numbers of northerners migrated south, bringing labour and advanced farming skills."}, "03-8": {"zh": "自然條件上，南方氣候溫暖，雨水充足，更適合農作物生長。", "en": "Naturally, the south was warm and rainy, better for growing crops."}, "04-1": {"zh": "北宋最繁榮的城市是東京開封，南宋最繁榮的城市是臨安，也就是今天的杭州。", "en": "The greatest city of the Northern Song was Dongjing, today's Kaifeng; of the Southern Song, Lin'an, today's Hangzhou."}, "04-2": {"zh": "唐朝的城市，住宅區「坊」和商業區「市」是分開的，買東西只能去市裡，到了晚上還要關門。", "en": "In Tang cities, homes and markets were kept apart, and markets closed at night."}, "04-3": {"zh": "宋朝打破了這種限制。大街小巷到處都可以開店，做生意的時間也不受限制，出現了早市和夜市。", "en": "The Song broke these limits. Shops could open on any street, at any hour, and morning and night markets appeared."}, "04-4": {"zh": "城市的商業還帶動了鄉村。在交通方便的地方，形成了新的小市場，叫作「草市」。", "en": "City trade also spread to the countryside, where new small markets called \"grass markets\" grew up."}, "05-1": {"zh": "接下來，認識一位宋朝的農民——老張。", "en": "Now let's meet a Song Dynasty farmer: Old Zhang."}, "05-2": {"zh": "老張一家原來住在北方的澶州。因為戰亂，全家逃到了南方。來到南方以後，日子越過越好。", "en": "Old Zhang's family once lived in Chanzhou in the north. War drove them south, and there life got better and better."}, "05-3": {"zh": "春天到了，老張帶著孩子開始春耕。他該種什麼呢？", "en": "Spring came, and Old Zhang began ploughing with his children. What should he plant?"}, "C1-q": {"zh": "老張要選哪一種稻子？", "en": "Which rice should Old Zhang plant?"}, "C1-A": {"zh": "答對了！占城稻成熟早、耐旱，一年能收兩次。", "en": "Correct! Champa rice ripens early, resists drought and can be harvested twice a year."}, "C1-B": {"zh": "哎呀，普通水稻一年只收一次，遇到乾旱就減產。再想想！", "en": "Oops! Ordinary rice gives only one harvest and fails in droughts. Try again!"}, "C1-C": {"zh": "小麥是北方的主要作物。南方溫暖多雨，更適合種稻。再試一次！", "en": "Wheat was the main crop of the north. The warm, rainy south suited rice better. Try again!"}, "05-4": {"zh": "老張選的就是占城稻。占城稻從越南一帶傳入，成熟早，耐旱力強，北宋時推廣到東南各地。", "en": "He chose Champa rice. It came from the area of Vietnam, ripened early, resisted drought, and spread across the southeast in the Northern Song."}, "05-5": {"zh": "普通水稻一年只收一次，遇到乾旱就會嚴重減產；占城稻在嶺南一年能收兩次，乾旱的年份也還有收成。", "en": "Ordinary rice gave one harvest a year and failed in droughts; Champa rice gave two harvests a year in the far south, even in dry years."}, "05-6": {"zh": "這一年老張大豐收。他把多出來的糧食賣給國家，運進了蘇州的糧倉。", "en": "That year Old Zhang had a bumper harvest and sold his extra grain to the state, stored in the granaries of Suzhou."}, "05-7": {"zh": "當時有一句話：「蘇湖熟，天下足。」南方的糧食產量，已經超過了北方。", "en": "People said: \"When Suzhou and Huzhou ripen, the whole land has enough.\" Southern grain output now exceeded the north's."}, "06-1": {"zh": "老張家還有一塊空地，他想種點經濟作物。種茶葉，還是種棉花？", "en": "Old Zhang had a spare plot for cash crops. Tea, or cotton?"}, "C2-q": {"zh": "鄰居說：「棉花只能在北方種。」這句話對嗎？", "en": "A neighbour says: \"Cotton only grows in the north.\" Is that right?"}, "C2-A": {"zh": "不對哦！棉花最早在南方種植，後來才慢慢往北推廣。", "en": "Not quite! Cotton was first grown in the south and later spread north."}, "C2-B": {"zh": "答對了！宋朝時，棉花已經從南方推廣到江淮、川蜀一帶。", "en": "Correct! By the Song, cotton had spread from the south to the Yangtze–Huai and Sichuan regions."}, "C2-C": {"zh": "不對哦！海南島的棉紡織確實先進，但棉花已經推廣到很多地方了。", "en": "Not quite! Hainan had advanced cotton weaving, but cotton was grown in many places."}, "06-2": {"zh": "南方很多人種茶葉。棉花的種植也從南向北推廣，到了宋朝，已經推進到江淮、川蜀一帶。", "en": "Many southerners grew tea. Cotton spread from south to north, reaching the Yangtze–Huai and Sichuan regions by the Song."}, "06-3": {"zh": "老張說：「我們忙時耕作，閒時經商，賺的錢越來越多。」", "en": "Old Zhang said: \"We farm when it's busy and trade in our spare time, earning more and more.\""}, "06-4": {"zh": "棉花可以織成布。北宋時，南方的絲織業已經超過北方，四川和江浙的絲織品特別有名。", "en": "Cotton could be woven into cloth. In the Northern Song, southern silk-making surpassed the north, with Sichuan and Jiangzhe silks especially famous."}, "06-5": {"zh": "南宋後期，海南島已經有比較先進的棉紡織工具，棉布漸漸成為人們做衣服的主要材料。", "en": "By the late Southern Song, Hainan Island had advanced cotton-weaving tools, and cotton became a main material for clothing."}, "07-1": {"zh": "老張的大兒子想出去學一門手藝。學什麼好呢？", "en": "Old Zhang's eldest son wanted to learn a craft. Which one?"}, "C3-q": {"zh": "大兒子想學燒瓷器，北宋時應該去哪裡拜師？", "en": "The eldest son wants to learn porcelain-making. Where should he go in the Northern Song?"}, "C3-A": {"zh": "敦煌以壁畫聞名，不是製瓷中心。再想想！", "en": "Dunhuang is famous for its murals, not porcelain. Try again!"}, "C3-B": {"zh": "答對了！北宋時，景德鎮已經是有名的製瓷城市。", "en": "Correct! Jingdezhen was already a famous porcelain town in the Northern Song."}, "C3-C": {"zh": "澶州是老張的北方老家，那裡打仗，不是學手藝的好地方。", "en": "Chanzhou is Old Zhang's northern hometown, torn by war, not a place to learn a craft."}, "07-2": {"zh": "宋朝南方的手工業非常繁榮，其中製瓷業和造船業的成就最突出。", "en": "Southern handicrafts boomed in the Song, especially porcelain-making and shipbuilding."}, "07-3": {"zh": "宋代是中國瓷器發展史上的輝煌時代。汝窯、官窯、哥窯、鈞窯、定窯，都非常有名。", "en": "The Song was a golden age of Chinese porcelain, with famous kilns such as Ru, Guan, Ge, Jun and Ding."}, "07-4": {"zh": "北宋時，江西景德鎮已經成為製瓷名城；到了南宋，製瓷中心轉移到了江南地區。", "en": "In the Northern Song, Jingdezhen in Jiangxi became a famous porcelain town; in the Southern Song, the centre moved to the Jiangnan region."}, "07-5": {"zh": "再看造船業。廣州、泉州、明州造的船，水準都很高。北宋東京郊外，還建有世界上現存最早的船塢。", "en": "In shipbuilding, Guangzhou, Quanzhou and Mingzhou built excellent ships, and near Dongjing (Kaifeng) stood the world's earliest known dry dock."}, "07-6": {"zh": "泉州曾經出土一艘宋代海船，長二十四米多，有十三個船艙，船上還有四千七百多斤香料木。", "en": "A Song ship was excavated at Quanzhou: over 24 metres long, with 13 cabins and more than 2,300 kilograms of fragrant wood aboard."}, "08-1": {"zh": "這麼多瓷器和絲綢，怎樣賣到更遠的地方去呢？答案是：走海路。", "en": "How could so much porcelain and silk reach faraway lands? By sea."}, "08-2": {"zh": "宋朝的商船從廣州、泉州出發，往東到朝鮮、日本，往西可以到阿拉伯半島和非洲東海岸。", "en": "Song ships sailed from Guangzhou and Quanzhou, east to Korea and Japan, and west to Arabia and the east coast of Africa."}, "C4-q": {"zh": "老張要把瓷器運到阿拉伯去賣，應該找哪個官府辦手續？", "en": "To ship porcelain to Arabia, which government office should Old Zhang go to?"}, "C4-A": {"zh": "答對了！市舶司專門管理海上對外貿易。", "en": "Correct! The Maritime Trade Office managed overseas trade by sea."}, "C4-B": {"zh": "縣衙管的是地方事務，海上貿易要找專門的機構。再試一次！", "en": "The county office handled local affairs; sea trade had its own office. Try again!"}, "C4-C": {"zh": "糧倉是存糧食的地方，不管海上貿易。再想想！", "en": "A granary stores grain; it has nothing to do with sea trade. Try again!"}, "08-3": {"zh": "政府在主要港口設立了「市舶司」，專門管理海上對外貿易，就像今天的海關。", "en": "The government set up Maritime Trade Offices at major ports, much like customs today."}, "08-4": {"zh": "宋代海外貿易為什麼這麼興盛？第一，造船業發達；第二，有廣州、泉州這樣聞名世界的大商港；", "en": "Why did sea trade boom? First, advanced shipbuilding. Second, world-famous ports like Guangzhou and Quanzhou."}, "08-5": {"zh": "第三，政府鼓勵海外貿易；第四，兩宋沒有統一全國，陸路交通不便，就更依靠海路了。", "en": "Third, the government encouraged it. Fourth, the Song never fully unified the country, so land routes were blocked and the sea mattered more."}, "09-1": {"zh": "靠著絲織、製瓷和造船，老張一家賺了不少錢，準備去東京遊玩。", "en": "With money from silk, porcelain and ships, the Zhang family set off to visit the capital, Dongjing (today's Kaifeng)."}, "09-2": {"zh": "到東京時，天已經黑了。餓著肚子的老張，還能吃上晚飯嗎？", "en": "It was dark when they arrived in Dongjing. Could hungry Old Zhang still find dinner?"}, "C5-q": {"zh": "天黑了，老張一家肚子餓，怎麼辦？", "en": "It's dark and the family is hungry. What should they do?"}, "C5-A": {"zh": "那是唐朝的情況！宋朝已經打破了時間限制。再想想！", "en": "That was the Tang! The Song had broken the time limits. Try again!"}, "C5-B": {"zh": "答對了！宋朝都市有夜市，一直開到深夜。", "en": "Correct! Song cities had night markets open until late."}, "C5-C": {"zh": "宋朝已經打破坊市分區，大街小巷都能開店。再試一次！", "en": "The Song had ended the walled market system; shops opened on any street. Try again!"}, "09-3": {"zh": "當然可以！書上寫道：「夜市直至三更盡，才五更又復開張。」夜市一直開到深夜，天還沒亮，早市又開張了。", "en": "Of course! A Song book says the night market ran until midnight, and before dawn the morning market opened again."}, "09-4": {"zh": "第二天，老張想給妻子買一匹羅。一匹羅要兩萬文錢。當時四川用鐵錢，一貫是一千文，就重六斤半。", "en": "Next day, he wanted to buy a bolt of silk for his wife. It cost 20,000 coins. In Sichuan people used iron coins, and 1,000 coins weighed over three kilograms."}, "09-5": {"zh": "算一算，兩萬文鐵錢，重達一百三十斤！老張根本背不動啊。", "en": "Do the maths: 20,000 iron coins weighed about 65 kilograms! Far too heavy to carry."}, "C6-q": {"zh": "一百三十斤的鐵錢背不動，老張該怎麼付錢？", "en": "130 jin of iron coins is too heavy. How should Old Zhang pay?"}, "C6-A": {"zh": "貝殼是很早很早以前的貨幣，宋朝已經不用了。再想想！", "en": "Shells were money in ancient times, not in the Song. Try again!"}, "C6-B": {"zh": "太辛苦了！而且一點都不方便。有沒有更輕便的辦法？", "en": "Too exhausting, and not practical. Is there a lighter way?"}, "C6-C": {"zh": "答對了！交子是世界上最早的紙幣，輕便又好帶。", "en": "Correct! Jiaozi was the world's earliest paper money, light and easy to carry."}, "09-6": {"zh": "對，用交子！北宋時，四川地區出現了交子，這是世界上最早的紙幣。", "en": "Yes, jiaozi! Jiaozi appeared in Sichuan in the Northern Song, the world's earliest paper money."}, "09-7": {"zh": "商品經濟繁榮，買賣需要更方便的貨幣；紙幣輕便好帶，成本又低。到了南宋，又出現了會子。", "en": "A booming economy needed easier money; paper was light and cheap to make. Later, the Southern Song issued huizi."}, "10-1": {"zh": "我們來總結一下。宋代農業發展、手工業興盛、商業貿易繁榮。", "en": "Let's sum up. In the Song, agriculture grew, handicrafts flourished and trade boomed."}, "10-2": {"zh": "這些變化，讓南宋時期最終完成了經濟重心的南移。", "en": "Together, these changes completed the southward shift of the economic centre in the Southern Song."}, "10-3": {"zh": "現在，來幫老張一家闖幾關吧！", "en": "Now, let's help the Zhang family through some challenges!"}, "G1": {"zh": "第一關：重心南移排排看！把卡片拖到正確的朝代。", "en": "Level 1: Put the shift in order! Drag each card to the right period."}, "G2": {"zh": "第二關：手藝地圖配對！把每一門手藝送回它的家鄉。", "en": "Level 2: Match the crafts to the map! Send each craft home."}, "G3": {"zh": "最後一關：總複習小測驗，加油！", "en": "Final level: the review quiz. Good luck!"}, "Q1": {"zh": "下面哪一項，不是經濟重心南移的原因？", "en": "Which is NOT a reason for the southward shift?"}, "Q2": {"zh": "「草市」是什麼？", "en": "What was a \"grass market\"?"}, "Q3": {"zh": "下面哪一項，是宋代海外貿易興盛的原因？", "en": "Which helped Song sea trade boom?"}, "Q4": {"zh": "世界上最早的紙幣是什麼？", "en": "What was the world's earliest paper money?"}, "E1": {"zh": "三個原因是：南方戰亂少、北方人口南遷、南方自然條件好。", "en": "The three reasons: fewer wars, northern migration, and a good climate."}, "E2": {"zh": "都市的商業輻射到鄉鎮，形成了新的商業區，叫作草市。", "en": "City trade spread to the countryside, creating grass markets."}, "E3": {"zh": "造船發達、有大商港、政府鼓勵，加上陸路不便，海外貿易就興盛起來了。", "en": "Shipbuilding, great ports, government support and blocked land routes all helped."}, "E4": {"zh": "北宋四川出現的交子，是世界上最早的紙幣；會子是南宋的。", "en": "Jiaozi from Northern Song Sichuan came first; huizi was Southern Song."}, "OK": {"zh": "答對了！", "en": "Correct!"}, "NO": {"zh": "哎呀，答錯了。", "en": "Oops, that's wrong."}, "S1": {"zh": "全部答對！老張為你點讚！", "en": "All correct! Old Zhang is proud of you!"}, "S0": {"zh": "再複習一下，你會更棒！", "en": "Review once more and you'll do even better!"}};
+const DUR={"01-1": 10.27, "01-2": 9.46, "01-3": 11.18, "01-4": 6.36, "02-1": 7.58, "02-2": 6.89, "03-1": 10.58, "03-2": 4.08, "03-3": 7.27, "03-4": 7.87, "03-5": 4.08, "03-6": 5.78, "03-7": 7.68, "03-8": 7.68, "04-1": 10.37, "04-2": 11.88, "04-3": 10.87, "04-4": 10.08, "05-1": 4.49, "05-2": 11.59, "05-3": 6.48, "05-4": 12.07, "05-5": 13.37, "05-6": 8.47, "05-7": 9.48, "06-1": 8.28, "06-2": 11.59, "06-3": 7.87, "06-4": 11.38, "06-5": 10.46, "07-1": 5.78, "07-2": 8.57, "07-3": 11.78, "07-4": 10.39, "07-5": 13.78, "07-6": 11.18, "08-1": 8.38, "08-2": 11.78, "08-3": 8.98, "08-4": 12.17, "08-5": 11.38, "09-1": 7.87, "09-2": 7.56, "09-3": 14.47, "09-4": 14.47, "09-5": 9.17, "09-6": 9.29, "09-7": 11.88, "10-1": 8.38, "10-2": 6.38, "10-3": 3.77, "C1-A": 6.29, "C1-B": 8.06, "C1-C": 8.09, "C1-q": 3.07, "C2-A": 7.06, "C2-B": 7.27, "C2-C": 8.09, "C2-q": 5.78, "C3-A": 5.88, "C3-B": 6.26, "C3-C": 6.67, "C3-q": 5.78, "C4-A": 5.09, "C4-B": 7.49, "C4-C": 5.98, "C4-q": 6.26, "C5-A": 6.89, "C5-B": 5.47, "C5-C": 6.98, "C5-q": 4.58, "C6-A": 6.89, "C6-B": 7.49, "C6-C": 6.26, "C6-q": 5.28, "E1": 8.47, "E2": 7.27, "E3": 9.07, "E4": 7.87, "G1": 6.17, "G2": 6.48, "G3": 4.18, "NO": 2.57, "OK": 1.68, "Q1": 4.78, "Q2": 2.38, "Q3": 5.47, "Q4": 3.38, "S0": 3.07, "S1": 3.79};
+const AUDIO=/*AUDIO*/null; // base64 map in single-file build, else null
+const src=id=>AUDIO?AUDIO[id]:`audio/${id}.mp3`;
+
+const CHOICES={
+ C1:{opts:[["🌾","占城稻","Champa rice",1],["🌱","普通水稻","Ordinary rice",0],["🌾","小麥","Wheat",0]]},
+ C2:{opts:[["⬇️","對，南方不能種棉花","Yes, not in the south",0],["⬆️","不對，棉花由南向北推廣","No, it spread south to north",1],["🏝️","不對，只能在海南島種","No, only on Hainan",0]]},
+ C3:{opts:[["🏜️","敦煌","Dunhuang",0],["🏺","江西景德鎮","Jingdezhen, Jiangxi",1],["🏚️","澶州","Chanzhou",0]]},
+ C4:{opts:[["⚓","市舶司","Maritime Trade Office",1],["🏛️","縣衙","County office",0],["🏚️","糧倉","Granary",0]]},
+ C5:{opts:[["😴","忍到天亮，晚上都關門","Wait till morning",0],["🏮","去逛夜市","Go to the night market",1],["🧱","只能去坊裡的「市」","Only the walled market",0]]},
+ C6:{opts:[["🐚","用貝殼","Use shells",0],["🏋️","叫兒子幫忙一起背","Get his son to help carry it",0],["💴","用交子","Use jiaozi",1]]},
+};
+// scenes: steps are line ids, {c:'C1'} for choices, {fx:fn} for effects
+const SCENES=[
+ {id:'s0',steps:['01-1','01-2','01-3','01-4']},
+ {id:'s1',steps:['02-1','02-2']},
+ {id:'s2',steps:['03-1','03-2','03-3','03-4','03-5','03-6','03-7','03-8']},
+ {id:'s3',steps:['04-1','04-2','04-3','04-4']},
+ {id:'s4',steps:['05-1','05-2','05-3',{c:'C1'},'05-4','05-5','05-6','05-7'],hud:1},
+ {id:'s5',steps:['06-1',{c:'C2'},'06-2','06-3','06-4','06-5'],hud:1},
+ {id:'s6',steps:['07-1',{c:'C3'},'07-2','07-3','07-4','07-5','07-6'],hud:1},
+ {id:'s7',steps:['08-1','08-2',{c:'C4'},'08-3','08-4','08-5'],hud:1},
+ {id:'s8',steps:['09-1','09-2',{c:'C5'},'09-3','09-4','09-5',{c:'C6'},'09-6','09-7'],hud:1},
+ {id:'s9',steps:['10-1','10-2','10-3'],hold:1},
+ {id:'g1',steps:['G1'],game:'G1',hold:1},
+ {id:'g2',steps:['G2'],game:'G2',hold:1},
+ {id:'g3',steps:['G3'],game:'G3',hold:1},
+ {id:'end',steps:[],game:'END',hold:1},
+];
+const $=s=>document.querySelector(s);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* ---------- background music: Song-style pentatonic, synthesized ---------- */
+const M={ctx:null,master:null,gain:null,on:true,base:.20,duck:.05,timer:null,next:0,step:0,
+ init(){
+  const C=this.ctx=new (window.AudioContext||window.webkitAudioContext)();
+  const comp=C.createDynamicsCompressor();comp.threshold.value=-18;comp.ratio.value=8;comp.connect(C.destination);
+  this.master=C.createGain();this.master.gain.value=0;this.master.connect(comp);
+  // gentle reverb from low-passed decaying noise
+  const len=C.sampleRate*2.6,ir=C.createBuffer(2,len,C.sampleRate);
+  for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);let lp=0;for(let i=0;i<len;i++){lp=lp*.88+(Math.random()*2-1)*.12;d[i]=lp*Math.pow(1-i/len,2.4)}}
+  const rv=C.createConvolver();rv.buffer=ir;const rg=C.createGain();rg.gain.value=.35;rv.connect(rg);rg.connect(this.master);
+  this.gain=C.createGain();this.gain.gain.value=1;this.gain.connect(this.master);this.gain.connect(rv);
+ },
+ hz(n){return 440*Math.pow(2,(n-69)/12)},
+ pluck(n,t,v=.5,dur=1.8){const C=this.ctx;
+  [[1,1],[2,.28],[3,.08]].forEach(([h,a])=>{const o=C.createOscillator(),g=C.createGain();o.type='sine';o.frequency.value=this.hz(n)*h;
+   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v*a,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+dur/h);
+   o.connect(g);g.connect(this.gain);o.start(t);o.stop(t+dur+.05)})},
+ flute(n,t,dur,v=.06){const C=this.ctx,o=C.createOscillator(),g=C.createGain(),lfo=C.createOscillator(),lg=C.createGain();
+  o.type='sine';o.frequency.value=this.hz(n);lfo.frequency.value=5;lg.gain.value=this.hz(n)*.006;lfo.connect(lg);lg.connect(o.frequency);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.35);g.gain.setValueAtTime(v,t+dur-.4);g.gain.linearRampToValueAtTime(0,t+dur);
+  o.connect(g);g.connect(this.gain);o.start(t);lfo.start(t);o.stop(t+dur+.05);lfo.stop(t+dur+.05)},
+ // D gong mode: D E F# A B ; melody in eighth notes (0 = rest)
+ MEL:[69,0,71,69,66,0,64,66, 69,0,0,0,71,74,71,69, 66,0,64,0,62,0,0,0, 64,66,69,71,69,0,66,64,
+      66,0,69,0,71,0,74,76, 74,0,71,69,71,0,0,0, 69,71,69,66,64,0,66,64, 62,0,0,0,0,0,0,0],
+ BASS:[50,45,50,47,43,45,50,50],
+ start(){if(!this.ctx)this.init();this.ctx.resume();this.next=this.ctx.currentTime+.1;if(!this.timer)this.timer=setInterval(()=>this.tick(),120);this.fade()},
+ tick(){const C=this.ctx,e=60/62/2;while(this.next<C.currentTime+.6){const i=this.step%this.MEL.length,n=this.MEL[i];
+   if(n)this.pluck(n,this.next,.42);
+   if(i%8==0){const b=this.BASS[(i/8)%8];this.pluck(b,this.next,.32,3.2);this.flute(b+24,this.next,e*7.5,.035)}
+   if(i%16==14&&Math.random()<.5)this.pluck(n?n+12:81,this.next,.12,1);
+   this.next+=e;this.step++}},
+ talking:false,
+ fade(){if(!this.ctx)return;const v=(this.on&&P.started&&!P.paused)?(this.talking?this.duck:this.base):0;
+  this.master.gain.cancelScheduledValues(this.ctx.currentTime);this.master.gain.setTargetAtTime(v,this.ctx.currentTime,.25)},
+};
+
+/* ---------- audio playback ---------- */
+const VX={ctx:null,buf:{},cur:null};
+function vctx(){if(!VX.ctx){try{VX.ctx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}return VX.ctx}
+function b64buf(d){const b=atob(d.slice(d.indexOf(',')+1));const u=new Uint8Array(b.length);for(let k=0;k<b.length;k++)u[k]=b.charCodeAt(k);return u.buffer}
+function getBuf(id){const c=vctx();if(!c)return Promise.reject();if(VX.buf[id])return Promise.resolve(VX.buf[id]);
+ return new Promise((ok,no)=>{c.decodeAudioData(b64buf(AUDIO[id]),b=>{VX.buf[id]=b;ok(b)},no)})}
+const V={on:true,cur:null,
+ play(id,tok){return new Promise(res=>{
+  if(this.stop)this.stop();
+  let fin=false,a=null,bs=null,chk=null;
+  const done=()=>{if(fin)return;fin=true;clearInterval(chk);if(this.stop===done)this.stop=null;
+    if(a)a.pause();if(bs){try{bs.onended=null;bs.stop()}catch(e){}}if(VX.cur===bs)VX.cur=null;M.talking=false;M.fade();res()};
+  this.stop=done;M.talking=true;M.fade();
+  const timed=()=>{if(fin)return;clearInterval(chk);const ms=(DUR[id]||3)*1000;let t=0;chk=setInterval(()=>{if(!P.paused)t+=100;if(t>=ms||tok!==P.tok)done()},100)};
+  if(!this.on||!AUDIO&&!src(id)){timed();return}
+  chk=setInterval(()=>{if(tok!==P.tok)done()},150);
+  if(AUDIO){
+    getBuf(id).then(b=>{if(fin)return;const c=VX.ctx;bs=c.createBufferSource();bs.buffer=b;bs.connect(c.destination);bs.onended=done;VX.cur=bs;
+      if(!P.paused&&c.state==='suspended')c.resume();bs.start();
+      setTimeout(()=>{if(!fin&&c.state!=='running'&&!P.paused){try{bs.onended=null;bs.stop()}catch(e){}timed()}},1500);
+    }).catch(timed);
+    return}
+  a=this.cur=new Audio(src(id));a.onended=done;a.onerror=()=>{a=null;timed()};
+  if(!P.paused)a.play().catch(()=>{a=null;timed()});
+ })},
+ pause(){this.cur&&this.cur.pause();VX.ctx&&VX.ctx.state==='running'&&VX.ctx.suspend()},
+ resume(){this.cur&&!this.cur.ended&&this.cur.play().catch(()=>{});VX.ctx&&VX.ctx.resume()}
+};
+async function waitPlay(tok){while(P.paused&&tok===P.tok)await sleep(120)}
+async function pausableSleep(ms,tok){let t=0;while(t<ms&&tok===P.tok){await sleep(100);if(!P.paused)t+=100}}
+
+function setSub(id){const L=LINES[id];$('#subs').classList.toggle('long',!!L&&(L.zh.length>32||L.en.length>100));$('#subs').classList.toggle('xlong',!!L&&(L.zh.length>44||L.en.length>130));$('#subZh').textContent=L?L.zh:'';$('#subEn').textContent=L?L.en:''}
+async function say(id,tok){setSub(id);await waitPlay(tok);if(tok!==P.tok)return;await V.play(id,tok);if(tok===P.tok&&V.on)await pausableSleep(700,tok)}
+
+
+/* ---------- celebration: chime + confetti ---------- */
+function cheerSound(big){const c=vctx();if(!c)return;if(c.state==='suspended')c.resume();const t0=c.currentTime+.02;
+ const out=c.createGain();out.gain.value=.28;out.connect(c.destination);
+ const notes=big?[523.25,659.25,783.99,1046.5,1318.5,1567.98]:[659.25,783.99,1046.5,1318.5];
+ notes.forEach((f,k)=>{const t=t0+k*.085;[1,2].forEach((h,hi)=>{const o=c.createOscillator(),g=c.createGain();o.type=hi?'sine':'triangle';o.frequency.value=f*h;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(hi?.12:.5,t+.012);g.gain.exponentialRampToValueAtTime(.001,t+(k===notes.length-1?1.1:.45));
+  o.connect(g);g.connect(out);o.start(t);o.stop(t+1.2)})});
+ for(let k=0;k<(big?14:7);k++){const t=t0+.3+Math.random()*.7,o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=2000+Math.random()*2500;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.06,t+.005);g.gain.exponentialRampToValueAtTime(.001,t+.25);o.connect(g);g.connect(out);o.start(t);o.stop(t+.3)}}
+function confetti(big){const st=$('#stage');let cv=$('#confetti');if(!cv){cv=document.createElement('canvas');cv.id='confetti';
+  cv.style.cssText='position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:30';st.appendChild(cv)}
+ const W=cv.width=st.clientWidth*devicePixelRatio,H=cv.height=st.clientHeight*devicePixelRatio,x=cv.getContext('2d');
+ const cols=['#c0392b','#e6a817','#2f8f5b','#2f6fb0','#e85d9e','#f3d36b','#8e44ad'];const N=big?260:140,ps=[];
+ for(let i=0;i<N;i++){const side=i%2?1:0;ps.push({x:side?W*.95:W*.05,y:H*.85,vx:(side?-1:1)*(W*(.004+Math.random()*.012)),vy:-H*(.018+Math.random()*.02),
+  r:(6+Math.random()*8)*devicePixelRatio,a:Math.random()*6,va:(Math.random()-.5)*.3,c:cols[i%cols.length],sh:Math.random()<.3})}
+ const g=H*.0006,t0=performance.now();cancelAnimationFrame(confetti.raf);
+ (function f(now){x.clearRect(0,0,W,H);const age=now-t0;
+  ps.forEach(p=>{p.vy+=g;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.a+=p.va;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.globalAlpha=Math.max(0,1-age/3200);
+   if(p.sh){x.beginPath();x.arc(0,0,p.r*.45,0,7);x.fill()}else x.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);x.restore()});
+  if(age<3300)confetti.raf=requestAnimationFrame(f);else x.clearRect(0,0,W,H)})(t0)}
+function celebrate(big){try{cheerSound(big)}catch(e){}try{confetti(big)}catch(e){}}
+
+/* ---------- player ---------- */
+const P={i:0,tok:0,paused:false,started:false,life:0,lifeDone:{},
+ sceneEl(i){return document.getElementById(SCENES[i].id)},
+ reset(el){el.querySelectorAll('.pop').forEach(e=>e.classList.remove('show','gone'))},
+ activate(el,id){el.querySelectorAll(`[data-at~="${id}"]`).forEach(e=>{e.classList.add('show');e.classList.remove('gone')});
+  el.querySelectorAll(`[data-hide~="${id}"]`).forEach(e=>e.classList.add('gone'))},
+ async go(i){
+  if(i<0||i>=SCENES.length)return;
+  const tok=++this.tok;this.i=i;V.pause();$('#choice').classList.remove('on');
+  document.querySelectorAll('.scene').forEach(s=>s.classList.remove('on'));
+  const sc=SCENES[i],el=this.sceneEl(i);this.reset(el);el.classList.add('on');
+  $('#hud').style.display=sc.hud?'block':'none';
+  if(i===0){this.life=0;this.lifeDone={};$('#hudN').textContent=0}
+  this.ui();setSub(null);
+  if(sc.game)Games[sc.game].setup();
+  await pausableSleep(700,tok);
+  for(let k=0;k<sc.steps.length;k++){
+   if(tok!==this.tok)return;
+   const st=sc.steps[k];this.stepFrac=k/sc.steps.length;this.ui();
+   if(typeof st==='string'){this.activate(el,st);el.querySelectorAll('.lz').forEach(z=>z.classList.toggle('shake',st==='09-5'));await say(st,tok);await pausableSleep(450,tok)}
+   else if(st.c){await Choice.run(st.c,tok);}
+  }
+  if(tok!==this.tok)return;
+  this.stepFrac=1;this.ui();
+  if(!sc.hold){await pausableSleep(900,tok);if(tok===this.tok)this.go(i+1)}
+ },
+ next(){this.go(Math.min(this.i+1,SCENES.length-1))}, prev(){this.go(Math.max(this.i-1,0))},
+ toggle(){this.paused=!this.paused;this.paused?V.pause():V.resume();M.fade();this.ui()},
+ ui(){$('#bPlay').textContent=this.paused?'▶':'⏸';$('#count').textContent=`${this.i+1}/${SCENES.length}`;
+  const f=(this.i+(this.stepFrac||0))/SCENES.length;$('#fill').style.width=(f*100)+'%'},
+ addLife(c){if(!this.lifeDone[c]){this.lifeDone[c]=1;this.life++;$('#hudN').textContent=this.life}},
+};
+
+/* ---------- choice questions ---------- */
+const Choice={async run(c,tok){
+  const box=$('#choice'),opts=$('#copts'),fb=$('#cfb'),q=LINES[c+'-q'];
+  $('#cq').innerHTML=`${q.zh}<i>${q.en}</i>`;fb.innerHTML='';fb.className='fb';opts.innerHTML='';
+  let firstTry=true,solved=false,busy=false;
+  const finish=new Promise(res=>{
+   CHOICES[c].opts.forEach((o,idx)=>{const b=document.createElement('button');b.className='opt';
+    b.innerHTML=`<span class="ico">${o[0]}</span>${o[1]}<i>${o[2]}</i>`;
+    b.onclick=async()=>{if(busy||solved)return;busy=true;const key=c+'-'+'ABC'[idx],L=LINES[key];
+     fb.innerHTML=`${L.zh}<i>${L.en}</i>`;
+     if(o[3]){solved=true;b.classList.add('right');fb.className='fb ok';celebrate();if(firstTry)P.addLife(c);
+      opts.querySelectorAll('.opt').forEach(x=>x.disabled=true);await say(key,tok);await pausableSleep(500,tok);res()}
+     else{firstTry=false;b.classList.add('wrong');b.disabled=true;fb.className='fb no';await say(key,tok);setSub(c+'-q')}
+     busy=false};
+    opts.appendChild(b)});
+   const watch=setInterval(()=>{if(tok!==P.tok){clearInterval(watch);res()}},200);
+  });
+  box.classList.add('on');await say(c+'-q',tok);
+  await finish;box.classList.remove('on');
+}};
+
+/* ---------- games ---------- */
+function dragGame(cfg){ // generic place-the-card game
+ const slots=$(cfg.slots),pool=$(cfg.pool),fb=$(cfg.fb),nextBtn=$(cfg.next);
+ slots.innerHTML='';pool.innerHTML='';fb.innerHTML='';fb.className='gfb';nextBtn.style.display='none';
+ let sel=null,left=cfg.items.length;
+ const place=(card,slot)=>{const it=cfg.items[card.dataset.i];
+  if(slot.dataset.k===it.k){slot.classList.add('done');celebrate();card.classList.remove('sel');card.draggable=false;card.onclick=null;slot.appendChild(card);
+   fb.className='gfb ok';fb.innerHTML=`✅ 對了！${it.ok}<i>Correct! ${it.oke}</i>`;sel=null;
+   if(--left===0){fb.innerHTML+=`<div style="margin-top:.4cqw">🎉 過關了！<i>Level cleared!</i></div>`;nextBtn.style.display='inline-block'}}
+  else{slot.classList.remove('bad');void slot.offsetWidth;slot.classList.add('bad');fb.className='gfb no';
+   fb.innerHTML=`❌ ${cfg.wrong(it)}<i>${cfg.wronge(it)}</i>`}};
+ cfg.slotsDef.forEach(s=>{const d=document.createElement('div');d.className='slot';d.dataset.k=s.k;
+  d.innerHTML=`<div class="lab">${s.zh}<i>${s.en}</i></div>`;
+  d.onclick=()=>{if(sel&&!d.classList.contains('done'))place(sel,d)};
+  d.ondragover=e=>{e.preventDefault();d.classList.add('hot')};d.ondragleave=()=>d.classList.remove('hot');
+  d.ondrop=e=>{e.preventDefault();d.classList.remove('hot');const c=pool.querySelector(`[data-i="${e.dataTransfer.getData('text')}"]`);if(c&&!d.classList.contains('done'))place(c,d)};
+  slots.appendChild(d)});
+ cfg.items.map((it,i)=>[it,i]).sort(()=>Math.random()-.5).forEach(([it,i])=>{const c=document.createElement('div');c.className='gcard';c.dataset.i=i;c.draggable=true;
+  c.innerHTML=`${it.zh}<i>${it.en}</i>`;
+  c.onclick=()=>{pool.querySelectorAll('.gcard').forEach(x=>x.classList.remove('sel'));sel=c;c.classList.add('sel')};
+  c.ondragstart=e=>e.dataTransfer.setData('text',String(i));pool.appendChild(c)});
+}
+const PERIOD={han:['兩漢','Han'],wj:['魏晉南北朝','Wei–Jin and N./S. Dynasties'],tang:['唐朝中期','the mid-Tang'],ss:['南宋','the Southern Song']};
+const PLACE={jdz:['景德鎮','Jingdezhen'],qz:['泉州','Quanzhou'],sc:['四川','Sichuan'],hn:['海南島','Hainan']};
+const Games={
+ G1:{setup(){dragGame({slots:'#g1slots',pool:'#g1pool',fb:'#g1fb',next:'#g1next',
+  slotsDef:[{k:'han',zh:'① 兩漢',en:'Han'},{k:'wj',zh:'② 魏晉南北朝',en:'Wei–Jin, N. & S.'},{k:'tang',zh:'③ 唐朝中期',en:'Mid-Tang'},{k:'ss',zh:'④ 南宋',en:'Southern Song'}],
+  items:[{k:'han',zh:'經濟重心在北方',en:'The economic centre is in the north',ok:'兩漢時經濟重心在北方。',oke:'In the Han, the centre was in the north.'},
+   {k:'wj',zh:'江南得到開發，打下基礎',en:'The south is developed, laying the foundation',ok:'魏晉南北朝時江南得到開發。',oke:'The south was developed in the Wei–Jin period.'},
+   {k:'tang',zh:'經濟重心開始南移',en:'The centre begins to move south',ok:'唐朝中期開始南移。',oke:'The shift began in the mid-Tang.'},
+   {k:'ss',zh:'經濟重心完成南移',en:'The shift south is complete',ok:'南宋時完成南移。',oke:'The shift was complete in the Southern Song.'}],
+  wrong:it=>`再想想，這件事發生在${PERIOD[it.k][0]}。`,wronge:it=>`Not quite: this happened in ${PERIOD[it.k][1]}.`})}},
+ G2:{setup(){dragGame({slots:'#g2slots',pool:'#g2pool',fb:'#g2fb',next:'#g2next',
+  slotsDef:[{k:'jdz',zh:'📍 江西景德鎮',en:'Jingdezhen, Jiangxi'},{k:'qz',zh:'📍 泉州',en:'Quanzhou'},{k:'sc',zh:'📍 四川',en:'Sichuan'},{k:'hn',zh:'📍 海南島',en:'Hainan Island'}],
+  items:[{k:'jdz',zh:'🏺 製瓷',en:'Porcelain',ok:'北宋時景德鎮已是製瓷名城。',oke:'Jingdezhen was a famous porcelain town in the Northern Song.'},
+   {k:'qz',zh:'⛵ 造船',en:'Shipbuilding',ok:'泉州造船水準高，也是世界大商港。',oke:'Quanzhou built fine ships and was a great world port.'},
+   {k:'sc',zh:'🧵 蜀錦',en:'Shu brocade',ok:'四川絲織發達，蜀錦很有名。',oke:"Sichuan's silk industry was famous for Shu brocade."},
+   {k:'hn',zh:'☁️ 棉紡織',en:'Cotton weaving',ok:'南宋後期海南島已有先進棉紡織工具。',oke:'Late Southern Song Hainan had advanced cotton-weaving tools.'}],
+  wrong:it=>`這裡不是「${it.zh.slice(2)}」的中心，再試一次。`,wronge:it=>`This isn't the centre of ${it.en.toLowerCase()}. Try again.`})}},
+ G3:{setup(){G3.start()}},
+ END:{setup(){const q=G3.score;$('#endLife').textContent=`⭐ ${P.life} / 6`;$('#endQuiz').textContent=`${q} / 4`;
+  $('#endIcon').textContent=(q===4&&P.life>=5)?'🏆':'👍';setSub(null)}},
+};
+const QUIZ=[
+ {opts:[['南方戰亂較少','The south had fewer wars',0],['北方人口南遷','Northerners moved south',0],['南方發現了金礦','Gold was found in the south',1]]},
+ {opts:[['賣草藥的市場','A herb market',0],['鄉村形成的新商業區','A new market in the countryside',1],['皇宮裡的市場','A palace market',0]]},
+ {opts:[['造船業發達','Advanced shipbuilding',1],['陸路交通很方便','Easy land routes',0],['政府禁止出海','Sea travel was banned',0]]},
+ {opts:[['會子','Huizi',0],['交子','Jiaozi',1],['鐵錢','Iron coins',0]]},
+];
+const G3={n:0,score:0,start(){this.n=0;this.score=0;this.show()},
+ async show(){const tok=P.tok,n=this.n,q=LINES['Q'+(n+1)],box=$('#g3opts'),fb=$('#g3fb');
+  $('#g3num').innerHTML=`第 ${n+1} / 4 題 <i>Question ${n+1} of 4</i>`;$('#g3q').innerHTML=`${q.zh}<i>${q.en}</i>`;
+  fb.innerHTML='';fb.className='gfb';$('#g3next').style.display='none';box.innerHTML='';
+  QUIZ[n].opts.forEach(o=>{const b=document.createElement('button');b.className='opt';b.innerHTML=`${o[0]}<i>${o[1]}</i>`;
+   b.onclick=async()=>{box.querySelectorAll('.opt').forEach(x=>x.disabled=true);
+    const E=LINES['E'+(n+1)];
+    if(o[2]){this.score++;celebrate();b.classList.add('right');fb.className='gfb ok';fb.innerHTML=`✅ 答對了！${E.zh}<i>Correct! ${E.en}</i>`}
+    else{b.classList.add('wrong');box.querySelectorAll('.opt').forEach((x,j)=>{if(QUIZ[n].opts[j][2])x.classList.add('right')});
+     fb.className='gfb no';fb.innerHTML=`❌ 哎呀，答錯了。${E.zh}<i>Oops! ${E.en}</i>`}
+    $('#g3next').style.display='inline-block';
+    await say(o[2]?'OK':'NO',tok);await say('E'+(n+1),tok)};
+   box.appendChild(b)});
+  await pausableSleep(400,tok);if(tok===P.tok)say('Q'+(n+1),tok)},
+ async next(){const tok=P.tok;V.pause();
+  if(this.n<3){this.n++;this.show()}
+  else{$('#g3opts').innerHTML='';$('#g3q').innerHTML=`得分 ${this.score} / 4 <i>Score: ${this.score} of 4</i>`;$('#g3num').innerHTML='';$('#g3next').style.display='none';
+   const k=this.score===4?'S1':'S0';celebrate(true);$('#g3fb').className='gfb ok';$('#g3fb').innerHTML=`${this.score===4?'🏆':'👍'} ${LINES[k].zh}<i>${LINES[k].en}</i>`;
+   await say(k,tok);await pausableSleep(800,tok);if(tok===P.tok)P.next()}}
+};
+
+/* ---------- controls ---------- */
+$('#startBtn').onclick=()=>{const c=vctx();if(c&&c.state==='suspended')c.resume();$('#start').style.display='none';P.started=true;M.start();P.go(0)};
+$('#bPrev').onclick=()=>P.prev();$('#bNext').onclick=()=>P.next();$('#bPlay').onclick=()=>P.toggle();
+function toggleFull(){const d=document,el=d.documentElement;try{if(d.fullscreenElement||d.webkitFullscreenElement){(d.exitFullscreen||d.webkitExitFullscreen).call(d)}else{(el.requestFullscreen||el.webkitRequestFullscreen).call(el)}}catch(e){}}
+$('#bFull').onclick=toggleFull;
+document.addEventListener('fullscreenchange',()=>{$('#bFull').textContent=document.fullscreenElement?'⛶ 退出全屏':'⛶ 全屏'});
+document.addEventListener('keydown',e=>{if((e.key==='f'||e.key==='F')&&!e.repeat)toggleFull()});
+$('#bVoice').onclick=e=>{V.on=!V.on;e.target.classList.toggle('off',!V.on);if(!V.on)V.pause()};
+$('#bMusic').onclick=e=>{M.on=!M.on;e.target.classList.toggle('off',!M.on);M.fade()};
+$('#bSub').onclick=e=>{const s=$('#subs');const h=s.style.visibility==='hidden';s.style.visibility=h?'visible':'hidden';e.target.classList.toggle('off',!h)};
+$('#prog').onclick=e=>{const r=e.currentTarget.getBoundingClientRect();P.go(Math.floor((e.clientX-r.left)/r.width*SCENES.length))};
+for(let k=1;k<SCENES.length;k++){const t=document.createElement('div');t.className='tick';t.style.left=(k/SCENES.length*100)+'%';$('#prog').appendChild(t)}
+document.addEventListener('keydown',e=>{if(!P.started)return;if(e.key==='ArrowRight')P.next();else if(e.key==='ArrowLeft')P.prev();else if(e.key===' '){e.preventDefault();P.toggle()}});
+window.P=P;window.G3=G3;
+</script>
+</body>
+</html>
