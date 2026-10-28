@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>守株待兔｜動畫</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&display=swap">
+<style>
+:root{
+  --ground:#f3e8d2; --paper:#fbf5e8; --ink:#2b2117; --muted:#6e5d48;
+  --red:#c0392b; --green:#3f7d4e; --line:#d9c6a2; --shadow:rgba(70,45,15,.18);
+  --kai:"Kaiti TC","Kaiti SC","STKaiti","KaiTi","楷体","LXGW WenKai TC",serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --ground:#1d1812; --paper:#2a221a; --ink:#f3e8d2; --muted:#c2b195;
+  --red:#e2705f; --green:#7fbf8c; --line:#4a3c2c; --shadow:rgba(0,0,0,.4); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --ground:#1d1812; --paper:#2a221a; --ink:#f3e8d2; --muted:#c2b195;
+  --red:#e2705f; --green:#7fbf8c; --line:#4a3c2c; --shadow:rgba(0,0,0,.4); color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--ground);color:var(--ink);font-family:var(--kai);min-height:100vh;
+  padding:20px max(16px,env(safe-area-inset-right,0px)) 28px max(16px,env(safe-area-inset-left,0px));
+  background-image:radial-gradient(circle at 15% 8%,color-mix(in srgb,var(--red) 9%,transparent),transparent 40%),
+    radial-gradient(circle at 88% 92%,color-mix(in srgb,var(--green) 10%,transparent),transparent 45%)}
+.wrap{max-width:1500px;margin:0 auto}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+h1{margin:0;font-size:clamp(44px,7vw,84px);line-height:1.1;letter-spacing:.12em;font-weight:700}
+h1 small{display:block;font-size:.34em;letter-spacing:.06em;color:var(--muted);font-weight:400;margin-top:6px}
+.back{font-size:20px;color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 18px;background:var(--paper)}
+.back:hover{color:var(--ink)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.tab{font:inherit;font-size:clamp(24px,3.4vw,40px);font-weight:700;padding:16px 12px;border-radius:16px;cursor:pointer;
+  border:3px solid var(--line);background:var(--paper);color:var(--ink);box-shadow:0 4px 0 var(--line);transition:transform .12s}
+.tab span{display:block;font-size:.5em;font-weight:400;color:var(--muted);margin-top:4px}
+.tab[aria-selected="true"]{border-color:var(--red);background:var(--red);color:#fff;box-shadow:0 4px 0 color-mix(in srgb,var(--red) 60%,#000)}
+.tab[aria-selected="true"] span{color:#fff;opacity:.9}
+.tab:active{transform:translateY(2px)}
+.screen{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:10px;box-shadow:0 12px 32px var(--shadow)}
+video{display:block;width:min(100%,calc((100vh - 410px) * 16 / 9));min-width:min(100%,560px);margin:0 auto;aspect-ratio:16/9;background:#000;border-radius:8px}
+.screen{display:flex;justify-content:center}
+.row{display:flex;justify-content:center;gap:14px;margin-top:14px;flex-wrap:wrap}
+.btn{font:inherit;font-size:clamp(22px,2.6vw,30px);padding:10px 26px;border-radius:12px;cursor:pointer;
+  border:2px solid var(--line);background:var(--paper);color:var(--ink)}
+.btn:hover{border-color:var(--red)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>守株待兔<small>Year 3 · Unit 2 · 寓言動畫</small></h1>
+    <a class="back" href="../../">← 教學工具集</a>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-v="0">剪紙立體書動畫<span>Paper pop-up animation · 1 分鐘</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-v="1">拼音朗讀<span>Read along with pinyin · 51 秒</span></button>
+  </div>
+
+  <div class="screen">
+    <video id="v" controls playsinline preload="metadata" poster="img/papercut.jpg" src="video/papercut.mp4"></video>
+  </div>
+
+  <div class="row">
+    <button class="btn" id="play">▶ 播放</button>
+    <button class="btn" id="full">⛶ 全螢幕</button>
+  </div>
+</div>
+<script>
+const V = [
+  {src:'video/papercut.mp4', poster:'img/papercut.jpg'},
+  {src:'video/pinyin.mp4',   poster:'img/pinyin.jpg'}
+];
+const v = document.getElementById('v'), play = document.getElementById('play');
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.setAttribute('aria-selected', x === t));
+  const d = V[+t.dataset.v];
+  v.pause(); v.poster = d.poster; v.src = d.src; v.load();
+}));
+play.addEventListener('click', () => v.paused ? v.play() : v.pause());
+v.addEventListener('play', () => play.textContent = '❚❚ 暫停');
+v.addEventListener('pause', () => play.textContent = '▶ 播放');
+document.getElementById('full').addEventListener('click', () => {
+  (v.requestFullscreen || v.webkitEnterFullscreen || v.webkitRequestFullscreen).call(v);
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'f' || e.key === 'F') document.getElementById('full').click();
+  if (e.key === ' ' && e.target === document.body) { e.preventDefault(); play.click(); }
+});
+</script>
+</body>
+</html>

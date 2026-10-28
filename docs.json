@@ -3,9 +3,25 @@
     "課堂互動 · 分組比賽",
     "語文學習",
     "評估與練習",
-    "文學分析 · 口試"
+    "文學分析 · 口試",
+    "Olivia · Year 3"
   ],
   "docs": [
+    {
+      "slug": "olivia/year3unit2",
+      "cat": "Olivia · Year 3",
+      "zh": "守株待兔｜寓言動畫",
+      "en": "Waiting by the Stump for Rabbits · Fable Animation",
+      "desc": "Year 3 Unit 2 寓言《守株待兔》：剪紙立體書風格動畫（約 1 分鐘，帶拼音字幕）和拼音朗讀版（約 51 秒），一頁切換播放，可全螢幕投影。",
+      "tags": [
+        "Year 3",
+        "守株待兔",
+        "寓言",
+        "動畫",
+        "拼音"
+      ],
+      "date": "2026-10"
+    },
     {
       "slug": "gcs/year9lesson5",
       "cat": "課堂互動 · 分組比賽",
