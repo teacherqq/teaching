@@ -117,11 +117,20 @@ i,.en{font-family:var(--en);font-style:italic;font-weight:600;color:var(--ink2)}
 .slot.hot{background:#eef6f2}
 .slot.done{border-style:solid;border-color:#3d8a55;background:#e3f2e6}
 .slot.bad{animation:no .4s;background:#f6d6cf}
+.gbtns{display:flex;gap:1.6cqw;justify-content:center;align-items:center}
+.btn.redo{background:#6b5a45}
+.grow{display:flex;align-items:center;gap:1.6cqw;width:100%;margin-top:1cqw}.grow .gfb{flex:1;margin-top:0}
+#g1 .gtitle i,#g2 .gtitle i,#g1 .qnum i,#g2 .qnum i{display:inline;margin-left:1.2cqw}
+#g1 .gwrap,#g2 .gwrap{inset:2% 3% 2% 3%}
+#g1 .pool,#g2 .pool{flex-wrap:nowrap}#g1 .pool .gcard,#g2 .pool .gcard{flex:0 1 auto}
+.grow{margin-top:auto!important}
+#g1 .slots,#g2 .slots,#g1 .pool,#g2 .pool{flex-shrink:0}
+.cleared{font-size:3.4cqw;color:#2f6f43;font-weight:700;align-self:center}.cleared i{display:inline!important;margin-left:1.2cqw}
 .pool{display:flex;flex-wrap:wrap;gap:1cqw;justify-content:center;margin-top:1.4cqw;min-height:7cqw}
 .gcard{background:#fffdf6;border:.2cqw solid var(--celadon-d);border-radius:.9cqw;padding:.8cqw 1.2cqw;font-size:2.80cqw;cursor:grab;user-select:none;max-width:44cqw;line-height:1.25;box-shadow:0 .2cqw .6cqw rgba(0,0,0,.12)}
 .gcard i{display:block;font-size:2.34cqw}
 .gcard.sel{outline:.3cqw solid var(--gold);transform:translateY(-.3cqw)}
-.slot .gcard{cursor:default;margin:.5cqw auto 0;border-color:#3d8a55}
+.slot .gcard{cursor:pointer;margin:.5cqw auto 0;border-color:#3d8a55}
 .gfb{margin-top:1cqw;font-size:2.50cqw;min-height:4.2cqw;text-align:center;line-height:1.3}
 .gfb i{display:block;font-size:2.13cqw}
 .gfb.ok{color:#2f6f43}.gfb.no{color:var(--cinnabar)}
@@ -398,11 +407,10 @@ html:fullscreen #bar{width:min(100%,calc((100vh - 60px)*16/9))}
   <div class="bgimg dim" style="background-image:url(img/gamebg.webp)"></div>
   <div class="gwrap">
     <div class="gtitle">第一關 · 重心南移排排看<i>Level 1 · Put the Shift in Order</i></div>
-    <div class="qnum">點一張卡片，再點正確的朝代（也可以拖過去）<i>Tap a card, then tap the right period (or drag it)</i></div>
+    <div class="qnum">點卡片，再點朝代（也可拖過去）<i>Tap a card, then a period, or drag it</i></div>
     <div class="slots" id="g1slots" style="grid-template-columns:repeat(4,1fr)"></div>
     <div class="pool" id="g1pool"></div>
-    <div class="gfb" id="g1fb"></div>
-    <button class="btn" id="g1next" style="display:none" onclick="P.next()">下一關 ➜<i>Next level</i></button>
+    <div class="grow"><div class="gfb" id="g1fb"></div><div class="gbtns"><button class="btn redo" onclick="Games.G1.setup()">↺ 全部重來<i>Start over</i></button><button class="btn" id="g1next" style="display:none" onclick="P.next()">下一關 ➜<i>Next level</i></button></div></div>
   </div>
 </section>
 
@@ -414,8 +422,7 @@ html:fullscreen #bar{width:min(100%,calc((100vh - 60px)*16/9))}
     <div class="qnum">把每一門手藝送回它的家鄉<i>Send each craft back to its home</i></div>
     <div class="slots" id="g2slots" style="grid-template-columns:repeat(4,1fr)"></div>
     <div class="pool" id="g2pool"></div>
-    <div class="gfb" id="g2fb"></div>
-    <button class="btn" id="g2next" style="display:none" onclick="P.next()">最後一關 ➜<i>Final level</i></button>
+    <div class="grow"><div class="gfb" id="g2fb"></div><div class="gbtns"><button class="btn redo" onclick="Games.G2.setup()">↺ 全部重來<i>Start over</i></button><button class="btn" id="g2next" style="display:none" onclick="P.next()">最後一關 ➜<i>Final level</i></button></div></div>
   </div>
 </section>
 
@@ -664,11 +671,16 @@ function dragGame(cfg){ // generic place-the-card game
  slots.innerHTML='';pool.innerHTML='';fb.innerHTML='';fb.className='gfb';nextBtn.style.display='none';
  let sel=null,left=cfg.items.length;
  const place=(card,slot)=>{const it=cfg.items[card.dataset.i];
-  if(slot.dataset.k===it.k){slot.classList.add('done');celebrate();card.classList.remove('sel');card.draggable=false;card.onclick=null;slot.appendChild(card);
+  if(slot.dataset.k===it.k){slot.classList.remove('bad');slot.classList.add('done');celebrate();card.classList.remove('sel');card.draggable=false;slot.appendChild(card);
+   card.onclick=e=>{e.stopPropagation();undo(card,slot)};
    fb.className='gfb ok';fb.innerHTML=`✅ 對了！${it.ok}<i>Correct! ${it.oke}</i>`;sel=null;
-   if(--left===0){fb.innerHTML+=`<div style="margin-top:.4cqw">🎉 過關了！<i>Level cleared!</i></div>`;nextBtn.style.display='inline-block'}}
-  else{slot.classList.remove('bad');void slot.offsetWidth;slot.classList.add('bad');fb.className='gfb no';
+   if(--left===0){pool.innerHTML=`<div class="cleared">🎉 過關了！<i>Level cleared!</i></div>`;nextBtn.style.display='inline-block'}}
+  else{slot.classList.remove('bad');void slot.offsetWidth;slot.classList.add('bad');setTimeout(()=>slot.classList.remove('bad'),900);fb.className='gfb no';
    fb.innerHTML=`❌ ${cfg.wrong(it)}<i>${cfg.wronge(it)}</i>`}};
+ const undo=(card,slot)=>{ // tap a placed card to take it back
+  slot.classList.remove('done','bad');card.draggable=true;pool.querySelector('.cleared')?.remove();pool.appendChild(card);left++;nextBtn.style.display='none';
+  card.onclick=()=>{pool.querySelectorAll('.gcard').forEach(x=>x.classList.remove('sel'));sel=card;card.classList.add('sel')};
+  fb.className='gfb';fb.innerHTML='↩️ 已撤回，可以重新放。<i>Undone. Place it again.</i>'};
  cfg.slotsDef.forEach(s=>{const d=document.createElement('div');d.className='slot';d.dataset.k=s.k;
   d.innerHTML=`<div class="lab">${s.zh}<i>${s.en}</i></div>`;
   d.onclick=()=>{if(sel&&!d.classList.contains('done'))place(sel,d)};
@@ -685,10 +697,10 @@ const PLACE={jdz:['景德鎮','Jingdezhen'],qz:['泉州','Quanzhou'],sc:['四川
 const Games={
  G1:{setup(){dragGame({slots:'#g1slots',pool:'#g1pool',fb:'#g1fb',next:'#g1next',
   slotsDef:[{k:'han',zh:'① 兩漢',en:'Han'},{k:'wj',zh:'② 魏晉南北朝',en:'Wei–Jin, N. & S.'},{k:'tang',zh:'③ 唐朝中期',en:'Mid-Tang'},{k:'ss',zh:'④ 南宋',en:'Southern Song'}],
-  items:[{k:'han',zh:'經濟重心在北方',en:'The economic centre is in the north',ok:'兩漢時經濟重心在北方。',oke:'In the Han, the centre was in the north.'},
-   {k:'wj',zh:'江南得到開發，打下基礎',en:'The south is developed, laying the foundation',ok:'魏晉南北朝時江南得到開發。',oke:'The south was developed in the Wei–Jin period.'},
-   {k:'tang',zh:'經濟重心開始南移',en:'The centre begins to move south',ok:'唐朝中期開始南移。',oke:'The shift began in the mid-Tang.'},
-   {k:'ss',zh:'經濟重心完成南移',en:'The shift south is complete',ok:'南宋時完成南移。',oke:'The shift was complete in the Southern Song.'}],
+  items:[{k:'han',zh:'經濟重心在北方',en:'Centre in the north',ok:'兩漢時經濟重心在北方。',oke:'In the Han, the centre was in the north.'},
+   {k:'wj',zh:'江南開發，打下基礎',en:'South developed',ok:'魏晉南北朝時江南得到開發。',oke:'The south was developed in the Wei–Jin period.'},
+   {k:'tang',zh:'重心開始南移',en:'Shift south begins',ok:'唐朝中期開始南移。',oke:'The shift began in the mid-Tang.'},
+   {k:'ss',zh:'重心完成南移',en:'Shift south complete',ok:'南宋時完成南移。',oke:'The shift was complete in the Southern Song.'}],
   wrong:it=>`再想想，這件事發生在${PERIOD[it.k][0]}。`,wronge:it=>`Not quite: this happened in ${PERIOD[it.k][1]}.`})}},
  G2:{setup(){dragGame({slots:'#g2slots',pool:'#g2pool',fb:'#g2fb',next:'#g2next',
   slotsDef:[{k:'jdz',zh:'📍 江西景德鎮',en:'Jingdezhen, Jiangxi'},{k:'qz',zh:'📍 泉州',en:'Quanzhou'},{k:'sc',zh:'📍 四川',en:'Sichuan'},{k:'hn',zh:'📍 海南島',en:'Hainan Island'}],
