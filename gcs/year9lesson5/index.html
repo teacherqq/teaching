@@ -43,7 +43,7 @@ i,.en{font-family:var(--en);font-style:italic;font-weight:600;color:var(--ink2)}
 .ph figcaption{font-size:2.35cqw;text-align:center;padding:.5cqw .3cqw .1cqw;line-height:1.25}
 .ph figcaption i{display:block;font-size:2.08cqw}
 .card{background:rgba(255,250,238,.94);border:.18cqw solid var(--ochre);border-radius:1cqw;padding:1.4cqw 1.8cqw;box-shadow:0 .4cqw 1.4cqw rgba(60,40,20,.2)}
-#tl h3{font-size:2.6cqw}#tl .card p{font-size:2.4cqw;line-height:1.3}#tl .card p i,#tl h3 i{font-size:1.7cqw}#tl .card{padding:.8cqw 1cqw}
+#tl h3{font-size:2.6cqw}#tl .card p{font-size:2.4cqw;line-height:1.3}#tl .card p i,#tl h3 i{font-size:1.7cqw}#tl .card{padding:.8cqw 1cqw;text-align:center}#tl .tlmap{display:block;width:100%;height:21cqw;object-fit:contain;margin:.4cqw 0;border-radius:.6cqw}
 .card h3{font-size:3.20cqw;color:var(--cinnabar);margin-bottom:.4cqw}
 .card p{font-size:2.70cqw;line-height:1.45}
 .card p i,.card h3 i{display:block;font-size:2.13cqw;line-height:1.3;color:var(--ink2)}
@@ -211,14 +211,15 @@ html:fullscreen #bar{width:min(100%,calc((100vh - 60px)*16/9))}
 <!-- S2 shift -->
 <section class="scene" id="s2">
   <div class="title">經濟重心南移 <i>The Southward Shift of the Economic Centre</i></div>
-  <figure class="ph pop" data-at="03-1" style="position:absolute;left:3%;top:17%;width:27%;height:80%;display:flex;flex-direction:column"><img src="img/migrate2.webp" style="flex:1;object-fit:contain;min-height:0"><figcaption>北方人口南遷 <i>Migration from north to south</i></figcaption></figure>
-  <div class="card pop" data-at="03-1" data-hide="03-5" style="position:absolute;left:33%;right:2.5%;top:17%"><p style="font-size:2.58cqw">黃河流域 <span style="color:var(--cinnabar)">➜</span> 長江流域<i>Yellow River valley ➜ Yangtze River valley</i></p></div>
-  <div id="tl" class="pop" data-at="03-2" data-hide="03-5" style="position:absolute;left:33%;right:2.5%;top:38%;display:grid;grid-template-columns:repeat(4,1fr);gap:1cqw">
-    <div class="card pop" data-at="03-2"><h3>兩漢<i>Han</i></h3><p>經濟重心在北方<i>Centre in the north</i></p></div>
-    <div class="card pop" data-at="03-3"><h3>魏晉南北朝<i>Wei–Jin, N. &amp; S.</i></h3><p>江南得到開發<i>The south is developed</i></p></div>
-    <div class="card pop" data-at="03-4"><h3>唐朝中期<i>Mid-Tang</i></h3><p>開始南移<i>Shift begins</i></p></div>
-    <div class="card pop" data-at="03-4" style="border-color:var(--cinnabar)"><h3>南宋<i>Southern Song</i></h3><p>完成南移<i>Shift complete</i></p></div>
+  <figure class="ph pop" data-at="03-1" data-hide="03-2" style="position:absolute;left:3%;top:17%;width:27%;height:80%;display:flex;flex-direction:column"><img src="img/migrate2.webp" style="flex:1;object-fit:contain;min-height:0"><figcaption>北方人口南遷 <i>Migration from north to south</i></figcaption></figure>
+  <div class="card pop" data-at="03-1" data-hide="03-2" style="position:absolute;left:33%;right:2.5%;top:17%"><p style="font-size:2.58cqw">黃河流域 <span style="color:var(--cinnabar)">➜</span> 長江流域<i>Yellow River valley ➜ Yangtze River valley</i></p></div>
+  <div id="tl" class="pop" data-at="03-2" data-hide="03-5" style="position:absolute;left:2.5%;right:2.5%;top:16%;display:grid;grid-template-columns:repeat(4,1fr);gap:1.2cqw">
+    <div class="card pop" data-at="03-2"><h3>兩漢<i>Han</i></h3><img class="tlmap" src="img/maphan.webp"><p>經濟重心在北方<i>Centre in the north</i></p></div>
+    <div class="card pop" data-at="03-3"><h3>魏晉南北朝<i>Wei–Jin, N. &amp; S.</i></h3><img class="tlmap" src="img/mapwj.webp"><p>江南得到開發<i>The south is developed</i></p></div>
+    <div class="card pop" data-at="03-4"><h3>唐朝中期<i>Mid-Tang</i></h3><img class="tlmap" src="img/maptang.webp"><p>開始南移<i>Shift begins</i></p></div>
+    <div class="card pop" data-at="03-4" style="border-color:var(--cinnabar)"><h3>南宋<i>Southern Song</i></h3><img class="tlmap" src="img/mapsong.webp"><p>完成南移<i>Shift complete</i></p></div>
   </div>
+  <figure class="ph pop" data-at="03-5" style="position:absolute;left:3%;top:17%;width:27%;height:80%;display:flex;flex-direction:column"><img src="img/migrate2.webp" style="flex:1;object-fit:contain;min-height:0"><figcaption>北方人口南遷 <i>Migration from north to south</i></figcaption></figure>
   <div style="position:absolute;left:33%;right:2.5%;top:25%;display:grid;grid-template-columns:repeat(3,1fr);gap:1.2cqw">
     <div class="card pop" data-at="03-6"><h3>⚔️ 政治<i>Political</i></h3><p>南方戰亂少，社會安定<i>Fewer wars, more stability</i></p></div>
     <div class="card pop" data-at="03-7"><h3>👨‍🌾 經濟<i>Economic</i></h3><p>北方人口南遷，帶來勞動力和技術<i>Migrants bring labour and skills</i></p></div>
