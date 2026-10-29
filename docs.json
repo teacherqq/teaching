@@ -2,7 +2,7 @@
   "cats": [
     "課堂互動 · 分組比賽",
     "語文學習",
-    "評估與練習",
+    "GCS 課程",
     "文學分析 · 口試",
     "Olivia · Year 3",
     "學生數據分析"
@@ -275,7 +275,7 @@
     },
     {
       "slug": "y9gcsb3",
-      "cat": "評估與練習",
+      "cat": "GCS 課程",
       "zh": "Y9 GCS Band 3 備課資源",
       "en": "Y9 GCS Band 3 · Teaching Materials",
       "desc": "Y9 GCS Band 3 課程備課頁面與 lesson1 教學資源，供課堂講解與學生練習使用。",
@@ -303,7 +303,7 @@
     },
     {
       "slug": "y9gcs",
-      "cat": "評估與練習",
+      "cat": "GCS 課程",
       "zh": "Y9 GCS 課程專區",
       "en": "Y9 GCS · Course Hub",
       "desc": "Y9 GCS 課程專區（待建），預留作為 Y9 GCS 各單元課程資源的匯集入口。",
