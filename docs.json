@@ -4,9 +4,26 @@
     "語文學習",
     "評估與練習",
     "文學分析 · 口試",
-    "Olivia · Year 3"
+    "Olivia · Year 3",
+    "學生數據分析"
   ],
   "docs": [
+    {
+      "slug": "",
+      "abs": "https://claude.ai/artifact/AmQdDZhWommWLrzYJ6xfnp",
+      "cat": "學生數據分析",
+      "zh": "十三年級語言",
+      "en": "Y13 Chinese B SL · Student Data Dashboard",
+      "desc": "Y13 BSL1 成績儀表：全班總覽與預警、學生個人趨勢、聽說讀寫四項技能（25 分制）、中英雙語學習建議與家長版 PDF，可直接錄入或導入新成績。僅老師本人可以打開。",
+      "tags": [
+        "Y13",
+        "DP Chinese B",
+        "成績分析",
+        "學習建議",
+        "儀表盤"
+      ],
+      "date": "2026-10"
+    },
     {
       "slug": "olivia/year3unit2",
       "cat": "Olivia · Year 3",
