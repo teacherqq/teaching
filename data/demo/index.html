@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>學習數據看板示範</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700&family=LXGW+WenKai+TC:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: instrument console — sticky control bar, then summary strip, then charts and tables on a 12-col grid that collapses to one column */
+:root{
+  --bg:#f3f6f8; --panel:#ffffff; --panel-2:#f7fafb; --line:#e3e9ee; --line-2:#cdd7df;
+  --fg:#16212b; --muted:#5d6e7d; --faint:#8696a4;
+  --accent:#0b8f9a; --accent-dim:rgba(11,143,154,.10); --glow:rgba(11,143,154,.28);
+  --bar:rgba(243,246,248,.92); --tip:rgba(255,255,255,.98); --scrim:rgba(22,33,43,.38); --shadow:0 1px 2px rgba(22,33,43,.04),0 4px 14px rgba(22,33,43,.05);
+  --read:#2f6fd6; --write:#c97a12; --listen:#16936a; --oral:#8355d4;
+  --red:#d93a3a; --orange:#d9700b; --yellow:#a87d00; --on-accent:#ffffff;
+  --f-display:"Oxanium","LXGW WenKai TC","Kaiti TC","STKaiti","BiauKai","KaiTi","DFKai-SB",serif;
+  --f-body:"IBM Plex Sans","LXGW WenKai TC","Kaiti TC","STKaiti","BiauKai","KaiTi","DFKai-SB",serif;
+  --f-mono:"JetBrains Mono","LXGW WenKai TC","Kaiti TC","STKaiti","BiauKai","KaiTi","DFKai-SB",monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--f-body);font-size:15px;line-height:1.55;
+  background-image:radial-gradient(circle at 1px 1px,rgba(22,60,90,.07) 1px,transparent 0);background-size:22px 22px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:none;margin:0 auto;padding-left:max(clamp(16px,2.5vw,48px),env(safe-area-inset-left,0px));padding-right:max(clamp(16px,2.5vw,48px),env(safe-area-inset-right,0px))}
+@media (min-width:1100px){body{zoom:1.12}}
+@media (min-width:1280px){body{zoom:1.22}}
+@media (min-width:1500px){body{zoom:1.32}}
+@media (min-width:1800px){body{zoom:1.45}}
+@media (min-width:2300px){body{zoom:1.7}}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* top bar */
+header.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bar);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;flex-direction:column;gap:10px;padding-block:12px}
+.bar-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px;margin-right:auto;min-width:0;flex-wrap:wrap}
+.demo-tag{font-size:12px;color:var(--orange);border:1px solid var(--orange);border-radius:999px;padding:1px 9px;white-space:nowrap}
+.brand h1{font-family:var(--f-display);font-weight:700;font-size:18px;letter-spacing:.06em;margin:0;white-space:nowrap}
+.brand .sub{color:var(--muted);font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-2);background:var(--panel);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:13px;transition:border-color .15s,background .15s}
+.btn:hover{border-color:var(--accent);background:var(--panel-2)}
+.btn.primary{border-color:var(--accent);color:var(--accent)}
+.btn.ghost{background:transparent}
+.btn[aria-pressed="true"]{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.switcher{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin}
+.chip{flex:none;border:1px solid var(--line-2);background:transparent;border-radius:999px;padding:4px 12px;font-family:var(--f-body);font-size:14px;cursor:pointer;position:relative;color:var(--muted)}
+.chip:hover{color:var(--fg);border-color:var(--faint)}
+.chip.on{color:var(--on-accent);background:var(--accent);border-color:var(--accent);box-shadow:0 2px 10px var(--glow)}
+.chip.t-red{color:var(--red);border:2px solid var(--red);font-weight:700}
+.chip.t-orange{color:var(--orange);border-color:var(--orange)}
+.chip.t-green{color:var(--listen);border-color:var(--listen)}
+.chip.on.t-red{background:var(--red);color:#fff;box-shadow:0 2px 10px rgba(217,58,58,.3)}
+.chip.on.t-orange{background:var(--orange);color:#fff;box-shadow:0 2px 10px rgba(217,112,11,.3)}
+.chip.on.t-green{background:var(--listen);color:#fff;box-shadow:0 2px 10px rgba(22,147,106,.3)}
+.nm.t-red{color:var(--red)}.nm.t-orange{color:var(--orange)}.nm.t-green{color:var(--listen)}
+.tlegend{display:flex;gap:12px;align-items:center;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.tlegend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+body.solo .tlegend{display:none}
+.chip .dot{position:absolute;top:-2px;right:-2px;width:8px;height:8px;border-radius:50%;border:2px solid var(--panel)}
+.solo-banner{display:none;align-items:center;gap:10px;color:var(--muted);font-size:13px}
+body.solo .switcher,body.solo .teacher-only{display:none!important}
+body.solo .solo-banner{display:flex}
+body.solo .flag,body.solo .flags{display:none!important}
+body.solo .sc .d.vs{display:none!important}
+
+main{overflow-x:clip;padding-block:22px 60px;display:flex;flex-direction:column;gap:18px}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+.panel{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:10px;padding:16px 18px;min-width:0}
+.panel h2{font-family:var(--f-display);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.panel h2 .zh{letter-spacing:.04em;text-transform:none;color:var(--fg);font-size:15.5px}
+.span-12{grid-column:span 12}.span-8{grid-column:span 8}.span-7{grid-column:span 7}.span-5{grid-column:span 5}.span-4{grid-column:span 4}.span-6{grid-column:span 6}.span-3{grid-column:span 3}
+@media (max-width:900px){.span-8,.span-7,.span-5,.span-4,.span-6{grid-column:span 12}.span-3{grid-column:span 6}}
+@media (max-width:480px){.span-3{grid-column:span 12}}
+
+.kpi .label{color:var(--muted);font-size:13px;letter-spacing:.04em}
+.kpi .value{font-family:var(--f-display);font-size:34px;font-weight:600;line-height:1.15;margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi .value small{font-size:14px;color:var(--muted);font-weight:400;margin-left:4px}
+.kpi .hint{color:var(--faint);font-size:13px;margin-top:2px}
+
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-bottom:6px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.legend .lg{all:unset;cursor:pointer;display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;border:1px solid var(--line);transition:opacity .15s,background .15s}
+.legend .lg:hover{background:var(--accent-dim)}
+.legend .lg.off{opacity:.38;text-decoration:line-through}
+.legend .lg:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sc[data-sk]{cursor:pointer;transition:opacity .15s,border-color .15s}
+.sc[data-sk]:hover{border-color:var(--accent)}
+.sc.off{opacity:.42}
+.legend i.dash{background:repeating-linear-gradient(90deg,var(--muted) 0 4px,transparent 4px 7px)!important}
+.chart{position:relative;width:100%}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .tip{position:absolute;pointer-events:none;background:var(--tip);box-shadow:var(--shadow);border:1px solid var(--line-2);border-radius:6px;padding:7px 10px;font-size:13px;white-space:nowrap;transform:translate(-50%,-110%);opacity:0;transition:opacity .12s;z-index:2}
+.chart .tip b{font-family:var(--f-display);font-weight:600;display:block;margin-bottom:2px}
+.chart .tip .r{display:flex;gap:8px;align-items:center}
+.chart .tip .r i{width:8px;height:8px;border-radius:50%}
+.pt{filter:drop-shadow(0 0 3px currentColor);stroke:var(--panel);stroke-width:1.5}
+
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:7px 9px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--muted);font-weight:500;font-size:13px;letter-spacing:.03em}
+td.c,th.c{text-align:center}
+tr.click{cursor:pointer}
+tr.click:hover td{background:var(--panel-2)}
+.heat{border-radius:4px;padding:3px 6px;display:inline-block;min-width:54px;text-align:center}
+.heat small{opacity:.7;margin-left:4px}
+.flag{display:inline-flex;align-items:center;gap:5px;font-size:13px;border-radius:999px;padding:2px 9px;border:1px solid currentColor;white-space:nowrap}
+.flag::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.flag.red{color:var(--red)}.flag.orange{color:var(--orange)}.flag.yellow{color:var(--yellow)}.flag.grey{color:var(--muted)}.flag.ok{color:var(--listen)}
+.flags{display:flex;gap:6px;flex-wrap:wrap}
+
+.hero{display:flex;gap:22px;align-items:stretch;flex-wrap:wrap}
+.hero .code{font-family:var(--f-display);font-size:48px;font-weight:700;letter-spacing:.02em;line-height:1;color:var(--accent)}
+.gauge{display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap}
+.gauge .g{display:flex;flex-direction:column}
+.gauge .g span{color:var(--muted);font-size:13px}
+.gauge .g strong{font-family:var(--f-display);font-size:34px;line-height:1.1;font-variant-numeric:tabular-nums}
+.gapline{font-size:14px;color:var(--muted);max-width:46ch}
+.skillcards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:640px){.skillcards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sc{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--panel-2);min-width:0}
+.sc .n{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap;white-space:nowrap}
+.sc .n i{width:8px;height:8px;border-radius:50%;flex:none}
+.sc .v{font-family:var(--f-display);font-size:28px;font-variant-numeric:tabular-nums}
+.sc .d{font-size:13px}
+.s25{color:var(--accent);white-space:nowrap}
+.up{color:var(--listen)}.down{color:var(--red)}.flat{color:var(--muted)}
+
+.fb{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:820px){.fb{grid-template-columns:1fr}}
+.fb section{border-top:2px solid var(--line-2);padding-top:10px;min-width:0}
+.fb section.s{border-color:var(--listen)}.fb section.i{border-color:var(--orange)}.fb section.n{border-color:var(--accent)}
+.fb h3{margin:0 0 6px;font-size:13px;font-family:var(--f-display);letter-spacing:.06em}
+.fb ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px}
+.fb li .en{display:block;color:var(--muted);font-size:13.5px;margin-top:2px}
+textarea,input[type=text],input[type=number],input[type=date],select{background:var(--panel);border:1px solid var(--line-2);border-radius:6px;padding:7px 9px;width:100%}
+textarea{min-height:84px;resize:vertical;line-height:1.5}
+.savestate{font-size:13px;color:var(--faint)}
+.dropalert{border:2px solid var(--red);background:color-mix(in srgb,var(--red) 7%,var(--panel,#fff));border-radius:14px;padding:14px 18px;display:flex;gap:14px;align-items:flex-start}
+.dropalert .ic{font-size:28px;line-height:1;color:var(--red)}
+.dropalert b.big{display:block;color:var(--red);font-size:22px;line-height:1.35}
+.dropalert .det{color:var(--red);font-size:16px;margin-top:4px}
+.dropalert .oth{color:var(--muted);font-size:14px;margin-top:4px}
+body.solo .dropalert{display:none!important}
+.mic{display:inline-flex;align-items:center;gap:6px}
+.mic.on{background:var(--red);color:#fff;border-color:var(--red);animation:micp 1.2s ease-in-out infinite}
+@keyframes micp{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--red) 25%,transparent)}}
+.interim{color:var(--faint);font-size:14px;min-height:1.4em;margin-top:6px}
+.miclang{width:auto;font-size:13px;padding:2px 6px}
+.comment{background:var(--panel-2);border:1px dashed var(--line-2);border-radius:8px;padding:12px 14px;white-space:pre-wrap;font-size:14.5px;max-width:90ch}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.muted{color:var(--muted)}
+.note-s{font-size:13px;color:var(--faint)}
+
+.empty{padding:60px 20px;text-align:center;color:var(--muted)}
+.empty strong{display:block;font-family:var(--f-display);color:var(--fg);font-size:18px;margin-bottom:6px}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:20;background:var(--scrim);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:max(20px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 20px max(12px,env(safe-area-inset-left,0px))}
+.modal .box{background:var(--panel);border:1px solid var(--line-2);border-radius:12px;width:min(980px,100%);padding:18px 20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.modal h3{margin:0;font-family:var(--f-display);font-size:17px;letter-spacing:.04em}
+.form-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:700px){.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.form-grid label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+.entry td{padding:4px 5px}
+.entry input{width:74px;padding:5px 6px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--panel-2);border:1px solid var(--accent);color:var(--fg);padding:9px 16px;border-radius:8px;z-index:30;font-size:13px}
+.err{color:var(--red);font-size:13px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<header class="bar">
+  <div class="wrap">
+    <div class="bar-row">
+      <div class="brand"><h1>示範班級</h1><span class="sub">學習數據看板</span><span class="demo-tag">示範數據 · 姓名與分數均為虛構</span></div>
+      <div class="row teacher-only">
+        <button class="btn" id="btnAdd">＋ 新增評估</button>
+        <button class="btn" id="btnImport">導入表格</button>
+        <input type="file" id="fileImport" accept=".xlsx,.xls,.csv" hidden>
+      </div>
+      <button class="btn ghost" id="btnSolo" aria-pressed="false" title="面談時只顯示當前學生">單人模式</button>
+      <button class="btn ghost" id="btnLang" title="切換成英文">EN</button>
+      <button class="btn ghost" id="btnSound" aria-pressed="true" title="齒輪音效">♪ 音效開</button>
+      <button class="btn ghost" id="btnFull" aria-pressed="false" title="全螢幕顯示" hidden>⛶ 全螢幕</button>
+    </div>
+    <nav class="switcher" id="switcher" aria-label="切換學生"></nav>
+    <div class="tlegend teacher-only" id="tlegend"></div>
+    <div class="solo-banner"><span>單人模式：只顯示這位同學的數據</span><button class="btn ghost" id="btnSoloExit">退出</button></div>
+  </div>
+</header>
+
+<main class="wrap" id="app">
+  <div class="empty"><strong>正在載入成績數據…</strong>數據保存在這個頁面的數據庫裏。如果還是空的，可以點「＋ 新增評估」或「導入表格」加入第一份成績。</div>
+</main>
+
+<div id="modalRoot"></div>
+
+<script>
+/* 公開示範版：所有姓名與分數均為虛構。資料只存在訪客自己的瀏覽器裏。 */
+(()=>{const SEED=[{"path": "assessments/a1", "data": {"name": "Theme 1", "type": "單元測", "order": 1, "date": null, "single": false, "source": "demo"}}, {"path": "assessments/a2", "data": {"name": "Theme 2", "type": "單元測", "order": 2, "date": null, "single": false, "source": "demo"}}, {"path": "assessments/a3", "data": {"name": "Theme 3", "type": "單元測", "order": 3, "date": null, "single": false, "source": "demo"}}, {"path": "assessments/a4", "data": {"name": "Term 2 Oral", "type": "口語考", "order": 4, "date": null, "single": true, "source": "demo"}}, {"path": "assessments/a5", "data": {"name": "EOY", "type": "EOY", "order": 5, "date": null, "single": false, "source": "demo"}}, {"path": "assessments/a6", "data": {"name": "Unit 4", "type": "單元測", "order": 6, "date": null, "single": false, "source": "demo"}}, {"path": "students/S01", "data": {"code": "S01", "label": "林", "target": "7", "note": ""}}, {"path": "scores/a1__S01", "data": {"aid": "a1", "sid": "S01", "skills": {"reading": {"raw": 37, "max": 40, "pct": 92.0, "grade": "7"}, "writing": {"raw": 27, "max": 30, "pct": 88.0, "grade": "7"}, "listening": {"raw": 24, "max": 25, "pct": 96.0, "grade": "7"}}, "pct": 92.0, "grade": "7"}}, {"path": "scores/a2__S01", "data": {"aid": "a2", "sid": "S01", "skills": {"reading": {"raw": 36, "max": 40, "pct": 88.0, "grade": "7"}, "writing": {"raw": 28, "max": 30, "pct": 92.0, "grade": "7"}, "listening": {"raw": 23, "max": 25, "pct": 92.0, "grade": "7"}, "oral": {"raw": 28, "max": 30, "pct": 92.0, "grade": "7"}}, "pct": 91.0, "grade": "7"}}, {"path": "scores/a3__S01", "data": {"aid": "a3", "sid": "S01", "skills": {"reading": {"raw": 39, "max": 40, "pct": 96.0, "grade": "7"}, "writing": {"raw": 27, "max": 30, "pct": 88.0, "grade": "7"}, "listening": {"raw": 23, "max": 25, "pct": 92.0, "grade": "7"}}, "pct": 92.0, "grade": "7"}}, {"path": "scores/a4__S01", "data": {"aid": "a4", "sid": "S01", "skills": {"oral": {"raw": 27, "max": 30, "pct": 88.0, "grade": "7"}}, "pct": 88.0, "grade": "7"}}, {"path": "scores/a5__S01", "data": {"aid": "a5", "sid": "S01", "skills": {"reading": {"raw": 37, "max": 40, "pct": 92.0, "grade": "7"}, "writing": {"raw": 29, "max": 30, "pct": 96.0, "grade": "7"}, "listening": {"raw": 23, "max": 25, "pct": 92.0, "grade": "7"}}, "pct": 93.3, "grade": "7"}}, {"path": "scores/a6__S01", "data": {"aid": "a6", "sid": "S01", "skills": {"reading": {"raw": 38, "max": 40, "pct": 96.0, "grade": "7"}, "writing": {"raw": 28, "max": 30, "pct": 92.0, "grade": "7"}, "listening": {"raw": 24, "max": 25, "pct": 96.0, "grade": "7"}}, "pct": 94.7, "grade": "7"}}, {"path": "students/S02", "data": {"code": "S02", "label": "周", "target": "7", "note": ""}}, {"path": "scores/a1__S02", "data": {"aid": "a1", "sid": "S02", "skills": {"reading": {"raw": 35, "max": 40, "pct": 88.0, "grade": "7"}, "writing": {"raw": 25, "max": 30, "pct": 84.0, "grade": "7-"}, "listening": {"raw": 22, "max": 25, "pct": 88.0, "grade": "7"}}, "pct": 86.7, "grade": "7"}}, {"path": "scores/a2__S02", "data": {"aid": "a2", "sid": "S02", "skills": {"reading": {"raw": 35, "max": 40, "pct": 88.0, "grade": "7"}, "writing": {"raw": 27, "max": 30, "pct": 88.0, "grade": "7"}, "listening": {"raw": 22, "max": 25, "pct": 88.0, "grade": "7"}, "oral": {"raw": 25, "max": 30, "pct": 84.0, "grade": "7-"}}, "pct": 87.0, "grade": "7"}}, {"path": "scores/a3__S02", "data": {"aid": "a3", "sid": "S02", "skills": {"reading": {"raw": 36, "max": 40, "pct": 88.0, "grade": "7"}, "writing": {"raw": 26, "max": 30, "pct": 88.0, "grade": "7"}, "listening": {"raw": 22, "max": 25, "pct": 88.0, "grade": "7"}}, "pct": 88.0, "grade": "7"}}, {"path": "scores/a4__S02", "data": {"aid": "a4", "sid": "S02", "skills": {"oral": {"raw": 26, "max": 30, "pct": 88.0, "grade": "7"}}, "pct": 88.0, "grade": "7"}}, {"path": "scores/a5__S02", "data": {"aid": "a5", "sid": "S02", "skills": {"reading": {"raw": 36, "max": 40, "pct": 88.0, "grade": "7"}, "writing": {"raw": 28, "max": 30, "pct": 92.0, "grade": "7"}, "listening": {"raw": 23, "max": 25, "pct": 92.0, "grade": "7"}}, "pct": 90.7, "grade": "7"}}, {"path": "scores/a6__S02", "data": {"aid": "a6", "sid": "S02", "skills": {"reading": {"raw": 29, "max": 40, "pct": 72.0, "grade": "6-"}, "writing": {"raw": 22, "max": 30, "pct": 72.0, "grade": "6-"}, "listening": {"raw": 18, "max": 25, "pct": 72.0, "grade": "6-"}}, "pct": 72.0, "grade": "6-"}}, {"path": "students/S03", "data": {"code": "S03", "label": "吳", "target": "6", "note": ""}}, {"path": "scores/a1__S03", "data": {"aid": "a1", "sid": "S03", "skills": {"reading": {"raw": 26, "max": 40, "pct": 64.0, "grade": "5"}, "writing": {"raw": 17, "max": 30, "pct": 56.0, "grade": "4"}, "listening": {"raw": 16, "max": 25, "pct": 64.0, "grade": "5"}}, "pct": 61.3, "grade": "5-"}}, {"path": "scores/a2__S03", "data": {"aid": "a2", "sid": "S03", "skills": {"reading": {"raw": 26, "max": 40, "pct": 64.0, "grade": "5"}, "writing": {"raw": 16, "max": 30, "pct": 52.0, "grade": "4"}, "listening": {"raw": 17, "max": 25, "pct": 68.0, "grade": "5"}, "oral": {"raw": 19, "max": 30, "pct": 64.0, "grade": "5"}}, "pct": 62.0, "grade": "5"}}, {"path": "scores/a3__S03", "data": {"aid": "a3", "sid": "S03", "skills": {"reading": {"raw": 24, "max": 40, "pct": 60.0, "grade": "5-"}, "writing": {"raw": 16, "max": 30, "pct": 52.0, "grade": "4"}, "listening": {"raw": 15, "max": 25, "pct": 60.0, "grade": "5-"}}, "pct": 57.3, "grade": "4+"}}, {"path": "scores/a4__S03", "data": {"aid": "a4", "sid": "S03", "skills": {"oral": {"raw": 18, "max": 30, "pct": 60.0, "grade": "5-"}}, "pct": 60.0, "grade": "5-"}}, {"path": "scores/a5__S03", "data": {"aid": "a5", "sid": "S03", "skills": {"reading": {"raw": 25, "max": 40, "pct": 64.0, "grade": "5"}, "writing": {"raw": 17, "max": 30, "pct": 56.0, "grade": "4"}, "listening": {"raw": 16, "max": 25, "pct": 64.0, "grade": "5"}}, "pct": 61.3, "grade": "5-"}}, {"path": "scores/a6__S03", "data": {"aid": "a6", "sid": "S03", "skills": {"reading": {"raw": 25, "max": 40, "pct": 64.0, "grade": "5"}, "writing": {"raw": 18, "max": 30, "pct": 60.0, "grade": "5-"}, "listening": {"raw": 16, "max": 25, "pct": 64.0, "grade": "5"}}, "pct": 62.7, "grade": "5"}}, {"path": "students/S04", "data": {"code": "S04", "label": "鄭", "target": "7", "note": ""}}, {"path": "scores/a1__S04", "data": {"aid": "a1", "sid": "S04", "skills": {"reading": {"raw": 33, "max": 40, "pct": 84.0, "grade": "7-"}, "writing": {"raw": 21, "max": 30, "pct": 72.0, "grade": "6-"}, "listening": {"raw": 21, "max": 25, "pct": 84.0, "grade": "7-"}}, "pct": 80.0, "grade": "6+"}}, {"path": "scores/a2__S04", "data": {"aid": "a2", "sid": "S04", "skills": {"reading": {"raw": 35, "max": 40, "pct": 88.0, "grade": "7"}, "writing": {"raw": 21, "max": 30, "pct": 72.0, "grade": "6-"}, "listening": {"raw": 22, "max": 25, "pct": 88.0, "grade": "7"}, "oral": {"raw": 24, "max": 30, "pct": 80.0, "grade": "6+"}}, "pct": 82.0, "grade": "6+"}}, {"path": "scores/a3__S04", "data": {"aid": "a3", "sid": "S04", "skills": {"reading": {"raw": 33, "max": 40, "pct": 84.0, "grade": "7-"}, "writing": {"raw": 22, "max": 30, "pct": 72.0, "grade": "6-"}, "listening": {"raw": 20, "max": 25, "pct": 80.0, "grade": "6+"}}, "pct": 78.7, "grade": "6"}}, {"path": "scores/a4__S04", "data": {"aid": "a4", "sid": "S04", "skills": {"oral": {"raw": 26, "max": 30, "pct": 88.0, "grade": "7"}}, "pct": 88.0, "grade": "7"}}, {"path": "scores/a5__S04", "data": {"aid": "a5", "sid": "S04", "skills": {"reading": {"raw": 35, "max": 40, "pct": 88.0, "grade": "7"}, "writing": {"raw": 19, "max": 30, "pct": 64.0, "grade": "5"}, "listening": {"raw": 20, "max": 25, "pct": 80.0, "grade": "6+"}}, "pct": 77.3, "grade": "6"}}, {"path": "scores/a6__S04", "data": {"aid": "a6", "sid": "S04", "skills": {"reading": {"raw": 35, "max": 40, "pct": 88.0, "grade": "7"}, "writing": {"raw": 21, "max": 30, "pct": 72.0, "grade": "6-"}, "listening": {"raw": 22, "max": 25, "pct": 88.0, "grade": "7"}}, "pct": 82.7, "grade": "6+"}}, {"path": "students/S05", "data": {"code": "S05", "label": "何", "target": "7", "note": ""}}, {"path": "scores/a1__S05", "data": {"aid": "a1", "sid": "S05", "skills": {"reading": {"raw": 35, "max": 40, "pct": 88.0, "grade": "7"}, "writing": {"raw": 26, "max": 30, "pct": 88.0, "grade": "7"}, "listening": {"raw": 21, "max": 25, "pct": 84.0, "grade": "7-"}}, "pct": 86.7, "grade": "7"}}, {"path": "scores/a2__S05", "data": {"aid": "a2", "sid": "S05", "skills": {"reading": {"raw": 32, "max": 40, "pct": 80.0, "grade": "6+"}, "writing": {"raw": 26, "max": 30, "pct": 88.0, "grade": "7"}, "listening": {"raw": 22, "max": 25, "pct": 88.0, "grade": "7"}, "oral": {"raw": 21, "max": 30, "pct": 72.0, "grade": "6-"}}, "pct": 82.0, "grade": "6+"}}, {"path": "scores/a3__S05", "data": {"aid": "a3", "sid": "S05", "skills": {"reading": {"raw": 34, "max": 40, "pct": 84.0, "grade": "7-"}, "writing": {"raw": 24, "max": 30, "pct": 80.0, "grade": "6+"}, "listening": {"raw": 20, "max": 25, "pct": 80.0, "grade": "6+"}}, "pct": 81.3, "grade": "6+"}}, {"path": "scores/a4__S05", "data": {"aid": "a4", "sid": "S05", "skills": {"oral": {"raw": 19, "max": 30, "pct": 64.0, "grade": "5"}}, "pct": 64.0, "grade": "5"}}, {"path": "scores/a5__S05", "data": {"aid": "a5", "sid": "S05", "skills": {"reading": {"raw": 33, "max": 40, "pct": 84.0, "grade": "7-"}, "writing": {"raw": 24, "max": 30, "pct": 80.0, "grade": "6+"}, "listening": {"raw": 20, "max": 25, "pct": 80.0, "grade": "6+"}}, "pct": 81.3, "grade": "6+"}}, {"path": "scores/a6__S05", "data": {"aid": "a6", "sid": "S05", "skills": {"reading": {"raw": 34, "max": 40, "pct": 84.0, "grade": "7-"}, "writing": {"raw": 24, "max": 30, "pct": 80.0, "grade": "6+"}, "listening": {"raw": 20, "max": 25, "pct": 80.0, "grade": "6+"}}, "pct": 81.3, "grade": "6+"}}, {"path": "students/S06", "data": {"code": "S06", "label": "許", "target": "6", "note": ""}}, {"path": "scores/a1__S06", "data": {"aid": "a1", "sid": "S06", "skills": {"reading": {"raw": 29, "max": 40, "pct": 72.0, "grade": "6-"}, "writing": {"raw": 22, "max": 30, "pct": 72.0, "grade": "6-"}, "listening": {"raw": 20, "max": 25, "pct": 80.0, "grade": "6+"}}, "pct": 74.7, "grade": "6"}}, {"path": "scores/a2__S06", "data": {"aid": "a2", "sid": "S06", "skills": {"reading": {"raw": 32, "max": 40, "pct": 80.0, "grade": "6+"}, "writing": {"raw": 22, "max": 30, "pct": 72.0, "grade": "6-"}, "listening": {"raw": 20, "max": 25, "pct": 80.0, "grade": "6+"}, "oral": {"raw": 24, "max": 30, "pct": 80.0, "grade": "6+"}}, "pct": 78.0, "grade": "6"}}, {"path": "scores/a3__S06", "data": {"aid": "a3", "sid": "S06", "skills": {"reading": {"raw": 30, "max": 40, "pct": 76.0, "grade": "6"}, "writing": {"raw": 23, "max": 30, "pct": 76.0, "grade": "6"}, "listening": {"raw": 20, "max": 25, "pct": 80.0, "grade": "6+"}}, "pct": 77.3, "grade": "6"}}, {"path": "scores/a4__S06", "data": {"aid": "a4", "sid": "S06", "skills": {"oral": {"raw": 24, "max": 30, "pct": 80.0, "grade": "6+"}}, "pct": 80.0, "grade": "6+"}}, {"path": "scores/a5__S06", "data": {"aid": "a5", "sid": "S06", "skills": {"reading": {"raw": 31, "max": 40, "pct": 76.0, "grade": "6"}, "writing": {"raw": 24, "max": 30, "pct": 80.0, "grade": "6+"}, "listening": {"raw": 19, "max": 25, "pct": 76.0, "grade": "6"}}, "pct": 77.3, "grade": "6"}}, {"path": "scores/a6__S06", "data": {"aid": "a6", "sid": "S06", "skills": {"reading": {"raw": 30, "max": 40, "pct": 76.0, "grade": "6"}, "writing": {"raw": 24, "max": 30, "pct": 80.0, "grade": "6+"}, "listening": {"raw": 19, "max": 25, "pct": 76.0, "grade": "6"}}, "pct": 77.3, "grade": "6"}}, {"path": "students/S07", "data": {"code": "S07", "label": "梁", "target": "6", "note": ""}}, {"path": "scores/a1__S07", "data": {"aid": "a1", "sid": "S07", "skills": {"reading": {"raw": 24, "max": 40, "pct": 60.0, "grade": "5-"}, "writing": {"raw": 16, "max": 30, "pct": 52.0, "grade": "4"}, "listening": {"raw": 14, "max": 25, "pct": 56.0, "grade": "4"}}, "pct": 56.0, "grade": "4"}}, {"path": "scores/a2__S07", "data": {"aid": "a2", "sid": "S07", "skills": {"reading": {"raw": 25, "max": 40, "pct": 64.0, "grade": "5"}, "writing": {"raw": 20, "max": 30, "pct": 68.0, "grade": "5"}, "listening": {"raw": 15, "max": 25, "pct": 60.0, "grade": "5-"}, "oral": {"raw": 20, "max": 30, "pct": 68.0, "grade": "5"}}, "pct": 65.0, "grade": "5"}}, {"path": "scores/a3__S07", "data": {"aid": "a3", "sid": "S07", "skills": {"reading": {"raw": 27, "max": 40, "pct": 68.0, "grade": "5"}, "writing": {"raw": 20, "max": 30, "pct": 68.0, "grade": "5"}, "listening": {"raw": 17, "max": 25, "pct": 68.0, "grade": "5"}}, "pct": 68.0, "grade": "5"}}, {"path": "scores/a4__S07", "data": {"aid": "a4", "sid": "S07", "skills": {"oral": {"raw": 24, "max": 30, "pct": 80.0, "grade": "6+"}}, "pct": 80.0, "grade": "6+"}}, {"path": "scores/a5__S07", "data": {"aid": "a5", "sid": "S07", "skills": {"reading": {"raw": 33, "max": 40, "pct": 84.0, "grade": "7-"}, "writing": {"raw": 24, "max": 30, "pct": 80.0, "grade": "6+"}, "listening": {"raw": 19, "max": 25, "pct": 76.0, "grade": "6"}}, "pct": 80.0, "grade": "6+"}}, {"path": "scores/a6__S07", "data": {"aid": "a6", "sid": "S07", "skills": {"reading": {"raw": 34, "max": 40, "pct": 84.0, "grade": "7-"}, "writing": {"raw": 26, "max": 30, "pct": 88.0, "grade": "7"}, "listening": {"raw": 22, "max": 25, "pct": 88.0, "grade": "7"}}, "pct": 86.7, "grade": "7"}}, {"path": "students/S08", "data": {"code": "S08", "label": "蘇", "target": "7", "note": ""}}, {"path": "scores/a1__S08", "data": {"aid": "a1", "sid": "S08", "skills": {"reading": {"raw": 38, "max": 40, "pct": 96.0, "grade": "7"}, "writing": {"raw": 26, "max": 30, "pct": 88.0, "grade": "7"}, "listening": {"raw": 25, "max": 25, "pct": 100.0, "grade": "7"}}, "pct": 94.7, "grade": "7"}}, {"path": "scores/a2__S08", "data": {"aid": "a2", "sid": "S08", "skills": {"reading": {"raw": 38, "max": 40, "pct": 96.0, "grade": "7"}, "writing": {"raw": 27, "max": 30, "pct": 88.0, "grade": "7"}, "listening": {"raw": 23, "max": 25, "pct": 92.0, "grade": "7"}, "oral": {"raw": 26, "max": 30, "pct": 88.0, "grade": "7"}}, "pct": 91.0, "grade": "7"}}, {"path": "scores/a3__S08", "data": {"aid": "a3", "sid": "S08", "skills": {"reading": {"raw": 38, "max": 40, "pct": 96.0, "grade": "7"}, "writing": {"raw": 26, "max": 30, "pct": 88.0, "grade": "7"}, "listening": {"raw": 24, "max": 25, "pct": 96.0, "grade": "7"}}, "pct": 93.3, "grade": "7"}}, {"path": "scores/a4__S08", "data": {"aid": "a4", "sid": "S08", "skills": {"oral": {"raw": 27, "max": 30, "pct": 88.0, "grade": "7"}}, "pct": 88.0, "grade": "7"}}, {"path": "scores/a5__S08", "data": {"aid": "a5", "sid": "S08", "skills": {"reading": {"raw": 35, "max": 40, "pct": 88.0, "grade": "7"}, "writing": {"raw": 26, "max": 30, "pct": 88.0, "grade": "7"}, "listening": {"raw": 24, "max": 25, "pct": 96.0, "grade": "7"}}, "pct": 90.7, "grade": "7"}}, {"path": "scores/a6__S08", "data": {"aid": "a6", "sid": "S08", "skills": {"reading": {"raw": 34, "max": 40, "pct": 84.0, "grade": "7-"}, "writing": {"raw": 27, "max": 30, "pct": 88.0, "grade": "7"}, "listening": {"raw": 25, "max": 25, "pct": 100.0, "grade": "7"}}, "pct": 90.7, "grade": "7"}}, {"path": "students/S09", "data": {"code": "S09", "label": "葉", "target": "6", "note": ""}}, {"path": "scores/a1__S09", "data": {"aid": "a1", "sid": "S09", "skills": {"reading": {"raw": 25, "max": 40, "pct": 64.0, "grade": "5"}, "writing": {"raw": 20, "max": 30, "pct": 68.0, "grade": "5"}, "listening": {"raw": 16, "max": 25, "pct": 64.0, "grade": "5"}}, "pct": 65.3, "grade": "5"}}, {"path": "scores/a2__S09", "data": {"aid": "a2", "sid": "S09", "skills": {"reading": {"raw": 24, "max": 40, "pct": 60.0, "grade": "5-"}, "writing": {"raw": 20, "max": 30, "pct": 68.0, "grade": "5"}, "listening": {"raw": 17, "max": 25, "pct": 68.0, "grade": "5"}, "oral": {"raw": 22, "max": 30, "pct": 72.0, "grade": "6-"}}, "pct": 67.0, "grade": "5"}}, {"path": "scores/a3__S09", "data": {"aid": "a3", "sid": "S09", "skills": {"reading": {"raw": 26, "max": 40, "pct": 64.0, "grade": "5"}, "writing": {"raw": 22, "max": 30, "pct": 72.0, "grade": "6-"}, "listening": {"raw": 17, "max": 25, "pct": 68.0, "grade": "5"}}, "pct": 68.0, "grade": "5"}}, {"path": "scores/a4__S09", "data": {"aid": "a4", "sid": "S09", "skills": {"oral": {"raw": 21, "max": 30, "pct": 72.0, "grade": "6-"}}, "pct": 72.0, "grade": "6-"}}, {"path": "scores/a5__S09", "data": {"aid": "a5", "sid": "S09", "skills": {"reading": {"raw": 28, "max": 40, "pct": 72.0, "grade": "6-"}, "writing": {"raw": 20, "max": 30, "pct": 68.0, "grade": "5"}, "listening": {"raw": 18, "max": 25, "pct": 72.0, "grade": "6-"}}, "pct": 70.7, "grade": "5+"}}, {"path": "scores/a6__S09", "data": {"aid": "a6", "sid": "S09", "skills": {"reading": {"raw": 28, "max": 40, "pct": 72.0, "grade": "6-"}, "writing": {"raw": 21, "max": 30, "pct": 72.0, "grade": "6-"}, "listening": {"raw": 18, "max": 25, "pct": 72.0, "grade": "6-"}}, "pct": 72.0, "grade": "6-"}}, {"path": "students/S10", "data": {"code": "S10", "label": "孫", "target": "7", "note": ""}}, {"path": "scores/a1__S10", "data": {"aid": "a1", "sid": "S10", "skills": {"reading": {"raw": 34, "max": 40, "pct": 84.0, "grade": "7-"}, "writing": {"raw": 24, "max": 30, "pct": 80.0, "grade": "6+"}, "listening": {"raw": 21, "max": 25, "pct": 84.0, "grade": "7-"}}, "pct": 82.7, "grade": "6+"}}, {"path": "scores/a2__S10", "data": {"aid": "a2", "sid": "S10", "skills": {"reading": {"raw": 32, "max": 40, "pct": 80.0, "grade": "6+"}, "writing": {"raw": 24, "max": 30, "pct": 80.0, "grade": "6+"}, "listening": {"raw": 21, "max": 25, "pct": 84.0, "grade": "7-"}, "oral": {"raw": 25, "max": 30, "pct": 84.0, "grade": "7-"}}, "pct": 82.0, "grade": "6+"}}, {"path": "scores/a3__S10", "data": {"aid": "a3", "sid": "S10", "skills": {"reading": {"raw": 33, "max": 40, "pct": 84.0, "grade": "7-"}, "writing": {"raw": 25, "max": 30, "pct": 84.0, "grade": "7-"}, "listening": {"raw": 19, "max": 25, "pct": 76.0, "grade": "6"}}, "pct": 81.3, "grade": "6+"}}, {"path": "scores/a4__S10", "data": {"aid": "a4", "sid": "S10", "skills": {"oral": {"raw": 22, "max": 30, "pct": 72.0, "grade": "6-"}}, "pct": 72.0, "grade": "6-"}}, {"path": "scores/a5__S10", "data": {"aid": "a5", "sid": "S10", "skills": {"reading": {"raw": 32, "max": 40, "pct": 80.0, "grade": "6+"}, "writing": {"raw": 23, "max": 30, "pct": 76.0, "grade": "6"}, "listening": {"raw": 19, "max": 25, "pct": 76.0, "grade": "6"}}, "pct": 77.3, "grade": "6"}}, {"path": "scores/a6__S10", "data": {"aid": "a6", "sid": "S10", "skills": {"reading": {"raw": 28, "max": 40, "pct": 72.0, "grade": "6-"}, "writing": {"raw": 21, "max": 30, "pct": 72.0, "grade": "6-"}, "listening": {"raw": 18, "max": 25, "pct": 72.0, "grade": "6-"}}, "pct": 72.0, "grade": "6-"}}, {"path": "students/S11", "data": {"code": "S11", "label": "謝", "target": "5", "note": ""}}, {"path": "scores/a1__S11", "data": {"aid": "a1", "sid": "S11", "skills": {"reading": {"raw": 28, "max": 40, "pct": 72.0, "grade": "6-"}, "writing": {"raw": 21, "max": 30, "pct": 72.0, "grade": "6-"}, "listening": {"raw": 16, "max": 25, "pct": 64.0, "grade": "5"}}, "pct": 69.3, "grade": "5+"}}, {"path": "scores/a2__S11", "data": {"aid": "a2", "sid": "S11", "skills": {"reading": {"raw": 27, "max": 40, "pct": 68.0, "grade": "5"}, "writing": {"raw": 21, "max": 30, "pct": 72.0, "grade": "6-"}, "listening": {"raw": 16, "max": 25, "pct": 64.0, "grade": "5"}, "oral": {"raw": 19, "max": 30, "pct": 64.0, "grade": "5"}}, "pct": 67.0, "grade": "5"}}, {"path": "scores/a3__S11", "data": {"aid": "a3", "sid": "S11", "skills": {"reading": {"raw": 28, "max": 40, "pct": 72.0, "grade": "6-"}, "writing": {"raw": 21, "max": 30, "pct": 72.0, "grade": "6-"}, "listening": {"raw": 18, "max": 25, "pct": 72.0, "grade": "6-"}}, "pct": 72.0, "grade": "6-"}}, {"path": "scores/a4__S11", "data": {"aid": "a4", "sid": "S11", "skills": {"oral": {"raw": 21, "max": 30, "pct": 72.0, "grade": "6-"}}, "pct": 72.0, "grade": "6-"}}, {"path": "scores/a5__S11", "data": {"aid": "a5", "sid": "S11", "skills": {"reading": {"raw": 27, "max": 40, "pct": 68.0, "grade": "5"}, "writing": {"raw": 21, "max": 30, "pct": 72.0, "grade": "6-"}, "listening": {"raw": 17, "max": 25, "pct": 68.0, "grade": "5"}}, "pct": 69.3, "grade": "5+"}}, {"path": "scores/a6__S11", "data": {"aid": "a6", "sid": "S11", "skills": {"reading": {"raw": 29, "max": 40, "pct": 72.0, "grade": "6-"}, "writing": {"raw": 19, "max": 30, "pct": 64.0, "grade": "5"}, "listening": {"raw": 18, "max": 25, "pct": 72.0, "grade": "6-"}}, "pct": 69.3, "grade": "5+"}}, {"path": "students/S12", "data": {"code": "S12", "label": "宋", "target": "7", "note": ""}}, {"path": "scores/a1__S12", "data": {"aid": "a1", "sid": "S12", "skills": {"reading": {"raw": 37, "max": 40, "pct": 92.0, "grade": "7"}, "writing": {"raw": 30, "max": 30, "pct": 100.0, "grade": "7"}, "listening": {"raw": 25, "max": 25, "pct": 100.0, "grade": "7"}}, "pct": 97.3, "grade": "7"}}, {"path": "scores/a2__S12", "data": {"aid": "a2", "sid": "S12", "skills": {"reading": {"raw": 37, "max": 40, "pct": 92.0, "grade": "7"}, "writing": {"raw": 27, "max": 30, "pct": 88.0, "grade": "7"}, "listening": {"raw": 23, "max": 25, "pct": 92.0, "grade": "7"}, "oral": {"raw": 30, "max": 30, "pct": 100.0, "grade": "7"}}, "pct": 93.0, "grade": "7"}}, {"path": "scores/a3__S12", "data": {"aid": "a3", "sid": "S12", "skills": {"reading": {"raw": 39, "max": 40, "pct": 96.0, "grade": "7"}, "writing": {"raw": 29, "max": 30, "pct": 96.0, "grade": "7"}, "listening": {"raw": 23, "max": 25, "pct": 92.0, "grade": "7"}}, "pct": 94.7, "grade": "7"}}, {"path": "scores/a4__S12", "data": {"aid": "a4", "sid": "S12", "skills": {"oral": {"raw": 28, "max": 30, "pct": 92.0, "grade": "7"}}, "pct": 92.0, "grade": "7"}}, {"path": "scores/a5__S12", "data": {"aid": "a5", "sid": "S12", "skills": {"reading": {"raw": 38, "max": 40, "pct": 96.0, "grade": "7"}, "writing": {"raw": 29, "max": 30, "pct": 96.0, "grade": "7"}, "listening": {"raw": 24, "max": 25, "pct": 96.0, "grade": "7"}}, "pct": 96.0, "grade": "7"}}, {"path": "scores/a6__S12", "data": {"aid": "a6", "sid": "S12", "skills": {"reading": {"raw": 36, "max": 40, "pct": 88.0, "grade": "7"}, "writing": {"raw": 30, "max": 30, "pct": 100.0, "grade": "7"}, "listening": {"raw": 23, "max": 25, "pct": 92.0, "grade": "7"}}, "pct": 93.3, "grade": "7"}}, {"path": "students/S13", "data": {"code": "S13", "label": "唐", "target": "6", "note": ""}}, {"path": "scores/a1__S13", "data": {"aid": "a1", "sid": "S13", "skills": {"reading": {"raw": 31, "max": 40, "pct": 76.0, "grade": "6"}, "writing": {"raw": 22, "max": 30, "pct": 72.0, "grade": "6-"}, "listening": {"raw": 16, "max": 25, "pct": 64.0, "grade": "5"}}, "pct": 70.7, "grade": "5+"}}, {"path": "scores/a2__S13", "data": {"aid": "a2", "sid": "S13", "skills": {"reading": {"raw": 31, "max": 40, "pct": 76.0, "grade": "6"}, "writing": {"raw": 22, "max": 30, "pct": 72.0, "grade": "6-"}, "listening": {"raw": 17, "max": 25, "pct": 68.0, "grade": "5"}, "oral": {"raw": 24, "max": 30, "pct": 80.0, "grade": "6+"}}, "pct": 74.0, "grade": "6"}}, {"path": "scores/a3__S13", "data": {"aid": "a3", "sid": "S13", "skills": {"reading": {"raw": 31, "max": 40, "pct": 76.0, "grade": "6"}, "writing": {"raw": 23, "max": 30, "pct": 76.0, "grade": "6"}, "listening": {"raw": 16, "max": 25, "pct": 64.0, "grade": "5"}}, "pct": 72.0, "grade": "6-"}}, {"path": "scores/a4__S13", "data": {"aid": "a4", "sid": "S13", "skills": {"oral": {"raw": 23, "max": 30, "pct": 76.0, "grade": "6"}}, "pct": 76.0, "grade": "6"}}, {"path": "scores/a5__S13", "data": {"aid": "a5", "sid": "S13", "skills": {"reading": {"raw": 30, "max": 40, "pct": 76.0, "grade": "6"}, "writing": {"raw": 22, "max": 30, "pct": 72.0, "grade": "6-"}, "listening": {"raw": 17, "max": 25, "pct": 68.0, "grade": "5"}}, "pct": 72.0, "grade": "6-"}}, {"path": "scores/a6__S13", "data": {"aid": "a6", "sid": "S13", "skills": {"reading": {"raw": 31, "max": 40, "pct": 76.0, "grade": "6"}, "writing": {"raw": 24, "max": 30, "pct": 80.0, "grade": "6+"}, "listening": {"raw": 16, "max": 25, "pct": 64.0, "grade": "5"}}, "pct": 73.3, "grade": "6-"}}, {"path": "students/S14", "data": {"code": "S14", "label": "韓", "target": "5", "note": ""}}, {"path": "scores/a1__S14", "data": {"aid": "a1", "sid": "S14", "skills": {"reading": {"raw": 20, "max": 40, "pct": 48.0, "grade": "4-"}, "writing": {"raw": 16, "max": 30, "pct": 52.0, "grade": "4"}, "listening": {"raw": 14, "max": 25, "pct": 56.0, "grade": "4"}}, "pct": 52.0, "grade": "4"}}, {"path": "scores/a2__S14", "data": {"aid": "a2", "sid": "S14", "skills": {"reading": {"raw": 24, "max": 40, "pct": 60.0, "grade": "5-"}, "writing": {"raw": 18, "max": 30, "pct": 60.0, "grade": "5-"}, "listening": {"raw": 14, "max": 25, "pct": 56.0, "grade": "4"}, "oral": {"raw": 17, "max": 30, "pct": 56.0, "grade": "4"}}, "pct": 58.0, "grade": "4+"}}, {"path": "scores/a3__S14", "data": {"aid": "a3", "sid": "S14", "skills": {"reading": {"raw": 22, "max": 40, "pct": 56.0, "grade": "4"}, "writing": {"raw": 17, "max": 30, "pct": 56.0, "grade": "4"}, "listening": {"raw": 16, "max": 25, "pct": 64.0, "grade": "5"}}, "pct": 58.7, "grade": "4+"}}, {"path": "scores/a4__S14", "data": {"aid": "a4", "sid": "S14", "skills": {"oral": {"raw": 18, "max": 30, "pct": 60.0, "grade": "5-"}}, "pct": 60.0, "grade": "5-"}}, {"path": "scores/a5__S14", "data": {"aid": "a5", "sid": "S14", "skills": {"reading": {"raw": 27, "max": 40, "pct": 68.0, "grade": "5"}, "writing": {"raw": 19, "max": 30, "pct": 64.0, "grade": "5"}, "listening": {"raw": 16, "max": 25, "pct": 64.0, "grade": "5"}}, "pct": 65.3, "grade": "5"}}, {"path": "scores/a6__S14", "data": {"aid": "a6", "sid": "S14", "skills": {"reading": {"raw": 29, "max": 40, "pct": 72.0, "grade": "6-"}, "writing": {"raw": 22, "max": 30, "pct": 72.0, "grade": "6-"}, "listening": {"raw": 17, "max": 25, "pct": 68.0, "grade": "5"}}, "pct": 70.7, "grade": "5+"}}, {"path": "students/S15", "data": {"code": "S15", "label": "馮", "target": "7", "note": ""}}, {"path": "scores/a1__S15", "data": {"aid": "a1", "sid": "S15", "skills": {"reading": {"raw": 33, "max": 40, "pct": 84.0, "grade": "7-"}, "writing": {"raw": 26, "max": 30, "pct": 88.0, "grade": "7"}, "listening": {"raw": 21, "max": 25, "pct": 84.0, "grade": "7-"}}, "pct": 85.3, "grade": "7"}}, {"path": "scores/a2__S15", "data": {"aid": "a2", "sid": "S15", "skills": {"reading": {"raw": 36, "max": 40, "pct": 88.0, "grade": "7"}, "writing": {"raw": 24, "max": 30, "pct": 80.0, "grade": "6+"}, "listening": {"raw": 22, "max": 25, "pct": 88.0, "grade": "7"}, "oral": {"raw": 23, "max": 30, "pct": 76.0, "grade": "6"}}, "pct": 83.0, "grade": "7-"}}, {"path": "scores/a3__S15", "data": {"aid": "a3", "sid": "S15", "skills": {"reading": {"raw": 32, "max": 40, "pct": 80.0, "grade": "6+"}, "writing": {"raw": 27, "max": 30, "pct": 88.0, "grade": "7"}, "listening": {"raw": 22, "max": 25, "pct": 88.0, "grade": "7"}}, "pct": 85.3, "grade": "7"}}, {"path": "scores/a4__S15", "data": {"aid": "a4", "sid": "S15", "skills": {"oral": {"raw": 24, "max": 30, "pct": 80.0, "grade": "6+"}}, "pct": 80.0, "grade": "6+"}}, {"path": "scores/a5__S15", "data": {"aid": "a5", "sid": "S15", "skills": {"reading": {"raw": 35, "max": 40, "pct": 88.0, "grade": "7"}, "writing": {"raw": 27, "max": 30, "pct": 88.0, "grade": "7"}, "listening": {"raw": 22, "max": 25, "pct": 88.0, "grade": "7"}}, "pct": 88.0, "grade": "7"}}, {"path": "scores/a6__S15", "data": {"aid": "a6", "sid": "S15", "skills": {"reading": {"raw": 35, "max": 40, "pct": 88.0, "grade": "7"}, "writing": {"raw": 25, "max": 30, "pct": 84.0, "grade": "7-"}, "listening": {"raw": 21, "max": 25, "pct": 84.0, "grade": "7-"}}, "pct": 85.3, "grade": "7"}}], KEY="demo-dashboard.v1";
+ let store={}; seed();
+ function seed(){store={};SEED.forEach(d=>store[d.path]=JSON.parse(JSON.stringify(d.data)));}
+ try{const s=localStorage.getItem(KEY); if(s) store=JSON.parse(s);}catch(e){}
+ const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}};
+ const subs=[];
+ const snap=c=>{const docs=Object.keys(store).filter(k=>k.split("/")[0]===c).map(k=>({id:k.split("/")[1],data:()=>Object.freeze(JSON.parse(JSON.stringify(store[k])))}));return{docs,size:docs.length,empty:!docs.length}};
+ const notify=()=>{save();subs.forEach(s=>s.fn(snap(s.col)))};
+ const db={collection:c=>({onSnapshot:fn=>{const s={col:c,fn};subs.push(s);setTimeout(()=>fn(snap(c)),0);return()=>{const i=subs.indexOf(s);if(i>=0)subs.splice(i,1)}}}),
+  doc:p=>({set:async d=>{store[p]=JSON.parse(JSON.stringify(d));notify()},update:async d=>{store[p]={...(store[p]||{}),...JSON.parse(JSON.stringify(d))};notify()},delete:async()=>{delete store[p];notify()}})};
+ const downloads={save:async({filename,data})=>{const b=data instanceof Blob?data:new Blob([data],{type:"text/plain;charset=utf-8"});const u=URL.createObjectURL(b);const a=document.createElement("a");a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);return{status:"saved"}}};
+ window.claude={use:async n=>n==="db"?db:n==="downloads"?downloads:null};
+ window.__resetDemo=()=>{seed();notify();};
+})();
+</script>
+<script>
+(() => {
+"use strict";
+const SK = ["reading","writing","listening","oral"];
+const SKN = {reading:"閱讀",writing:"寫作",listening:"聽力",oral:"口語"};
+const SKE = {reading:"Reading",writing:"Writing",listening:"Listening",oral:"Speaking"};
+const SKC = {reading:"var(--read)",writing:"var(--write)",listening:"var(--listen)",oral:"var(--oral)"};
+const TYPES = ["單元測","作業","口語考","EOY","Mock","其他"];
+const S = {skOff:new Set(), db:null, assessments:[], scores:{}, students:{}, view:"class", solo:false, ready:{a:false,s:false,st:false}};
+const $ = (s,el=document)=>el.querySelector(s);
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const store = { get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}} };
+let LANG=store.get("y13.lang","zh");
+S.skOff=new Set(store.get("y13.skoff",[]));
+const skOn = ser => { const f=ser.filter(x=>!x.k||!S.skOff.has(x.k)); return f.length?f:ser; };
+const T=(zh,en)=>LANG==="en"?en:zh;
+const SKL=k=>k?T(SKN[k],SKE[k]):"";
+const TYPEE={"單元測":"Unit test","作業":"Homework","口語考":"Oral exam","EOY":"EOY","Mock":"Mock","其他":"Other"};
+const TY=t=>LANG==="en"?(TYPEE[t]||t):t;
+const FL=f=>T(f.zh,f.en);
+const toast = (msg,ms=2400) => { const t=document.createElement("div"); t.className="toast"; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),ms); };
+
+/* ---------- gear sound ---------- */
+let actx=null, soundOn=store.get("y13.sound",true), lastTick=0;
+function ensureAudio(){ if(!actx){ try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ actx=null; } } if(actx&&actx.state==="suspended") actx.resume().catch(()=>{}); }
+function tick(vol=1){
+  if(!soundOn||!actx||actx.state!=="running") return;
+  const now=performance.now(); if(now-lastTick<38) return; lastTick=now;
+  const t=actx.currentTime, len=Math.floor(actx.sampleRate*0.028);
+  const buf=actx.createBuffer(1,len,actx.sampleRate), d=buf.getChannelData(0);
+  for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3);
+  const src=actx.createBufferSource(); src.buffer=buf;
+  const bp=actx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=2600+Math.random()*900; bp.Q.value=9;
+  const g=actx.createGain(); g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.22*vol,t+0.002); g.gain.exponentialRampToValueAtTime(0.0001,t+0.03);
+  const o=actx.createOscillator(); o.type="square"; o.frequency.setValueAtTime(1500,t); o.frequency.exponentialRampToValueAtTime(700,t+0.012);
+  const og=actx.createGain(); og.gain.setValueAtTime(0.03*vol,t); og.gain.exponentialRampToValueAtTime(0.0001,t+0.015);
+  src.connect(bp).connect(g).connect(actx.destination); o.connect(og).connect(actx.destination);
+  src.start(t); o.start(t); o.stop(t+0.02);
+}
+function ratchet(){ if(!soundOn) return; [0,45,90].forEach((ms,i)=>setTimeout(()=>{lastTick=0;tick(1-i*0.2)},ms)); }
+document.addEventListener("pointerdown",ensureAudio,{passive:true});
+document.addEventListener("keydown",ensureAudio);
+
+/* ---------- grade helpers ---------- */
+function gnum(g){
+  if(g===null||g===undefined||g==="") return null;
+  const s=String(g).trim();
+  if(s.includes("/")){ const p=s.split("/").map(gnum).filter(x=>x!==null); return p.length?p.reduce((a,b)=>a+b,0)/p.length:null; }
+  const m=s.match(/^(\d+(?:\.\d+)?)([+-]?)$/); if(!m) return null;
+  return +m[1]+(m[2]==="+"?0.3:m[2]==="-"?-0.3:0);
+}
+const singleSkill = a => { const r=Object.values(S.scores).find(v=>v.aid===a.id&&v.skills&&Object.keys(v.skills).length); return r?Object.keys(r.skills)[0]:null; };
+const pt25 = p => p==null||isNaN(p) ? "—" : (Math.round(p/4*10)/10).toString();
+const fmtPct = p => p===null||p===undefined||isNaN(p) ? "—" : (Math.round(p*10)/10).toString();
+const mean = a => { const v=a.filter(x=>x!==null&&x!==undefined&&!isNaN(x)); return v.length?v.reduce((s,x)=>s+x,0)/v.length:null; };
+
+/* ---------- derived data ---------- */
+const codes = () => Object.keys(S.students).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+const assessOrdered = () => S.assessments.slice().sort((a,b)=>(a.order??0)-(b.order??0));
+const nm = sid => (S.students[sid]?.label||"").trim() || sid;
+const isSingle = a => { if(!a) return false; if(a.single===true) return true; if(a.single===false) return false; const rs=Object.values(S.scores).filter(v=>v.aid===a.id); return rs.length>0 && rs.every(v=>Object.keys(v.skills||{}).length<=1); };
+const fullAs = () => assessOrdered().filter(a=>!isSingle(a));
+const sc = (aid,sid) => S.scores[aid+"__"+sid] || null;
+function classAvg(aid, skill){ return mean(codes().map(c=>{const r=sc(aid,c); return r? (skill? r.skills?.[skill]?.pct : r.pct) : null;})); }
+function studentSeries(sid){ return assessOrdered().map(a=>({a, r:sc(a.id,sid)})); }
+function analyse(sid){
+  const st=S.students[sid]||{}; const target=gnum(st.target)??7;
+  const ser=studentSeries(sid).filter(x=>x.r);
+  const flags=[];
+  const graded=ser.filter(x=>!isSingle(x.a)&&gnum(x.r.grade)!==null);
+  const latest=graded[graded.length-1]||null;
+  const cur=latest?gnum(latest.r.grade):null;
+  if(cur!==null && cur < target-0.35) flags.push({k:"red",zh:"低於目標",en:"Below target",t:T(`${latest.a.name} 等級 ${latest.r.grade}，目標 ${st.target||7}`,`${latest.a.name} grade ${latest.r.grade}, target ${st.target||7}`)});
+  const ov=ser.filter(x=>!isSingle(x.a)&&x.r.pct!==null&&x.r.pct!==undefined&&x.a.type!=="作業");
+  if(ov.length>=2){
+    const p=ov.map(x=>x.r.pct); const n=p.length;
+    const d1=p[n-1]-p[n-2], d2=n>=3?p[n-2]-p[n-3]:null;
+    if(d1<=-8 || (d2!==null && d1<0 && d2<0 && (p[n-1]-p[n-3])<=-5))
+      flags.push({k:"orange",zh:"最近在退步",en:"Recent decline",t:`${ov[n-2].a.name} ${fmtPct(p[n-2])}% → ${ov[n-1].a.name} ${fmtPct(p[n-1])}%`});
+  }
+  const sk={};
+  SK.forEach(k=>{ const pts=ser.map(x=>x.r.skills?.[k]).filter(Boolean); sk[k]={pct:mean(pts.map(p=>p.pct)), g:mean(pts.map(p=>gnum(p.grade))), n:pts.length, series:studentSeries(sid).map(x=>x.r?.skills?.[k]?.pct??null)}; });
+  const have=SK.filter(k=>sk[k].n>0);
+  let weakest=null, strongest=null;
+  if(have.length>=2){
+    weakest=have.reduce((a,b)=>sk[a].pct<=sk[b].pct?a:b); strongest=have.reduce((a,b)=>sk[a].pct>=sk[b].pct?a:b);
+    const others=have.filter(k=>k!==weakest);
+    const gapP=mean(others.map(k=>sk[k].pct))-sk[weakest].pct;
+    const og=mean(others.map(k=>sk[k].g)), wg=sk[weakest].g;
+    if((og!==null&&wg!==null&&og-wg>=0.8) || gapP>=10)
+      flags.push({k:"yellow",zh:`${SKN[weakest]}是短板`,en:`${SKE[weakest]} lags`,t:T(`${SKN[weakest]}平均 ${pt25(sk[weakest].pct)}/25，其他技能平均 ${pt25(mean(others.map(k=>sk[k].pct)))}/25`,`${SKE[weakest]} avg ${pt25(sk[weakest].pct)}/25; other skills avg ${pt25(mean(others.map(k=>sk[k].pct)))}/25`)});
+  }
+  const missing=[];
+  assessOrdered().forEach(a=>{
+    const r=sc(a.id,sid);
+    const classHas=SK.filter(k=>codes().some(c=>sc(a.id,c)?.skills?.[k]));
+    if(!r){ if(codes().some(c=>sc(a.id,c))) missing.push(T(`${a.name}（整份）`,`${a.name} (all)`)); return; }
+    classHas.forEach(k=>{ if(!r.skills?.[k]) missing.push(`${a.name} ${SKL(k)}`); });
+  });
+  return {sid,target,targetLabel:st.target||"7",latest,cur,flags,sk,weakest,strongest,missing,ser};
+}
+
+function trend(sid){
+  const ov=studentSeries(sid).filter(x=>x.r&&!isSingle(x.a)&&x.r.pct!=null&&x.a.type!=="作業");
+  if(ov.length<2) return null;
+  const a=ov[ov.length-2], b=ov[ov.length-1], d=b.r.pct-a.r.pct;
+  const k=d<-3?"red":d<0?"orange":"green";
+  const t=`${a.a.name} ${fmtPct(a.r.pct)} → ${b.a.name} ${fmtPct(b.r.pct)}（${d>=0?"+":""}${fmtPct(d)}）`;
+  return {k,d,t};
+}
+function skillDrop(sid){
+  const tr=trend(sid); if(!tr||tr.k!=="red") return null;
+  const ov=studentSeries(sid).filter(x=>x.r&&!isSingle(x.a)&&x.r.pct!=null&&x.a.type!=="作業");
+  const a=ov[ov.length-2], b=ov[ov.length-1];
+  const ds=SK.map(k=>{ const p=a.r.skills?.[k]?.pct, q=b.r.skills?.[k]?.pct; return (p==null||q==null)?null:{k,p,q,d:q-p}; }).filter(x=>x&&x.d<0).sort((x,y)=>x.d-y.d);
+  if(!ds.length) return null;
+  return {a:a.a.name,b:b.a.name,top:ds[0],rest:ds.slice(1),tr};
+}
+function dropAlertHTML(sid){
+  const x=skillDrop(sid); if(!x||S.solo) return "";
+  const t=x.top, n=pt25(-t.d);
+  return `<div class="panel dropalert" role="alert"><span class="ic">⚠</span><div><b class="big">${T(`${SKN[t.k]}掉得最多，需要特別注意`,`${SKE[t.k]} dropped the most — needs special attention`)}</b>
+  <div class="det">${SKL(t.k)}：${esc(x.a)} ${pt25(t.p)}/25 → ${esc(x.b)} ${pt25(t.q)}/25（${T("下降","down")} ${n} ${T("分","pts")}）</div>
+  ${x.rest.length?`<div class="oth">${T("其他下降：","Also down: ")}${x.rest.map(r=>`${SKL(r.k)} −${pt25(-r.d)}`).join(T("、",", "))}</div>`:""}</div></div>`;
+}
+/* ---------- feedback text ---------- */
+const ACTIONS = {
+  reading:[["每週做兩篇不同文本類型的 Paper 2 閱讀，先圈題目關鍵詞，再回原文定位。","Do two Paper 2 reading texts of different text types each week; underline key words in the question, then locate them in the text."],["判斷正誤題一定寫出原文依據，練習用自己的話概括段落大意。","For true/false items, always quote the evidence; practise summarising each paragraph in your own words."]],
+  writing:[["每週一篇限時 Paper 1 寫作（SL 250–400 字），輪換電郵、博客、演講稿、報告等文本類型。","Write one timed Paper 1 task a week (SL 250–400 characters), rotating email, blog, speech and report formats."],["寫完先自查三項：文本格式、語域是否配合讀者、段落之間的連接詞。","Self-check three things after writing: text-type conventions, register for the audience, and linking words between paragraphs."]],
+  listening:[["每週聽兩段不同語速的材料，聽前先讀題預測內容，邊聽邊記數字、人名和關鍵詞。","Listen to two recordings at different speeds each week; predict from the questions first, then note numbers, names and key words."],["做完對照聽力稿，把沒聽出來的詞句整理成生詞本。","After each task, check the transcript and log the words you missed."]],
+  oral:[["個人口語按「描述圖片 → 連結主題 → 表達看法 → 聯繫文化」的結構練習，每次錄音自評。","Practise the individual oral as describe → link to theme → give opinion → connect to culture; record and review each attempt."],["回答追問時多用「因為…所以…」「舉個例子…」把回答延伸到三四句。","Extend follow-up answers to three or four sentences with reasons and examples."]]
+};
+function feedback(sid){
+  const A=analyse(sid); const out={s:[],i:[],n:[]};
+  const best=A.strongest, weak=A.weakest;
+  const sevens=SK.filter(k=>A.sk[k].n>0&&A.sk[k].g!==null&&A.sk[k].g>=6.85);
+  if(best) out.s.push([`${SKN[best]}是最強項，平均 ${pt25(A.sk[best].pct)}/25。`,`${SKE[best]} is the strongest skill, averaging ${pt25(A.sk[best].pct)}/25.`]);
+  if(sevens.length) out.s.push([`${sevens.map(k=>SKN[k]).join("、")}一直保持在 7 分水平。`,`${sevens.map(k=>SKE[k]).join(", ")} consistently at grade 7.`]);
+  const ov=A.ser.filter(x=>!isSingle(x.a)&&x.r.pct!=null&&x.a.type!=="作業");
+  if(ov.length>=2){
+    const f=ov[0], l=ov[ov.length-1], d=l.r.pct-f.r.pct;
+    if(d>=3) out.s.push([`總分從 ${f.a.name} 的 ${fmtPct(f.r.pct)}% 提升到 ${l.a.name} 的 ${fmtPct(l.r.pct)}%。`,`Overall score rose from ${fmtPct(f.r.pct)}% (${f.a.name}) to ${fmtPct(l.r.pct)}% (${l.a.name}).`]);
+    else if(d<=-3) out.i.push([`總分從 ${f.a.name} 的 ${fmtPct(f.r.pct)}% 降到 ${l.a.name} 的 ${fmtPct(l.r.pct)}%，需要找出原因。`,`Overall score fell from ${fmtPct(f.r.pct)}% (${f.a.name}) to ${fmtPct(l.r.pct)}% (${l.a.name}); worth finding out why.`]);
+    else out.s.push([`總分保持穩定，在 ${fmtPct(Math.min(...ov.map(x=>x.r.pct)))}–${fmtPct(Math.max(...ov.map(x=>x.r.pct)))}% 之間。`,`Overall performance is steady, between ${fmtPct(Math.min(...ov.map(x=>x.r.pct)))}% and ${fmtPct(Math.max(...ov.map(x=>x.r.pct)))}%.`]);
+  }
+  if(weak && weak!==best) out.i.push([`${SKN[weak]}是相對短板，平均 ${pt25(A.sk[weak].pct)}/25，比最強項低 ${pt25(A.sk[best].pct-A.sk[weak].pct)} 分。`,`${SKE[weak]} is the relative weak spot at ${pt25(A.sk[weak].pct)}/25, ${pt25(A.sk[best].pct-A.sk[weak].pct)} marks below the strongest skill.`]);
+  A.flags.forEach(f=>{ if(f.k==="red") out.i.push([`最近等級 ${A.latest.r.grade}，距離目標 ${A.targetLabel} 還差一點。`,`Latest grade ${A.latest.r.grade}, just short of the target of ${A.targetLabel}.`]); if(f.k==="orange") out.i.push([`最近兩次評估有下滑：${f.t}。`,`Recent dip: ${f.t}.`]); });
+  if(!out.i.length) out.i.push(["各項都在高水平，下一步是把 7 分穩定在考試狀態。","All skills are strong; the next step is holding grade 7 under exam conditions."]);
+  const focus=weak?[weak]:[]; if(A.sk.oral.n>0 && weak!=="oral" && A.sk.oral.g!==null && A.sk.oral.g<6.85) focus.push("oral");
+  focus.forEach(k=>ACTIONS[k].forEach(a=>out.n.push(a)));
+  if(!out.n.length) out.n.push(["保持每週一篇限時寫作和一套閱讀，備考 Mock。","Keep one timed writing task and one reading paper a week ahead of the Mock."]);
+  return {A,out};
+}
+function combined(sid){
+  const {A,out}=feedback(sid); const note=(S.students[sid]?.note||"").trim();
+  const zh=[`${nm(sid)} 本階段表現：`+out.s.map(x=>x[0]).join("")+out.i.map(x=>x[0]).join(""), "建議："+out.n.slice(0,2).map(x=>x[0]).join(""), note?`老師觀察：${note}`:""].filter(Boolean).join("\n");
+  const en=[`${nm(sid)} this term: `+out.s.map(x=>x[1]).join(" ")+" "+out.i.map(x=>x[1]).join(" "), "Next steps: "+out.n.slice(0,2).map(x=>x[1]).join(" "), note?`Teacher's observation: ${note}`:""].filter(Boolean).join("\n");
+  return LANG==="en"? en+"\n\n"+zh : zh+"\n\n"+en;
+}
+
+/* ---------- SVG line chart ---------- */
+function lineChart(host, {labels, series, yMin=50, yMax=100, h=240, unit="%"}){
+  const W=Math.max(300,Math.round(host.clientWidth||760)), H=W<520?Math.round(h*0.85):Math.round(h*Math.min(1.35,Math.max(1,W/900))), L=40, R=16, T=14, B=34;
+  const x=i=> labels.length<=1 ? L+(W-L-R)/2 : L+(W-L-R)*i/(labels.length-1);
+  const y=v=> T+(H-T-B)*(1-(v-yMin)/(yMax-yMin));
+  const ticks=[]; for(let v=yMin; v<=yMax+1e-9; v+=(yMax-yMin)/5) ticks.push(Math.round(v));
+  let svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(series.map(s=>s.name).join("、"))} 趨勢">`;
+  ticks.forEach(v=>{ svg+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${L-8}" y="${y(v)+4}" fill="var(--faint)" font-size="12.5" text-anchor="end" font-family="JetBrains Mono, monospace">${v}</text>`; });
+  labels.forEach((lb,i)=>{ svg+=`<text x="${x(i)}" y="${H-10}" fill="var(--muted)" font-size="13" text-anchor="middle">${esc(lb)}</text>`; });
+  series.forEach(s=>{
+    let d="", area="", started=false, first=null, last=null;
+    s.values.forEach((v,i)=>{ if(v===null||v===undefined) return; const px=x(i), py=y(Math.max(yMin,Math.min(yMax,v))); d+=(started?"L":"M")+px.toFixed(1)+","+py.toFixed(1); if(!started) first=[px,py]; last=[px,py]; started=true; });
+    if(!started) return;
+    if(s.fill){ area=d+`L${last[0].toFixed(1)},${y(yMin)}L${first[0].toFixed(1)},${y(yMin)}Z`; svg+=`<path d="${area}" fill="${s.color}" fill-opacity=".08" stroke="none"/>`; }
+    svg+=`<path d="${d}" fill="none" stroke="${s.color}" stroke-width="${s.dash?1.5:2.2}" ${s.dash?'stroke-dasharray="5 4" stroke-opacity=".7"':""} stroke-linejoin="round" stroke-linecap="round"/>`;
+    if(!s.dash) s.values.forEach((v,i)=>{ if(v===null||v===undefined) return; const isLast=i===s.values.map((q,j)=>q==null?-1:j).reduce((a,b)=>Math.max(a,b)); svg+=`<circle class="pt" cx="${x(i)}" cy="${y(Math.max(yMin,Math.min(yMax,v)))}" r="${isLast?4.5:3}" fill="${s.color}" style="color:${s.color}"/>`; });
+  });
+  svg+=`<line class="xh" x1="0" x2="0" y1="${T}" y2="${H-B}" stroke="var(--accent)" stroke-opacity="0" stroke-width="1"/>`;
+  svg+=`<rect class="hit" x="${L}" y="${T}" width="${W-L-R}" height="${H-T-B}" fill="transparent"/></svg><div class="tip"></div>`;
+  host.classList.add("chart"); host.innerHTML=svg;
+  const el=host.querySelector("svg"), xh=host.querySelector(".xh"), tip=host.querySelector(".tip"); let cur=-1;
+  function at(evt){
+    const r=el.getBoundingClientRect(); const sx=(evt.clientX-r.left)*W/r.width;
+    let best=0,bd=1e9; labels.forEach((_,i)=>{const dd=Math.abs(x(i)-sx); if(dd<bd){bd=dd;best=i;}});
+    if(best!==cur){ cur=best; tick(0.8); }
+    xh.setAttribute("x1",x(best)); xh.setAttribute("x2",x(best)); xh.setAttribute("stroke-opacity",".5");
+    const rows=series.filter(s=>s.values[best]!=null).map(s=>`<div class="r"><i style="background:${s.color}"></i>${esc(s.name)}<span class="num" style="margin-left:auto">${fmtPct(s.values[best])}${unit}</span></div>`).join("");
+    tip.innerHTML=`<b>${esc(labels[best])}</b>${rows||`<span class="muted">${T("沒有數據","No data")}</span>`}`;
+    const vals=series.map(s=>s.values[best]).filter(v=>v!=null); const topV=vals.length?Math.max(...vals):yMax;
+    tip.style.left=(x(best)/W*r.width)+"px"; tip.style.top=(y(Math.min(yMax,topV))/H*r.height)+"px"; tip.style.opacity=1;
+  }
+  const hit=host.querySelector(".hit");
+  hit.addEventListener("pointermove",at); hit.addEventListener("pointerdown",at);
+  hit.addEventListener("pointerleave",()=>{cur=-1; tip.style.opacity=0; xh.setAttribute("stroke-opacity","0");});
+}
+const legend = series => `<div class="legend">${series.map(s=>s.k?`<button class="lg ${S.skOff.has(s.k)?"off":""}" data-sk="${s.k}" aria-pressed="${!S.skOff.has(s.k)}" title="${T("點擊顯示／隱藏這一項","Click to show / hide")}"><i style="background:${s.color}"></i>${esc(s.name)}</button>`:`<span><i class="${s.dash?"dash":""}" style="background:${s.color}"></i>${esc(s.name)}</span>`).join("")}</div>`;
+function heatBg(p){ if(p==null) return "transparent"; const t=Math.max(0,Math.min(1,(p-60)/40)); return `rgba(11,143,154,${(0.05+t*0.30).toFixed(2)})`; }
+
+/* ---------- views ---------- */
+function renderSwitcher(){
+  const nav=$("#switcher");
+  $("#tlegend").innerHTML=`<span>${T("名字顏色＝最近兩次總分的變化：","Name colour = change between the last two overall scores:")}</span><span><i style="background:var(--red)"></i>${T("下降超過 3 分","Dropped more than 3")}</span><span><i style="background:var(--orange)"></i>${T("下降 3 分以內","Dropped up to 3")}</span><span><i style="background:var(--listen)"></i>${T("持平或進步","Steady or improved")}</span>`;
+  const chips=[`<button class="chip ${S.view==="class"?"on":""}" data-go="class">${T("全班","Class")}</button>`].concat(codes().map(c=>{
+    const f=analyse(c).flags; const top=f.find(x=>x.k==="red")||f.find(x=>x.k==="orange")||f.find(x=>x.k==="yellow");
+    const tr=trend(c); return `<button class="chip ${S.view===c?"on":""} ${tr?"t-"+tr.k:""}" data-go="${esc(c)}" title="${esc(c)}${tr?" · "+esc(tr.t):""}">${esc(nm(c))}</button>`;
+  }));
+  nav.innerHTML=chips.join("");
+}
+function go(v,{sound=true}={}){ if(S.solo && v==="class") return; S.view=v; if(location.hash.slice(1)!==v) history.replaceState(null,"","#"+v); if(sound) ratchet(); render(); window.scrollTo({top:0}); }
+
+function renderClass(){
+  const app=$("#app"); const as=assessOrdered(); const cs=codes();
+  if(!as.length||!cs.length){ app.innerHTML=`${T(`<div class="empty"><strong>還沒有成績數據</strong>點上方「＋ 新增評估」錄入第一次成績，或用「導入表格」上傳 Excel / CSV。</div>`,`<div class="empty"><strong>No scores yet</strong>Use “＋ Add assessment” above to enter the first scores, or “Import sheet” to upload Excel / CSV.</div>`)}`; return; }
+  const an=cs.map(analyse);
+  const lastA=[...as].reverse().find(a=>!isSingle(a)&&a.type!=="作業" && cs.some(c=>sc(a.id,c)?.pct!=null))||as[as.length-1];
+  const avg=classAvg(lastA.id);
+  const onTarget=an.filter(x=>x.cur!==null && !x.flags.some(f=>f.k==="red")).length;
+  const attention=an.filter(x=>x.flags.length).length;
+  const skAvg=SK.map(k=>({k,v:mean(cs.map(c=>analyse(c).sk[k].pct))})).filter(x=>x.v!==null);
+  const weakK=skAvg.length?skAvg.reduce((a,b)=>a.v<=b.v?a:b):null;
+  const labels=as.map(a=>a.name);
+  const series=SK.map(k=>({k,name:SKL(k),color:SKC[k],values:as.map(a=>classAvg(a.id,k))})).filter(s=>s.values.some(v=>v!=null));
+  const sorted=an.slice().sort((a,b)=>{const w=x=>x.flags.reduce((s,f)=>s+({red:9,orange:4,yellow:2}[f.k]||0),0); return w(b)-w(a)||a.sid.localeCompare(b.sid,undefined,{numeric:true});});
+  app.innerHTML=`
+  <div class="grid">
+    <div class="panel kpi span-3"><div class="label">${esc(lastA.name)} ${T("班級平均","class average")}</div><div class="value">${fmtPct(avg)}<small>%</small></div><div class="hint">${T("最近一次全班評估","Latest whole-class assessment")}</div></div>
+    <div class="panel kpi span-3"><div class="label">${T("達到目標等級","On target")}</div><div class="value">${onTarget}<small>/ ${cs.length}</small></div><div class="hint">${T("以最近一次有等級的評估計","Based on the latest graded assessment")}</div></div>
+    <div class="panel kpi span-3"><div class="label">${T("需要關注","Need attention")}</div><div class="value" style="color:${attention?"var(--orange)":"var(--listen)"}">${attention}<small>${T("人","students")}</small></div><div class="hint">${T("紅 · 橙 · 黃 任一標記","Any red · orange · yellow flag")}</div></div>
+    <div class="panel kpi span-3"><div class="label">${T("全班相對短板","Class weak spot")}</div><div class="value" style="color:${weakK?SKC[weakK.k]:"inherit"}">${weakK?SKL(weakK.k):"—"}</div><div class="hint">${weakK?T(`各次平均 ${pt25(weakK.v)}/25`,`Average ${pt25(weakK.v)}/25`):""}</div></div>
+  </div>
+  <div class="grid">
+    <div class="panel span-8"><h2>Skill trend <span class="zh">${T("全班四項技能平均","Class average by skill")}</span></h2>${legend(series)}<div id="chClass"></div></div>
+    <div class="panel span-4"><h2>Watchlist <span class="zh">${T("優先反饋","Priority feedback")}</span></h2><div id="watch" style="display:flex;flex-direction:column;gap:10px"></div></div>
+  </div>
+  <div class="panel"><h2>Matrix <span class="zh">${T("每次評估總分 %，單項成績另列（點擊進入學生頁）","Overall % per assessment; single-skill scores shown separately (click a row to open the student)")}</span></h2>
+    <div class="tbl-wrap"><table><thead><tr><th>${T("學生","Student")}</th>${as.map(a=>`<th class="c">${esc(a.name)}<br><span class="note-s">${isSingle(a)?T("單項 · ","Single · ")+esc(SKL(singleSkill(a))):esc(TY(a.type))}</span></th>`).join("")}<th>${T("標記","Flags")}</th></tr></thead>
+    <tbody>${sorted.map(x=>`<tr class="click" data-go="${esc(x.sid)}"><td><b class="nm ${trend(x.sid)?"t-"+trend(x.sid).k:""}">${esc(nm(x.sid))}</b> <span class="note-s num">${esc(x.sid)}</span></td>${as.map(a=>{const r=sc(a.id,x.sid); if(r&&isSingle(a)){ const k=Object.keys(r.skills||{})[0]; const v=k?r.skills[k]:null; return `<td class="c"><span class="heat num" style="background:transparent;border:1px dashed ${SKC[k]||"var(--line-2)"}">${fmtPct(v?.pct)}<small>${esc(v?.grade??r.grade??"")}</small></span></td>`; }
+      return `<td class="c">${r?`<span class="heat num" style="background:${heatBg(r.pct)}">${fmtPct(r.pct)}<small>${esc(r.grade??"")}</small></span>`:'<span class="muted">—</span>'}</td>`;}).join("")}<td><div class="flags">${x.flags.map(f=>`<span class="flag ${f.k}" title="${esc(f.t)}">${esc(FL(f))}</span>`).join("")||`<span class="flag ok">${T("穩定","Steady")}</span>`}${x.missing.length?`<span class="flag grey" title="${esc(x.missing.join(T("、",", ")))}">${T(`缺 ${x.missing.length} 項`,`${x.missing.length} missing`)}</span>`:""}</div></td></tr>`).join("")}</tbody></table></div>
+    <p class="note-s" style="margin:10px 0 0">${T("紅：最近等級低於目標　橙：最近兩次在退步　黃：某項技能比自己其他技能明顯低　灰：有分數缺失（可能缺考或未錄入）　虛線框：單項成績，不計入總分","Red: latest grade below target　Orange: dropped in recent assessments　Yellow: one skill clearly below the student’s others　Grey: scores missing (absent or not entered)　Dashed box: single-skill score, not counted in the overall")}</p>
+  </div>`;
+  lineChart($("#chClass"),{labels,series:series.length?skOn(series):[{name:"—",color:"var(--muted)",values:[]}],yMin:60,yMax:100});
+  const w=sorted.filter(x=>x.flags.length).slice(0,6);
+  $("#watch").innerHTML=w.length?w.map(x=>`<button class="btn ghost" data-go="${esc(x.sid)}" style="justify-content:space-between;text-align:left;width:100%"><span><b>${esc(nm(x.sid))}</b> <span class="note-s num">${esc(x.sid)}</span></span><span class="flags">${x.flags.map(f=>`<span class="flag ${f.k}">${esc(FL(f))}</span>`).join("")}</span></button><div class="note-s" style="margin-top:-6px">${esc(x.flags.map(f=>f.t).join(T("；","; ")))}</div>`).join(""):`<p class="muted">${T("目前沒有學生觸發預警，全班狀態穩定。","No flags right now; the class is steady.")}</p>`;
+}
+
+let REC=null;
+function stopMic(){ if(REC){ try{ REC.__stop=true; REC.stop(); }catch(e){} } }
+function setupMic(sid){
+  const btn=$("#btnMic"), sel=$("#micLang"), ta=$("#note"), st=$("#saveState"), im=$("#interim");
+  sel.value=store.get("y13.miclang")||(LANG==="en"?"en-US":"zh-TW");
+  sel.onchange=()=>store.set("y13.miclang",sel.value);
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const save=async()=>{ st.textContent=T("保存中…","Saving…"); try{ await S.db.doc("students/"+sid).update({note:ta.value}); st.textContent=T("已保存 ✓","Saved ✓"); }catch(err){ st.textContent=T("保存失敗：","Save failed: ")+(err.message||err.code); } };
+  const fallback=why=>{ S.listening=false; btn.classList.remove("on"); btn.querySelector("span").textContent=T("語音輸入","Voice input"); im.textContent="";
+    ta.focus(); toast(T("這裡不能直接用麥克風"+(why?"（"+why+"）":"")+"。請用鍵盤上的 🎤 聽寫，說完會自動保存。","The mic isn’t available here"+(why?" ("+why+")":"")+". Use the 🎤 dictation key on your keyboard; it autosaves."),5200); };
+  btn.onclick=()=>{
+    if(REC){ stopMic(); return; }
+    if(!SR){ fallback(""); return; }
+    let r; try{ r=new SR(); }catch(e){ fallback(""); return; }
+    REC=r; r.lang=sel.value; r.continuous=true; r.interimResults=true;
+    let first=true, gotAny=false;
+    const d=new Date(), stamp=`【${d.getMonth()+1}/${d.getDate()}】`;
+    r.onstart=()=>{ S.listening=true; btn.classList.add("on"); btn.querySelector("span").textContent=T("停止","Stop"); st.textContent=T("正在聽…","Listening…"); };
+    r.onresult=e=>{ let fin="", tmp="";
+      for(let i=e.resultIndex;i<e.results.length;i++){ const t=e.results[i][0].transcript; if(e.results[i].isFinal) fin+=t; else tmp+=t; }
+      im.textContent=tmp;
+      if(fin.trim()){ gotAny=true; const v=ta.value.replace(/\s+$/,"");
+        const sep=first?(v?"\n":"")+stamp:(/[。！？.!?；;，,]$/.test(v)?"":(r.lang.startsWith("en")?". ":"。"));
+        ta.value=v+sep+fin.trim(); first=false; ta.scrollTop=ta.scrollHeight; save(); } };
+    r.onerror=e=>{ const c=e.error; REC=null; if(c==="not-allowed"||c==="service-not-allowed"||c==="audio-capture") fallback(c==="audio-capture"?T("找不到麥克風","no microphone"):T("沒有麥克風權限","no mic permission")); else if(c!=="aborted"&&c!=="no-speech") toast(T("語音識別出錯：","Speech error: ")+c); };
+    r.onend=()=>{ const again=!r.__stop&&REC===r; if(again){ try{ r.start(); return; }catch(e){} }
+      if(REC===r) REC=null; S.listening=false; btn.classList.remove("on"); btn.querySelector("span").textContent=T("語音輸入","Voice input"); im.textContent=""; if(!gotAny&&st.textContent===T("正在聽…","Listening…")) st.textContent=T("自動保存","Autosaves"); if(S.pendingRender){ S.pendingRender=false; render(); } };
+    try{ r.start(); }catch(e){ REC=null; fallback(""); }
+  };
+}
+function renderStudent(sid){
+  stopMic();
+  const app=$("#app"); if(!S.students[sid]){ go("class",{sound:false}); return; }
+  const {A,out}=feedback(sid); const as=assessOrdered(); const labels=as.map(a=>a.name);
+  const fa=fullAs(), flabels=fa.map(a=>a.name);
+  const ovS={name:nm(sid)+T(" 總分"," overall"),color:"var(--accent)",fill:true,values:fa.map(a=>sc(a.id,sid)?.pct??null)};
+  const avS={name:T("全班平均","Class average"),color:"var(--muted)",dash:true,values:fa.map(a=>classAvg(a.id))};
+  const skS=SK.map(k=>({k,name:SKL(k),color:SKC[k],values:A.sk[k].series})).filter(s=>s.values.some(v=>v!=null));
+  const gap=A.cur===null?null:A.cur-A.target;
+  const gapTxt = A.cur===null ? T("還沒有等級數據。","No grade data yet.") : gap>=-0.35 ? T(`已達到目標等級 ${esc(A.targetLabel)}。下一步是在 Mock 中保持。`,`On target (grade ${esc(A.targetLabel)}). Next: hold it in the Mock.`) : T(`比目標 ${esc(A.targetLabel)} 低約 ${Math.abs(gap).toFixed(1)} 級，重點補${A.weakest?SKN[A.weakest]:"短板"}。`,`About ${Math.abs(gap).toFixed(1)} grade below target ${esc(A.targetLabel)}; focus on ${A.weakest?SKE[A.weakest].toLowerCase():"the weak skill"}.`);
+  const ovVals=ovS.values.filter(v=>v!=null); const ovMin=Math.min(60,...ovVals.map(v=>Math.floor(v/10)*10));
+  const skVals=skS.flatMap(s=>s.values).filter(v=>v!=null); const skMin=Math.min(60,...skVals.map(v=>Math.floor(v/10)*10));
+  app.innerHTML=`
+  <div class="panel"><div class="hero">
+    <div style="display:flex;flex-direction:column;gap:8px;min-width:0"><div class="row" style="align-items:baseline"><div class="code">${esc(nm(sid))}</div><span class="num muted">${esc(sid)}</span></div><div class="flags">${A.flags.map(f=>`<span class="flag ${f.k}" title="${esc(f.t)}">${esc(FL(f))}</span>`).join("")||`<span class="flag ok">${T("狀態穩定","Steady")}</span>`}${A.missing.length?`<span class="flag grey" title="${esc(A.missing.join(T("、",", ")))}">${T(`缺 ${A.missing.length} 項`,`${A.missing.length} missing`)}</span>`:""}</div></div>
+    <div class="gauge"><div class="g"><span>${T("最近等級","Latest grade")}${A.latest?` · ${esc(A.latest.a.name)}`:""}</span><strong>${esc(A.latest?.r.grade??"—")}</strong></div><div class="g"><span>${T("目標","Target")}</span><strong style="color:var(--accent)">${esc(A.targetLabel)}</strong></div><div class="g"><span>${T("最近總分","Latest overall")}</span><strong>${fmtPct(ovVals[ovVals.length-1])}<small class="muted" style="font-size:14px">%</small></strong></div></div>
+    <p class="gapline" style="margin:auto 0 0">${gapTxt}</p>
+  </div></div>
+  ${dropAlertHTML(sid)}
+  <div class="grid">
+    <div class="panel span-7"><h2>Trajectory <span class="zh">${S.solo?T("總分趨勢（不含單項）","Overall score (single-skill excluded)"):T("總分趨勢 vs 全班（不含單項）","Overall vs class (single-skill excluded)")}</span></h2>${legend(S.solo?[ovS]:[ovS,avS])}<div id="chOv"></div></div>
+    <div class="panel span-5"><h2>Skills <span class="zh">${T("四項技能平均（25 分制）","Skill averages (out of 25)")}</span></h2><div class="skillcards">${SK.map(k=>{const s=A.sk[k]; if(!s.n) return `<div class="sc"><div class="n"><i style="background:${SKC[k]}"></i>${SKL(k)}</div><div class="v muted">—</div><div class="d muted">${T("沒有數據","No data")}</div></div>`; const ca=mean(codes().map(c=>analyse(c).sk[k].pct)); const d=s.pct-ca; return `<div class="sc ${S.skOff.has(k)?"off":""}" data-sk="${k}" role="button" tabindex="0" title="${T("點擊顯示／隱藏這一項","Click to show / hide")}"><div class="n"><i style="background:${SKC[k]}"></i>${SKL(k)}${k===A.weakest?` <span class="flag yellow" style="padding:0 6px;font-size:11px">${T("最弱","Weakest")}</span>`:""}</div><div class="v">${pt25(s.pct)}<small class="muted" style="font-size:12px">/25</small></div><div class="d vs ${d>=0.5?"up":d<=-0.5?"down":"flat"}">${d>=0?"+":""}${pt25(d)}${T(" 分 vs 全班平均"," vs class avg")}</div></div>`;}).join("")}</div>
+      <div id="chSk" style="margin-top:12px"></div>${legend(skS)}</div>
+  </div>
+  <div class="panel"><h2>Feedback <span class="zh">${T("學習建議（數據初稿）","Learning advice (data-based draft)")}</span></h2>
+    <div class="fb">
+      <section class="s"><h3>${T("優勢 Strengths","Strengths")}</h3><ul>${out.s.map(x=>`<li>${esc(x[LANG==="en"?1:0])}<span class="en">${esc(x[LANG==="en"?0:1])}</span></li>`).join("")}</ul></section>
+      <section class="i"><h3>${T("需要改進 To improve","To improve")}</h3><ul>${out.i.map(x=>`<li>${esc(x[LANG==="en"?1:0])}<span class="en">${esc(x[LANG==="en"?0:1])}</span></li>`).join("")}</ul></section>
+      <section class="n"><h3>${T("下一步 Next steps","Next steps")}</h3><ul>${out.n.map(x=>`<li>${esc(x[LANG==="en"?1:0])}<span class="en">${esc(x[LANG==="en"?0:1])}</span></li>`).join("")}</ul></section>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="panel span-5 teacher-only"><h2>Observation <span class="zh">${T("老師課堂觀察","Teacher’s observations")}</span></h2>
+      <textarea id="note" placeholder="${T("例如：課堂上積極發言，但作業常遲交；寫作時字數夠但格式常漏。","e.g. Speaks up in class but often hands homework in late; writing meets the word count but misses format conventions.")}">${esc(S.students[sid]?.note||"")}</textarea>
+      <div class="interim" id="interim"></div>
+      <div class="row" style="margin-top:8px;justify-content:space-between"><span class="row" style="gap:8px"><button class="btn mic" id="btnMic" type="button">🎤 <span>${T("語音輸入","Voice input")}</span></button><select id="micLang" class="miclang" title="${T("識別語言","Recognition language")}"><option value="zh-TW">中文（繁）</option><option value="zh-CN">中文（简）</option><option value="en-US">English</option></select><span class="savestate" id="saveState">${T("自動保存","Autosaves")}</span></span>
+      <label class="row note-s">${T("目標等級","Target grade")} <select id="target" style="width:auto">${["7","6","5","4"].map(v=>`<option ${String(A.targetLabel)===v?"selected":""}>${v}</option>`).join("")}</select></label></div>
+    </div>
+    <div class="panel span-7"><h2>Comment <span class="zh">${T("合成評語（中英對照）","Combined comment (English · Chinese)")}</span></h2>
+      <div class="comment" id="comment">${esc(combined(sid))}</div>
+      <div class="row" style="margin-top:10px"><button class="btn" id="btnCopy">${T("複製評語","Copy comment")}</button><button class="btn" id="btnAI">${T("AI 潤色評語","AI polish")}</button><button class="btn primary" id="btnPDF">${T("導出家長版 PDF","Export parent PDF")}</button><span class="note-s" id="aiState"></span></div>
+    </div>
+  </div>
+  <div class="panel"><h2>Detail <span class="zh">${T("各次成績明細","Score details")}</span><span class="note-s" style="text-transform:none;letter-spacing:0;font-family:var(--f-body)">${T("原始分 → 折算成 25 分制（閱讀 /40、寫作 /30、聽力 /25、口語 /30，四項各佔 25%）","Raw score → converted to /25 (Reading /40, Writing /30, Listening /25, Speaking /30; each skill weighs 25%)")}</span></h2><div class="tbl-wrap"><table><thead><tr><th>${T("評估","Assessment")}</th><th>${T("類型","Type")}</th>${SK.map(k=>`<th class="c">${SKL(k)}</th>`).join("")}<th class="c">${T("總分 %（25 分制合計）","Overall % (sum out of 25s)")}</th><th class="c">${T("等級","Grade")}</th><th class="c teacher-only"></th></tr></thead><tbody>
+    ${as.map(a=>{const r=sc(a.id,sid); return `<tr><td>${esc(a.name)}</td><td class="muted">${esc(TY(a.type))}${isSingle(a)?T(" · 單項"," · single"):""}</td>${SK.map(k=>{const s=r?.skills?.[k]; return `<td class="c num">${s?`<span class="raw">${s.raw??""}${s.max?`<span class="muted">/${s.max}</span>`:""}</span> <span class="s25">→ ${pt25(s.pct)}<span class="muted">/25</span></span> <small class="muted">${esc(s.grade??"")}</small>`:'<span class="muted">—</span>'}</td>`;}).join("")}<td class="c num">${isSingle(a)?`<span class="note-s">${T("單項","Single")}</span>`:(()=>{ const v=Object.values(r?.skills||{}).filter(x=>x&&x.pct!=null); return v.length?`${fmtPct(r.pct)} <span class="s25">(${fmtPct(v.reduce((t,x)=>t+x.pct/4,0))}<span class="muted">/${v.length*25}</span>)</span>`:fmtPct(r?.pct); })()}</td><td class="c num">${esc((isSingle(a)?Object.values(r?.skills||{})[0]?.grade:null)??r?.grade??"—")}</td><td class="c teacher-only"><button class="btn ghost" data-edit="${esc(a.id)}" style="padding:2px 8px;font-size:12px">${T("編輯","Edit")}</button></td></tr>`;}).join("")}
+  </tbody></table></div></div>`;
+  lineChart($("#chOv"),{labels:flabels,series:S.solo?[ovS]:[avS,ovS],yMin:ovMin,yMax:100});
+  lineChart($("#chSk"),{labels,series:skOn(skS),yMin:skMin,yMax:100,h:200});
+  let tmr=null;
+  $("#note").addEventListener("input",e=>{ $("#saveState").textContent=T("輸入中…","Typing…"); clearTimeout(tmr); const v=e.target.value; tmr=setTimeout(async()=>{ try{ await S.db.doc("students/"+sid).update({note:v}); $("#saveState").textContent=T("已保存 ✓","Saved ✓"); }catch(err){ $("#saveState").textContent="保存失敗："+(err.message||err.code); } },700); });
+  setupMic(sid);
+  $("#target").addEventListener("change",async e=>{ try{ await S.db.doc("students/"+sid).update({target:e.target.value}); toast(T("目標已更新","Target updated")); }catch(err){ toast("保存失敗："+(err.message||err.code)); } });
+  $("#btnCopy").addEventListener("click",()=>{ const t=$("#comment").textContent; navigator.clipboard?.writeText(t).then(()=>toast(T("已複製","Copied")),()=>{ const r=document.createRange(); r.selectNodeContents($("#comment")); const s=getSelection(); s.removeAllRanges(); s.addRange(r); toast("已選中文字，請按複製"); }); });
+  $("#btnAI").addEventListener("click",()=>polish(sid));
+  $("#btnPDF").addEventListener("click",()=>exportPDF(sid));
+}
+
+function render(){
+  document.body.classList.toggle("solo",S.solo);
+  $("#btnSolo").setAttribute("aria-pressed",S.solo); $("#btnSolo").disabled = S.view==="class" && !S.solo;
+  renderSwitcher();
+  if(S.view==="class") renderClass(); else renderStudent(S.view);
+}
+
+/* ---------- AI polish ---------- */
+async function polish(sid){
+  const st=$("#aiState"); const sample=await claude.use("sample");
+  if(!sample){ st.textContent=T("公開示範版不提供 AI 潤色","AI polish is not available in the public demo"); return; }
+  st.textContent=T("生成中…","Generating…"); $("#btnAI").disabled=true;
+  const {A,out}=feedback(sid);
+  const data={code:sid,target:A.targetLabel,assessments:A.ser.map(x=>({name:x.a.name,type:x.a.type,pct:x.r.pct,grade:x.r.grade,skills:Object.fromEntries(Object.entries(x.r.skills||{}).map(([k,v])=>[k,{pct:v.pct,grade:v.grade}]))})),flags:A.flags.map(f=>f.zh+"："+f.t),draft:out,teacherNote:S.students[sid]?.note||""};
+  const prompt=`你是中學語言科老師的助手。根據下面的成績數據、規則生成的初稿和老師觀察，寫一段給學生和家長的評語。
+要求：先寫繁體中文（120–180字，句子簡單清楚，學生能讀懂），空一行，再寫對應的英文版本。內容包括：具體優勢、一到兩個需要改進的地方（用數據說明）、兩條可操作的練習建議。只用「${nm(sid)}」稱呼學生，不要編造數據裏沒有的事實。只輸出評語正文。
+數據：${JSON.stringify(data)}`;
+  try{
+    const res=await sample(prompt,{modelTier:"default",onText:({text})=>{ $("#comment").textContent=text; }});
+    $("#comment").textContent=res.text; st.textContent=T("AI 版本（僅在本頁顯示，可複製）","AI version (shown here only; copy to keep)");
+  }catch(e){ st.textContent=e.code==="not_granted"?"未獲准使用 AI 功能":e.code==="rate_limited"?"使用太頻繁，稍後再試":"生成失敗："+(e.message||e.code); }
+  $("#btnAI").disabled=false;
+}
+
+/* ---------- lazy libs ---------- */
+const libs={};
+function loadLib(url){ return libs[url] ||= new Promise((res,rej)=>{ const s=document.createElement("script"); s.src=url; s.onload=res; s.onerror=()=>{ delete libs[url]; rej(new Error("載入失敗")); }; document.head.appendChild(s); }); }
+const URL_XLSX="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
+const URL_H2C="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+const URL_PDF="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+
+/* ---------- PDF export (parent version) ---------- */
+async function exportPDF(sid){
+  const dl=await claude.use("downloads"); if(!dl){ toast("這個視圖無法下載文件"); return; }
+  const btn=$("#btnPDF"); btn.disabled=true; btn.textContent=T("生成中…","Generating…");
+  try{
+    await Promise.all([loadLib(URL_H2C),loadLib(URL_PDF)]);
+    const {A,out}=feedback(sid); const as=assessOrdered();
+    const node=document.createElement("div");
+    node.style.cssText="position:fixed;left:-10000px;top:0;width:794px;padding:44px 48px;background:#ffffff;color:#16202a;font-family:"+getComputedStyle(document.body).fontFamily+";font-size:13px;line-height:1.6";
+    const colors={reading:"#2f6fd6",writing:"#c27a1a",listening:"#1f9a6a",oral:"#8b5cd6"};
+    const host=document.createElement("div");
+    node.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #16202a;padding-bottom:10px"><div><div style="font-size:12px;letter-spacing:.12em;color:#5b6b7a">CLASS LEARNING REPORT</div><div style="font-size:26px;font-weight:700">${esc(nm(sid))} 學習報告 Progress Report</div></div><div style="text-align:right;font-size:12px;color:#5b6b7a">${new Date().toISOString().slice(0,10)}</div></div>
+    <div style="display:flex;gap:28px;margin:18px 0"><div><div style="color:#5b6b7a;font-size:12px">最近等級 Latest grade</div><div style="font-size:28px;font-weight:700">${esc(A.latest?.r.grade??"—")}</div></div><div><div style="color:#5b6b7a;font-size:12px">目標 Target</div><div style="font-size:28px;font-weight:700">${esc(A.targetLabel)}</div></div>${SK.filter(k=>A.sk[k].n).map(k=>`<div><div style="color:#5b6b7a;font-size:12px">${SKN[k]} ${SKE[k]}</div><div style="font-size:22px;font-weight:600;color:${colors[k]}">${pt25(A.sk[k].pct)}/25</div></div>`).join("")}</div>
+    <div id="pdfChart" style="margin-bottom:12px"></div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px"><tr style="background:#eef2f5">${["評估 Assessment",...SK.map(k=>SKN[k]),"總分 %","等級"].map(h=>`<th style="padding:5px 6px;text-align:left">${h}</th>`).join("")}</tr>${as.map(a=>{const r=sc(a.id,sid); if(!r) return ""; return `<tr>${[a.name+(isSingle(a)?"（單項）":""),...SK.map(k=>r.skills?.[k]?(r.skills[k].grade??fmtPct(r.skills[k].pct)+"%"):"—"),isSingle(a)?"—":fmtPct(r.pct),isSingle(a)?"—":(r.grade??"—")].map(v=>`<td style="padding:5px 6px;border-bottom:1px solid #dde3e8">${esc(v)}</td>`).join("")}</tr>`;}).join("")}</table>
+    <div style="white-space:pre-wrap;border:1px solid #cfd8df;border-radius:6px;padding:12px 14px">${esc($("#comment").textContent)}</div>`;
+    document.body.appendChild(node);
+    const fa=fullAs(); const labels=fa.map(a=>a.name);
+    const vals=fa.map(a=>sc(a.id,sid)?.pct??null);
+    const W=698,H=170,L=34,R=10,T=10,B=26; const mn=Math.min(60,...vals.filter(v=>v!=null).map(v=>Math.floor(v/10)*10));
+    const x=i=>labels.length<=1?L+(W-L-R)/2:L+(W-L-R)*i/(labels.length-1), y=v=>T+(H-T-B)*(1-(v-mn)/(100-mn));
+    let p="",st=false; vals.forEach((v,i)=>{ if(v==null) return; p+=(st?"L":"M")+x(i)+","+y(v); st=true; });
+    let svg=`<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">`;
+    for(let v=mn; v<=100; v+=(100-mn)/4) svg+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="#e2e8ee"/><text x="${L-6}" y="${y(v)+4}" font-size="10" text-anchor="end" fill="#7a8896">${Math.round(v)}</text>`;
+    labels.forEach((l,i)=>svg+=`<text x="${x(i)}" y="${H-8}" font-size="10.5" text-anchor="middle" fill="#5b6b7a">${esc(l)}</text>`);
+    svg+=`<path d="${p}" fill="none" stroke="#0e7c86" stroke-width="2.2"/>`; vals.forEach((v,i)=>{ if(v!=null) svg+=`<circle cx="${x(i)}" cy="${y(v)}" r="3.5" fill="#0e7c86"/>`; });
+    node.querySelector("#pdfChart").innerHTML=`<div style="font-size:12px;color:#5b6b7a;margin-bottom:4px">總分趨勢 Overall score (%)</div>`+svg+"</svg>";
+    const canvas=await window.html2canvas(node,{scale:2,backgroundColor:"#ffffff"});
+    node.remove();
+    const pdf=new window.jspdf.jsPDF({unit:"pt",format:"a4"}); const pw=pdf.internal.pageSize.getWidth(), ph=pdf.internal.pageSize.getHeight();
+    const ih=canvas.height*pw/canvas.width; const img=canvas.toDataURL("image/jpeg",0.92);
+    let off=0; pdf.addImage(img,"JPEG",0,0,pw,ih); while(ih-off>ph){ off+=ph; pdf.addPage(); pdf.addImage(img,"JPEG",0,-off,pw,ih); }
+    const blob=pdf.output("blob");
+    await dl.save({filename:`${nm(sid)}_${sid}_學習報告.pdf`,data:blob}).then(r=>{ if(r.status==="saved") toast(T("已導出","Exported")); }).catch(e=>{ if(e.code!=="declined"&&e.code!=="cancelled") toast("導出失敗："+(e.message||e.code)); });
+  }catch(e){ toast("導出失敗："+e.message); }
+  btn.disabled=false; btn.textContent=T("導出家長版 PDF","Export parent PDF");
+}
+
+/* ---------- entry modal ---------- */
+function closeModal(){ $("#modalRoot").innerHTML=""; }
+function openEntry(aid){
+  const a=aid?S.assessments.find(x=>x.id===aid):null; const cs=codes();
+  const used=SK.filter(k=>a? cs.some(c=>sc(a.id,c)?.skills?.[k]) : k!=="oral");
+  const maxOf=k=>{ if(a){ const s=cs.map(c=>sc(a.id,c)?.skills?.[k]?.max).find(Boolean); if(s) return s; } return {reading:40,writing:30,listening:25,oral:30}[k]; };
+  $("#modalRoot").innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle"><div class="box">
+    <div class="row" style="justify-content:space-between"><h3 id="mTitle">${a?"編輯評估："+esc(a.name):"新增評估"}</h3><button class="btn ghost" id="mClose">關閉</button></div>
+    <div class="form-grid">
+      <label>名稱<input type="text" id="mName" value="${esc(a?.name||"")}" placeholder="例如 Mock 或 作業 3"></label>
+      <label>類型<select id="mType">${TYPES.map(t=>`<option ${a?.type===t?"selected":""}>${t}</option>`).join("")}</select></label>
+      <label>日期<input type="date" id="mDate" value="${esc(a?.date||"")}"></label>
+      <label>順序（越大越新）<input type="number" id="mOrder" value="${a?.order??(Math.max(0,...S.assessments.map(x=>x.order||0))+1)}"></label>
+    </div>
+    <label class="row note-s" style="gap:6px"><input type="checkbox" id="mSingle" ${a&&isSingle(a)?"checked":""}> 單項成績（例如口語考、單獨的寫作作業）：只計入對應技能，不計入總分和總評等級</label>
+    <div class="row">${SK.map(k=>`<label class="row note-s" style="gap:6px"><input type="checkbox" id="use_${k}" ${used.includes(k)?"checked":""}> ${SKN[k]} 滿分 <input type="number" id="max_${k}" value="${maxOf(k)}" style="width:64px"></label>`).join("")}</div>
+    <p class="note-s" style="margin:0">填原始分（會按滿分換算成 %）。技能等級和總評等級可選填，例如 7、6+、6+/7-。留空表示沒有這項。</p>
+    <div class="tbl-wrap"><table class="entry"><thead><tr><th>${T("學生","Student")}</th>${SK.map(k=>`<th class="c sk_${k}">${SKN[k]} 分</th><th class="c sk_${k}">等級</th>`).join("")}<th class="c">總評等級</th></tr></thead><tbody>
+    ${cs.map(c=>{const r=a?sc(a.id,c):null; return `<tr><td><b>${esc(nm(c))}</b> <span class="note-s num">${esc(c)}</span></td>${SK.map(k=>`<td class="sk_${k}"><input type="number" step="any" data-c="${esc(c)}" data-k="${k}" data-f="raw" value="${r?.skills?.[k]?.raw??""}"></td><td class="sk_${k}"><input type="text" data-c="${esc(c)}" data-k="${k}" data-f="grade" value="${esc(r?.skills?.[k]?.grade??"")}"></td>`).join("")}<td><input type="text" data-c="${esc(c)}" data-f="og" value="${esc(r?.grade??"")}"></td></tr>`;}).join("")}
+    </tbody></table></div>
+    <div class="row" style="justify-content:space-between"><span>${a?`<button class="btn ghost" id="mDel" style="color:var(--red)">刪除這次評估</button>`:""}</span><span class="row"><span class="err" id="mErr"></span><button class="btn primary" id="mSave">保存</button></span></div>
+    <div id="mConfirm"></div>
+  </div></div>`;
+  const syncCols=()=>SK.forEach(k=>document.querySelectorAll(".sk_"+k).forEach(el=>el.style.display=$("#use_"+k).checked?"":"none"));
+  SK.forEach(k=>$("#use_"+k).addEventListener("change",syncCols)); syncCols();
+  $("#mClose").onclick=closeModal;
+  $("#mSave").onclick=async()=>{
+    const name=$("#mName").value.trim(); if(!name){ $("#mErr").textContent="請填寫評估名稱"; return; }
+    const id=a?.id||("a"+Date.now().toString(36));
+    const use=SK.filter(k=>$("#use_"+k).checked), mx=Object.fromEntries(SK.map(k=>[k,+$("#max_"+k).value||100]));
+    $("#mSave").disabled=true; $("#mErr").textContent="";
+    try{
+      await S.db.doc("assessments/"+id).set({name,type:$("#mType").value,date:$("#mDate").value||null,order:+$("#mOrder").value||0,single:$("#mSingle").checked,source:a?.source||"manual"});
+      for(const c of cs){
+        const skills={};
+        use.forEach(k=>{ const raw=document.querySelector(`input[data-c="${CSS.escape(c)}"][data-k="${k}"][data-f="raw"]`).value; const gr=document.querySelector(`input[data-c="${CSS.escape(c)}"][data-k="${k}"][data-f="grade"]`).value.trim(); if(raw!==""){ skills[k]={raw:+raw,max:mx[k],pct:Math.round(+raw/mx[k]*1000)/10,grade:gr||null}; } });
+        const og=document.querySelector(`input[data-c="${CSS.escape(c)}"][data-f="og"]`).value.trim();
+        const ref=S.db.doc(`scores/${id}__${c}`);
+        if(!Object.keys(skills).length && !og){ if(sc(id,c)) await ref.delete(); continue; }
+        const tot=Object.values(skills); const pct=tot.length? Math.round(tot.reduce((s,v)=>s+v.pct,0)/tot.length*10)/10 : null; /* 每項技能先折成 25 分制，各佔同等比重 */
+        await ref.set({aid:id,sid:c,skills,pct,grade:og||null});
+      }
+      closeModal(); toast("已保存"); tick();
+    }catch(e){ $("#mErr").textContent="保存失敗："+(e.message||e.code); $("#mSave").disabled=false; }
+  };
+  if(a) $("#mDel").onclick=()=>{
+    $("#mConfirm").innerHTML=`<div class="row" style="justify-content:flex-end;gap:8px"><span class="err">確定刪除「${esc(a.name)}」和全部學生這次的分數？刪除後無法恢復。</span><button class="btn" id="mDelNo">取消</button><button class="btn" id="mDelYes" style="border-color:var(--red);color:var(--red)">確定刪除</button></div>`;
+    $("#mDelNo").onclick=()=>$("#mConfirm").innerHTML="";
+    $("#mDelYes").onclick=async()=>{ try{ for(const c of cs){ if(sc(a.id,c)) await S.db.doc(`scores/${a.id}__${c}`).delete(); } await S.db.doc("assessments/"+a.id).delete(); closeModal(); toast("已刪除"); }catch(e){ $("#mErr").textContent="刪除失敗："+(e.message||e.code); } };
+  };
+}
+
+/* ---------- import ---------- */
+function openImportHelp(){
+  $("#modalRoot").innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="iTitle"><div class="box">
+    <div class="row" style="justify-content:space-between"><h3 id="iTitle">導入表格</h3><button class="btn ghost" id="iClose">關閉</button></div>
+    <p style="margin:0;max-width:70ch">上傳 Excel 或 CSV，每行是一個學生在一次評估的成績。必填列：<b>學生代號</b>、<b>評估名稱</b>。可選列：類型、日期、閱讀、寫作、聽力、口語、等級。技能列可以寫「得分/滿分」（如 33/40）或直接寫百分比（如 82.5）。同名評估會更新，新名稱會新建一次評估。表裏只用代號，不要放學生姓名。</p>
+    <div class="row"><button class="btn" id="iTpl">下載範本</button><button class="btn primary" id="iPick">選擇文件</button><span class="err" id="iErr"></span></div>
+  </div></div>`;
+  $("#iClose").onclick=closeModal;
+  $("#iPick").onclick=()=>$("#fileImport").click();
+  $("#iTpl").onclick=async()=>{ const dl=await claude.use("downloads"); if(!dl){ $("#iErr").textContent="這個視圖無法下載文件"; return; } const csv="﻿學生代號,評估名稱,類型,日期,閱讀,寫作,聽力,口語,等級\nS01,Mock,Mock,2026-12-10,34/40,25/30,22/25,26/30,7\nS02,Mock,Mock,2026-12-10,31/40,22/30,21/25,24/30,6+\n"; dl.save({filename:"成績導入範本.csv",data:csv}).catch(()=>{}); };
+}
+function parseCell(v){
+  if(v===null||v===undefined||v==="") return null;
+  const s=String(v).trim(); const m=s.match(/^(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)$/);
+  if(m) return {raw:+m[1],max:+m[2],pct:Math.round(+m[1]/+m[2]*1000)/10};
+  const n=parseFloat(s.replace("%","")); if(isNaN(n)) return null; return {raw:n,max:100,pct:n};
+}
+async function importFile(file){
+  try{
+    await loadLib(URL_XLSX);
+    const buf=await file.arrayBuffer(); const wb=XLSX.read(buf,{type:"array"});
+    const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:""});
+    const col=(r,...names)=>{ for(const n of names){ const key=Object.keys(r).find(k=>k.trim().toLowerCase()===n.toLowerCase()); if(key!==undefined) return r[key]; } return ""; };
+    const map={reading:["閱讀","阅读","reading"],writing:["寫作","写作","writing"],listening:["聽力","听力","listening"],oral:["口語","口语","oral","speaking"]};
+    let n=0, newA={}, unknown=new Set();
+    let nextOrder=Math.max(0,...S.assessments.map(x=>x.order||0));
+    for(const r of rows){
+      const c=String(col(r,"學生代號","学生代号","code")).trim(); const an=String(col(r,"評估名稱","评估名称","assessment")).trim();
+      if(!c||!an) continue;
+      if(!S.students[c]){ unknown.add(c); await S.db.doc("students/"+c).set({code:c,target:"7",note:""}); S.students[c]={code:c,target:"7",note:""}; }
+      let a=S.assessments.find(x=>x.name===an)||newA[an];
+      if(!a){ a={id:"a"+Date.now().toString(36)+Object.keys(newA).length,name:an,type:String(col(r,"類型","类型","type")).trim()||"其他",date:String(col(r,"日期","date")).trim()||null,order:++nextOrder,source:"upload"}; newA[an]=a; await S.db.doc("assessments/"+a.id).set({name:a.name,type:a.type,date:a.date,order:a.order,source:"upload"}); }
+      const skills={}; SK.forEach(k=>{ const p=parseCell(col(r,...map[k])); if(p) skills[k]={...p,grade:null}; });
+      const tot=Object.values(skills); const pct=tot.length?Math.round(tot.reduce((s,v)=>s+v.pct,0)/tot.length*10)/10:null;
+      await S.db.doc(`scores/${a.id}__${c}`).set({aid:a.id,sid:c,skills,pct,grade:String(col(r,"等級","等级","grade")).trim()||null}); n++;
+    }
+    closeModal(); toast(`已導入 ${n} 行`+(unknown.size?`，新增學生 ${[...unknown].join("、")}`:"")); tick();
+  }catch(e){ const el=$("#iErr"); if(el) el.textContent="導入失敗："+(e.message||e.code); else toast("導入失敗："+(e.message||e.code)); }
+}
+
+/* ---------- events ---------- */
+function toggleSk(k){ if(S.skOff.has(k)) S.skOff.delete(k); else { const shown=SK.filter(x=>!S.skOff.has(x)); if(shown.length<=1) { toast(T("至少保留一項技能","Keep at least one skill")); return; } S.skOff.add(k); } store.set("y13.skoff",[...S.skOff]); tick(); render(); }
+document.addEventListener("keydown",e=>{ const s=e.target.closest&&e.target.closest(".sc[data-sk]"); if(s&&(e.key==="Enter"||e.key===" ")){ e.preventDefault(); toggleSk(s.dataset.sk); } });
+document.addEventListener("click",e=>{ const sk=e.target.closest("[data-sk]"); if(sk){ toggleSk(sk.dataset.sk); return; } const t=e.target.closest("[data-go]"); if(t){ go(t.dataset.go); return; } const ed=e.target.closest("[data-edit]"); if(ed) openEntry(ed.dataset.edit); });
+$("#btnAdd").onclick=()=>{ if(!S.db) return toast("數據庫未連接"); openEntry(null); };
+$("#btnImport").onclick=()=>{ if(!S.db) return toast("數據庫未連接"); openImportHelp(); };
+$("#fileImport").onchange=e=>{ const f=e.target.files[0]; e.target.value=""; if(f) importFile(f); };
+$("#btnSolo").onclick=()=>{ if(S.view==="class") return; S.solo=!S.solo; ratchet(); render(); };
+$("#btnSoloExit").onclick=()=>{ S.solo=false; ratchet(); render(); };
+const paintSound=()=>{ $("#btnSound").setAttribute("aria-pressed",soundOn); $("#btnSound").textContent=soundOn?T("♪ 音效開","♪ Sound on"):T("♪ 音效關","♪ Sound off"); $("#btnSound").title=T("齒輪音效","Gear sound"); };
+$("#btnSound").onclick=()=>{ soundOn=!soundOn; store.set("y13.sound",soundOn); paintSound(); ensureAudio(); if(soundOn) setTimeout(()=>tick(),30); };
+let paintFull=null;
+function paintStatic(){
+  document.documentElement.lang=T("zh-Hant","en");
+  const set=(sel,z,e)=>{ const el=$(sel); if(el) el.textContent=T(z,e); };
+  set(".brand .sub","學習數據看板","Learning dashboard"); set(".brand h1","示範班級","Demo class");
+  set("#btnAdd","＋ 新增評估","＋ Add assessment");
+  set("#btnImport","導入表格","Import sheet");
+  set("#btnSolo","單人模式","Single-student mode");
+  set(".solo-banner span","單人模式：只顯示這位同學的數據","Single-student mode: showing this student only");
+  set("#btnSoloExit","退出","Exit");
+  set(".demo-tag","示範數據 · 姓名與分數均為虛構","Demo data · names and scores are fictional");
+  $("#btnSolo").title=T("面談時只顯示當前學生","Show only the current student in meetings");
+  $("#switcher").setAttribute("aria-label",T("切換學生","Switch student"));
+  const bl=$("#btnLang"); bl.textContent=LANG==="en"?"中文":"EN"; bl.title=T("切換成英文","切換成中文 Switch to Chinese");
+  paintSound(); if(paintFull) paintFull();
+}
+$("#btnLang").onclick=()=>{ LANG=LANG==="en"?"zh":"en"; store.set("y13.lang",LANG); ratchet(); paintStatic(); if(S.ready.a&&S.ready.s&&S.ready.st) render(); };
+(()=>{ const b=$("#btnFull"), el=document.documentElement; const req=el.requestFullscreen||el.webkitRequestFullscreen; if(!req) return; b.hidden=false;
+  const fsEl=()=>document.fullscreenElement||document.webkitFullscreenElement;
+  const paint=()=>{ const on=!!fsEl(); b.setAttribute("aria-pressed",on); b.textContent=on?T("⛶ 退出全螢幕","⛶ Exit full screen"):T("⛶ 全螢幕","⛶ Full screen"); b.title=T("全螢幕顯示","Full screen"); }; paintFull=paint;
+  b.onclick=async()=>{ try{ if(fsEl()) await (document.exitFullscreen||document.webkitExitFullscreen).call(document); else await req.call(el); }catch(e){ toast("這個視圖不支持全螢幕，可以按瀏覽器的全螢幕鍵（Mac：Ctrl+Cmd+F）"); } };
+  document.addEventListener("fullscreenchange",paint); document.addEventListener("webkitfullscreenchange",paint); })();
+paintStatic();
+let rz=null, lastW=innerWidth; window.addEventListener("resize",()=>{ clearTimeout(rz); rz=setTimeout(()=>{ if(Math.abs(innerWidth-lastW)>40 && S.ready.a && !(document.activeElement&&document.activeElement.id==="note")){ lastW=innerWidth; render(); } },200); });
+window.addEventListener("hashchange",()=>{ const h=location.hash.slice(1)||"class"; if(h!==S.view && (h==="class"||S.students[h])) { S.view=h; render(); } });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); if((e.key==="ArrowRight"||e.key==="ArrowLeft") && !e.target.closest("input,textarea,select") && !S.solo){ const list=["class",...codes()]; const i=list.indexOf(S.view); const n=list[(i+(e.key==="ArrowRight"?1:-1)+list.length)%list.length]; go(n); } });
+
+/* ---------- boot ---------- */
+(async()=>{
+  const db=await claude.use("db");
+  if(!db){ $("#app").innerHTML=`<div class="empty"><strong>無法連接數據庫</strong>請登錄 claude.ai 後用你自己的帳號打開這個頁面。</div>`; return; }
+  S.db=db;
+  let pending=null; const schedule=()=>{ if(pending) return; pending=requestAnimationFrame(()=>{ pending=null; if(!(S.ready.a&&S.ready.s&&S.ready.st)) return; const h=location.hash.slice(1); if(S.view==="class" && h && S.students[h]) S.view=h; if((document.activeElement && document.activeElement.id==="note")||S.listening) { if(S.listening) S.pendingRender=true; renderSwitcher(); return; } render(); }); };
+  const fail=e=>{ $("#app").innerHTML=`<div class="empty"><strong>讀取數據失敗</strong>${esc(e.message||e.code)}</div>`; };
+  db.collection("assessments").onSnapshot(q=>{ S.assessments=q.docs.map(d=>({id:d.id,...d.data()})); S.ready.a=true; schedule(); },fail);
+  db.collection("scores").onSnapshot(q=>{ S.scores={}; q.docs.forEach(d=>{ const v={...d.data()}; const ps=Object.values(v.skills||{}).map(x=>x&&x.pct).filter(x=>x!=null&&!isNaN(x)); if(ps.length) v.pct=Math.round(ps.reduce((a,b)=>a+b,0)/ps.length*10)/10; S.scores[v.aid+"__"+v.sid]=v; }); S.ready.s=true; schedule(); },fail);
+  db.collection("students").onSnapshot(q=>{ S.students={}; q.docs.forEach(d=>{ S.students[d.id]=d.data(); }); S.ready.st=true; schedule(); },fail);
+})();
+})();
+</script>
+
+</html>
