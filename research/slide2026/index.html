@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>驭AI以文｜受保护放映</title>
+<title>Q老師 Research｜受保护放映</title>
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="same-origin">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
@@ -39,6 +39,8 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
 #gate button:disabled{opacity:.5;cursor:default}
 #gate .err{color:var(--danger);font-size:13.5px;min-height:20px;margin:2px 0 0}
 #gate .meta{margin-top:20px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;line-height:1.8}
+#gate .back{display:inline-block;margin-bottom:16px;color:var(--muted);text-decoration:none;font-size:13px}
+#gate .back:hover{color:var(--accent)}
 
 /* ---------- 放映区 ---------- */
 #stage{position:fixed;inset:0;display:none;flex-direction:column}
@@ -53,6 +55,8 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
   align-items:center;justify-content:center;color:var(--soft);font-size:16px}
 #top .ib:hover{background:rgba(255,255,255,.08);color:var(--ink)}
 #top .ib:disabled{opacity:.3;cursor:default}
+#top a.ib{text-decoration:none;color:var(--soft)}
+#top a.ib:hover{color:var(--accent);background:rgba(255,255,255,.08)}
 #view{flex:1;position:relative;display:flex;align-items:center;justify-content:center;padding:18px;min-height:0}
 #canvas{max-width:100%;max-height:100%;border-radius:8px;box-shadow:0 20px 60px -24px rgba(0,0,0,.85);
   background:#0d1524;opacity:0;transition:opacity .28s}
@@ -90,9 +94,10 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
 
 <div id="gate">
   <div class="box">
+    <a class="back" href="../">← Q老師 Research</a>
     <div class="mark">駛</div>
-    <h1>驭AI以文</h1>
-    <p class="sub">一线教师数字素养以及中文课堂 AI 案例实操<br>共 45 页 · 受保护放映</p>
+    <h1>Q老師 Research</h1>
+    <p class="sub">驭AI以文 · 一线教师数字素养以及中文课堂 AI 案例实操<br>共 45 页 · 受保护放映</p>
     <div class="row">
       <input id="pwd" type="password" placeholder="输入访问密码" autocomplete="off" spellcheck="false">
       <button id="go">进入</button>
@@ -106,7 +111,8 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
   <div id="top">
     <button class="ib" id="prev" title="上一页">‹</button>
     <button class="ib" id="next" title="下一页">›</button>
-    <span class="ttl">驭AI以文 · 一线教师数字素养以及中文课堂 AI 案例实操</span>
+    <span class="ttl">Q老師 Research · 驭AI以文</span>
+    <a class="ib" href="../" title="返回 Q老師 Research">←</a>
     <span class="who"><span id="whoTag"></span>受保护放映</span>
   </div>
   <div id="view">
