@@ -123,6 +123,7 @@
   <span class="who" id="whoTag">未標識</span>
   <span class="sp"></span>
   <button id="editWho">更換姓名</button>
+  <button id="clearWho">清除姓名</button>
   <button id="lock">重新鎖定</button>
 </div>
 
@@ -199,6 +200,9 @@ window.addEventListener('beforeprint',()=>{const v=document.getElementById('lbv'
 
 /* ============ 狀態 ============ */
 let key=null,who='',META=null,ready=false;
+const WHO_KEY='qr_who_video';
+// 與另一頁分開存儲，避免互相污染；並清理早期測試殘留的舊鍵
+try{localStorage.removeItem('qr_who')}catch(e){}
 const lb=document.getElementById('lb'),v=document.getElementById('lbv'),t=document.getElementById('lbt');
 const gate=document.getElementById('gate');
 
@@ -305,7 +309,7 @@ guard.addEventListener('click',()=>setGuard(false));
 const whoEl=document.getElementById('who'),pwdEl=document.getElementById('pwd');
 const goEl=document.getElementById('go'),errEl=document.getElementById('err');
 // 記住上次填寫的姓名
-whoEl.value=localStorage.getItem('qr_who')||'';
+whoEl.value=localStorage.getItem(WHO_KEY)||'';
 
 async function enter(){
   const pw=pwdEl.value.trim();
@@ -320,7 +324,7 @@ async function enter(){
     await decryptBlob(k,await vr.arrayBuffer());
     key=k;
     who=whoEl.value.trim();
-    localStorage.setItem('qr_who',who);
+    localStorage.setItem(WHO_KEY,who);
     fillWatermarks();
     gate.classList.add('off');
     document.body.classList.remove('locked');
@@ -337,8 +341,17 @@ pwdEl.addEventListener('keydown',e=>{if(e.key==='Enter')enter()});
 whoEl.focus();
 
 document.getElementById('editWho').onclick=()=>{
-  const n=prompt('請輸入你的姓名或郵箱（會嵌入浮水印）',who);
-  if(n!==null){who=n.trim();localStorage.setItem('qr_who',who);fillWatermarks()}
+  const n=prompt('請輸入你的姓名或郵箱（會嵌入浮水印）。\n若要清除，請直接按確定鍵並留空。',who);
+  if(n!==null){
+    who=n.trim();
+    if(who) localStorage.setItem(WHO_KEY,who); else localStorage.removeItem(WHO_KEY);
+    fillWatermarks();
+  }
+};
+document.getElementById('clearWho').onclick=()=>{
+  who='';
+  localStorage.removeItem(WHO_KEY);
+  fillWatermarks();
 };
 document.getElementById('lock').onclick=()=>{
   ready=false;closeLb();gate.classList.remove('off');
