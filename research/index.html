@@ -219,7 +219,7 @@ async function decryptBlob(key,buf){
 }
 
 /* ============ 浮水印 ============ */
-function wmLabel(){ return who?`${who} · 受保護放映 · 請勿截圖`:'受保護放映 · 請勿截圖'; }
+function wmLabel(){ return who?`錢老師 · ${who} · 受保護放映 · 請勿截圖`:'錢老師 · 受保護放映 · 請勿截圖'; }
 function fillWatermarks(){
   const label=wmLabel();
   // 影片播放層
