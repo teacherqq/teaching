@@ -199,6 +199,8 @@ async function decryptPage(key,buf){
 
 /* ============ 水印 ============ */
 let who='';
+const WHO_KEY='qr_who_slide';
+try{localStorage.removeItem('qr_who')}catch(e){}   // 清理早期測試殘留的舊鍵   // 與影片頁分開存儲，避免互相污染
 function wmLabel(){ return who?`錢老師 · ${who} · 受保護放映 · 請勿截圖`:'錢老師 · 受保護放映 · 請勿截圖'; }
 function buildWatermark(label){
   const wm=document.getElementById('wm');
@@ -272,12 +274,14 @@ function updateBar(){
   document.getElementById('last').disabled=idx===pages.length-1;
 }
 const WATERMARK='錢老師 · 受保護放映 · 請勿截圖';
-// 顶栏「已解锁」改为显示姓名，便于一眼确认是谁在看
+// 顶栏「姓名」可点击修改，便于随时更正或清除
 document.getElementById('top').addEventListener('click',e=>{
   if(e.target.closest('#whoTag')){
-    const n=prompt('请输入你的姓名或邮箱（会嵌入水印）',who);
-    if(n!==null&&n.trim()){who=n.trim();localStorage.setItem('qr_who',who);
-      document.getElementById('whoTag').textContent=who;
+    const n=prompt('请输入你的姓名或邮箱（会嵌入水印）\n若要清除，请直接按确定键并留空。',who);
+    if(n!==null){
+      who=n.trim();
+      if(who) localStorage.setItem(WHO_KEY,who); else localStorage.removeItem(WHO_KEY);
+      document.getElementById('whoTag').textContent=who||'已解锁';
       buildWatermark(wmLabel());
       if(key) show(idx);
     }
@@ -331,7 +335,7 @@ guard.addEventListener('click',()=>setGuard(false));
 /* ============ 进入流程 ============ */
 const pwdEl=document.getElementById('pwd'), goEl=document.getElementById('go'), errEl=document.getElementById('err');
 const whoEl=document.getElementById('who');
-whoEl.value=localStorage.getItem('qr_who')||'';
+whoEl.value=localStorage.getItem(WHO_KEY)||'';
 async function enter(){
   const p=pwdEl.value.trim();
   if(!p){errEl.textContent='请输入密码';return}
@@ -345,7 +349,7 @@ async function enter(){
     await decryptPage(k,await r.arrayBuffer());
     key=k;pages=META.pages;
     who=whoEl.value.trim();
-    localStorage.setItem('qr_who',who);
+    localStorage.setItem(WHO_KEY,who);
     buildWatermark(wmLabel());
     document.getElementById('whoTag').textContent=who||'已解锁';
     gate.style.display='none';
