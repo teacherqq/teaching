@@ -1,16 +1,21 @@
 <!doctype html>
-<html lang="zh">
+<html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Q老師 Research｜知行合一</title>
-<meta name="description" content="AI 原生教師與 vibe coding 教學網站的介紹影片。">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="same-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' blob: data:; media-src 'self' blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23a8672a'/><text x='50' y='70' font-size='46' text-anchor='middle' fill='%23fff' font-family='serif'>研</text></svg>">
 <style>
   :root{--bg:#e9e3d7;--bg2:#d9cfbe;--ink:#1f232a;--soft:#4b4f56;--muted:#857d70;--line:rgba(60,45,25,.14);--accent:#a8672a;
     --sans:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Helvetica Neue",Arial,sans-serif}
   *{box-sizing:border-box}
   body{margin:0;background:linear-gradient(180deg,#f1ece3 0%,var(--bg) 45%,var(--bg2) 100%) var(--bg);min-height:100vh;color:var(--ink);font-family:var(--sans);line-height:1.6}
   header{max-width:1200px;margin:0 auto;padding:48px 24px 8px}
+  /* 未解鎖時整個內容區隱藏 */
+  body.locked header,body.locked main,body.locked footer,body.locked #pgwm{display:none}
   .back{color:var(--muted);text-decoration:none;font-size:14px}
   .back:hover{color:var(--accent)}
   h1{margin:14px 0 6px;font-size:clamp(26px,4vw,38px);letter-spacing:.02em}
@@ -32,31 +37,105 @@
   .dur{position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.7);color:#fff;font-size:12px;padding:1px 6px;border-radius:4px}
   .num{padding:10px 14px 0;font-size:11px;color:var(--accent);font-weight:600;letter-spacing:.12em}
   .title{padding:2px 14px 14px;font-size:15px;font-weight:600;line-height:1.45}
-  .lb{position:fixed;inset:0;background:rgba(10,10,12,.88);display:flex;align-items:center;justify-content:center;z-index:10;padding:20px}
+  .lb{position:fixed;inset:0;background:#0a0a0c;display:flex;align-items:center;justify-content:center;z-index:20;padding:20px}
   .lb[hidden]{display:none}
   .lb-box{position:relative;width:min(1200px,100%)}
   .lb video{width:100%;max-height:82vh;background:#000;border-radius:8px;display:block}
-  .lb-title{color:#eee;margin-top:10px;font-size:15px}
+  .lb-title{color:#eee;margin-top:10px;font-size:15px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .lb-title .wmwho{font-size:12px;color:#d9a441;border:1px solid rgba(217,164,65,.5);border-radius:999px;padding:1px 10px}
   .close{all:unset;cursor:pointer;position:absolute;right:-6px;top:-44px;color:#fff;font-size:34px;line-height:1;padding:4px 10px}
   footer{text-align:center;color:var(--muted);font-size:13px;padding:0 0 40px}
+
+  /* ---------- 水印（影片播放时叠加） ---------- */
+  #wm{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2}
+  #wm span{position:absolute;white-space:nowrap;font-size:16px;color:rgba(0,0,0,.30);
+    transform:rotate(-24deg);letter-spacing:.1em;font-weight:600;
+    text-shadow:0 0 6px rgba(255,255,255,.9),0 1px 2px rgba(255,255,255,.85)}
+  /* 頁面級水印（整頁覆蓋，含卡片區） */
+  #pgwm{position:fixed;inset:0;pointer-events:none;z-index:5;overflow:hidden}
+  #pgwm span{position:absolute;white-space:nowrap;font-size:16px;color:rgba(60,45,25,.10);
+    transform:rotate(-24deg);letter-spacing:.1em;font-weight:500}
+  /* ---------- 密碼門禁 ---------- */
+  #gate{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(1000px 620px at 50% 0%,#f3ece0 0%,#e2d9c8 55%,#d3c6b0 100%);padding:24px}
+  #gate.off{display:none}
+  #gate .box{width:min(440px,100%);background:rgba(255,255,255,.62);border:1px solid var(--line);
+    border-radius:18px;padding:36px 34px;text-align:center;box-shadow:0 20px 50px -30px rgba(60,45,25,.5)}
+  #gate .mark{width:54px;height:54px;margin:0 auto 16px;border-radius:14px;border:1.5px solid var(--accent);
+    display:flex;align-items:center;justify-content:center;color:var(--accent);font-family:"KaiTi","楷体","STKaiti",serif;font-size:28px}
+  #gate h2{margin:0 0 4px;font-size:22px;font-weight:500}
+  #gate .lead{margin:0 0 20px;color:var(--soft);font-size:14px}
+  #gate label{display:block;text-align:left;font-size:12.5px;color:var(--muted);margin:0 0 5px}
+  #gate input{width:100%;padding:11px 13px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.75);
+    color:var(--ink);font-size:15px;font-family:var(--sans);outline:none;margin-bottom:14px}
+  #gate input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(168,103,42,.14)}
+  #gate .hint{font-size:12px;color:var(--muted);margin:-8px 0 14px;text-align:left;line-height:1.6}
+  #gate button{width:100%;padding:12px;border-radius:10px;border:1px solid var(--accent);background:var(--accent);
+    color:#fff;font-size:15px;font-weight:500;cursor:pointer;font-family:var(--sans)}
+  #gate button:disabled{opacity:.55;cursor:default}
+  #gate .err{color:#b3402f;font-size:13.5px;min-height:20px;margin:10px 0 0}
+  #gate .meta{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;line-height:1.8}
+
+  /* ---------- 已在放映時的狀態 ---------- */
+  #topbar{position:fixed;top:0;right:0;left:0;height:44px;display:none;align-items:center;gap:12px;z-index:6;
+    padding:0 16px;background:rgba(241,236,227,.86);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  #topbar.on{display:flex}
+  #topbar .who{font-size:12.5px;color:var(--accent);border:1px solid rgba(168,103,42,.45);border-radius:999px;padding:2px 11px}
+  #topbar .sp{margin-left:auto}
+  #topbar button{all:unset;cursor:pointer;font-size:12.5px;color:var(--muted);padding:4px 10px;border-radius:8px}
+  #topbar button:hover{background:rgba(60,45,25,.07);color:var(--ink)}
+  #guard{position:fixed;inset:0;background:rgba(233,227,215,.985);z-index:90;display:none;align-items:center;
+    justify-content:center;flex-direction:column;gap:12px;text-align:center;padding:30px}
+  #guard.on{display:flex}
+  #guard .i{font-size:32px}
+  #guard p{margin:0;color:var(--soft);font-size:15px}
+  #guard small{color:var(--muted);font-size:12.5px}
+  #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:rgba(30,28,24,.93);
+    color:#f0e9dc;border-radius:999px;padding:8px 18px;font-size:13px;z-index:96;opacity:0;pointer-events:none;transition:opacity .2s}
+  #toast.on{opacity:1}
 </style>
 </head>
-<body>
+<body class="locked">
+
+<div id="gate">
+  <div class="box">
+    <div class="mark">研</div>
+    <h2>Q老師 Research</h2>
+    <p class="lead">知行合一 · 受保護放映</p>
+    <label for="who">你的姓名或郵箱（會嵌入浮水印，供追蹤外傳）</label>
+    <input id="who" type="text" placeholder="例：陳老師 / teacher@school.edu" autocomplete="off" spellcheck="false">
+    <label for="pwd">訪問密碼</label>
+    <input id="pwd" type="password" placeholder="輸入訪問密碼" autocomplete="off" spellcheck="false">
+    <p class="hint">姓名將以浮水印形式覆蓋於每一頁畫面與每一幀影片上，請如實填寫。</p>
+    <button id="go">進入放映</button>
+    <p class="err" id="err"></p>
+    <div class="meta">內容已加密存放，請勿截圖或轉發<br>如需訪問請聯繫 Ms Qian</div>
+  </div>
+</div>
+
 <header>
   <a class="back" href="../">← 教學工具集</a>
   <h1>Q老師 Research</h1>
   <p class="sub">知行合一</p>
 </header>
+
+<div id="topbar">
+  <span class="who" id="whoTag">未標識</span>
+  <span class="sp"></span>
+  <button id="editWho">更換姓名</button>
+  <button id="lock">重新鎖定</button>
+</div>
+
 <main>
 <section class="sec">
   <div class="sec-head"><span class="glyph">知</span><div><h2>知 · 理念</h2><p>關於 AI 原生教師、建什麼庫的思考。</p></div></div>
   <div class="grid">
-  <button class="card" data-src="videos/ai-native-teacher.mp4" data-title="AI 原生教師">
-    <span class="thumb"><img src="videos/ai-native-teacher.jpg" alt="" loading="lazy"><span class="play"></span><span class="dur">2:14</span></span>
+  <button class="card" data-src="ai-native-teacher.mp4" data-title="AI 原生教師">
+    <span class="thumb"><img alt="" loading="lazy"><span class="play"></span><span class="dur">2:14</span></span>
     <span class="num">01</span><span class="title">AI 原生教師</span>
   </button>
-  <button class="card" data-src="videos/establish-what-db.mp4" data-title="建立什麼庫？">
-    <span class="thumb"><img src="videos/establish-what-db.jpg" alt="" loading="lazy"><span class="play"></span><span class="dur">2:11</span></span>
+  <button class="card" data-src="establish-what-db.mp4" data-title="建立什麼庫？">
+    <span class="thumb"><img alt="" loading="lazy"><span class="play"></span><span class="dur">2:11</span></span>
     <span class="num">02</span><span class="title">建立什麼庫？</span>
   </button>
   </div>
@@ -64,42 +143,211 @@
 <section class="sec">
   <div class="sec-head"><span class="glyph">行</span><div><h2>行 · 實踐</h2><p>用 vibe coding 做出來的教學網站與工作流。</p></div></div>
   <div class="grid">
-  <button class="card" data-src="videos/vocab-website-animated.mp4" data-title="Vibe Coding 詞彙網站（動畫版）">
-    <span class="thumb"><img src="videos/vocab-website-animated.jpg" alt="" loading="lazy"><span class="play"></span><span class="dur">2:19</span></span>
+  <button class="card" data-src="vocab-website-animated.mp4" data-title="Vibe Coding 詞彙網站（動畫版）">
+    <span class="thumb"><img alt="" loading="lazy"><span class="play"></span><span class="dur">2:19</span></span>
     <span class="num">01</span><span class="title">Vibe Coding 詞彙網站（動畫版）</span>
   </button>
-  <button class="card" data-src="videos/literature-anlexiang.mp4" data-title="Vibe Coding 文學作品學習網站：安樂鄉的一日（設計版）">
-    <span class="thumb"><img src="videos/literature-anlexiang.jpg" alt="" loading="lazy"><span class="play"></span><span class="dur">4:01</span></span>
+  <button class="card" data-src="literature-anlexiang.mp4" data-title="Vibe Coding 文學作品學習網站：安樂鄉的一日（設計版）">
+    <span class="thumb"><img alt="" loading="lazy"><span class="play"></span><span class="dur">4:01</span></span>
     <span class="num">02</span><span class="title">Vibe Coding 文學作品學習網站：安樂鄉的一日（設計版）</span>
   </button>
-  <button class="card" data-src="videos/learning-data-dashboard.mp4" data-title="Vibe Coding 學習數據看板介紹">
-    <span class="thumb"><img src="videos/learning-data-dashboard.jpg" alt="" loading="lazy"><span class="play"></span><span class="dur">2:53</span></span>
+  <button class="card" data-src="learning-data-dashboard.mp4" data-title="Vibe Coding 學習數據看板介紹">
+    <span class="thumb"><img alt="" loading="lazy"><span class="play"></span><span class="dur">2:53</span></span>
     <span class="num">03</span><span class="title">Vibe Coding 學習數據看板介紹</span>
   </button>
-  <button class="card" data-src="videos/real-question-bank.mp4" data-title="以真題庫為例：寫作真題庫一鍵匯總">
-    <span class="thumb"><img src="videos/real-question-bank.jpg" alt="" loading="lazy"><span class="play"></span><span class="dur">3:03</span></span>
+  <button class="card" data-src="real-question-bank.mp4" data-title="以真題庫為例：寫作真題庫一鍵匯總">
+    <span class="thumb"><img alt="" loading="lazy"><span class="play"></span><span class="dur">3:03</span></span>
     <span class="num">04</span><span class="title">以真題庫為例：寫作真題庫一鍵匯總</span>
   </button>
-  <button class="card" data-src="videos/ai-skill-vibecoding2.mp4" data-title="中文老師的 AI Skill 與 Vibe Coding ②">
-    <span class="thumb"><img src="videos/ai-skill-vibecoding2.jpg" alt="" loading="lazy"><span class="play"></span><span class="dur">4:52</span></span>
+  <button class="card" data-src="ai-skill-vibecoding2.mp4" data-title="中文老師的 AI Skill 與 Vibe Coding ②">
+    <span class="thumb"><img alt="" loading="lazy"><span class="play"></span><span class="dur">4:52</span></span>
     <span class="num">05</span><span class="title">中文老師的 AI Skill 與 Vibe Coding ②</span>
   </button>
   </div>
 </section>
 </main>
-<div class="lb" id="lb" hidden><div class="lb-box"><button class="close" aria-label="關閉">×</button><video id="lbv" controls playsinline></video><div class="lb-title" id="lbt"></div></div></div>
+
+<div class="lb" id="lb" hidden><div class="lb-box">
+  <button class="close" aria-label="關閉">×</button>
+  <div id="lbStage" style="position:relative"><video id="lbv" controls playsinline></video><div id="wm"></div></div>
+  <div class="lb-title"><span id="lbt"></span><span class="wmwho" id="lbtWho"></span></div>
+</div></div>
+
+<div id="pgwm"></div>
+
+<div id="guard"><div class="i">🔒</div><p>內容已暫停顯示</p><small>窗口失去焦點時自動隱藏，點擊任意處恢復</small></div>
+<div id="toast"></div>
+
 <footer>teacherqq · teaching / research</footer>
+
 <script>
+'use strict';
+/* ============ 基礎防護 ============ */
+const toastEl=document.getElementById('toast');let toastT;
+function toast(m){toastEl.textContent=m;toastEl.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>toastEl.classList.remove('on'),2200)}
+document.addEventListener('contextmenu',e=>e.preventDefault(),true);
+document.addEventListener('dragstart',e=>e.preventDefault(),true);
+document.addEventListener('selectstart',e=>e.preventDefault(),true);
+['copy','cut'].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),true));
+document.addEventListener('keydown',e=>{
+  const k=(e.key||'').toLowerCase(),mod=e.ctrlKey||e.metaKey;
+  if(mod&&['s','p','u','i','j','c'].includes(k)){e.preventDefault();toast('此內容受保護，該操作已禁用');return}
+  if(e.key==='PrintScreen'){e.preventDefault();toast('已禁用截圖快捷鍵');return}
+  if(e.key==='F12'||e.key==='ContextMenu'){e.preventDefault()}
+},{capture:true});
+window.addEventListener('beforeprint',()=>{const v=document.getElementById('lbv');if(v)v.style.visibility='hidden'});
+
+/* ============ 狀態 ============ */
+let key=null,who='',META=null,ready=false;
 const lb=document.getElementById('lb'),v=document.getElementById('lbv'),t=document.getElementById('lbt');
-function close(){if(document.fullscreenElement)document.exitFullscreen();v.pause();v.removeAttribute('src');v.load();lb.hidden=true}
-document.querySelectorAll('.card').forEach(c=>c.addEventListener('click',()=>{
-  v.src=c.dataset.src;t.textContent=c.dataset.title;lb.hidden=false;v.play().catch(()=>{});
-  const fs=v.requestFullscreen||v.webkitRequestFullscreen;
-  if(fs)fs.call(v).catch?.(()=>{});else if(v.webkitEnterFullscreen)v.webkitEnterFullscreen();
-}));
-lb.querySelector('.close').onclick=close;
-lb.addEventListener('click',e=>{if(e.target===lb)close()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!lb.hidden&&!document.fullscreenElement)close()});
+const gate=document.getElementById('gate');
+
+/* ============ Web Crypto ============ */
+function b64ToBuf(b64){const bin=atob(b64);const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u}
+async function deriveKey(pw,saltB64,iter){
+  const salt=b64ToBuf(saltB64);
+  const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:iter,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['decrypt']);
+}
+async function decryptBlob(key,buf){
+  const u=new Uint8Array(buf);
+  if(String.fromCharCode(...u.slice(0,4))!=='SLD1') throw new Error('bad magic');
+  const iv=u.slice(4,16),tag=u.slice(16,32),ct=u.slice(32);
+  const payload=new Uint8Array(ct.length+16);payload.set(ct,0);payload.set(tag,ct.length);
+  const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv,tagLength:128},key,payload);
+  return plain;
+}
+
+/* ============ 浮水印 ============ */
+function wmLabel(){ return who?`${who} · 受保護放映 · 請勿截圖`:'受保護放映 · 請勿截圖'; }
+function fillWatermarks(){
+  const label=wmLabel();
+  // 影片播放層
+  const wm=document.getElementById('wm');wm.innerHTML='';
+  for(let i=0;i<7;i++){
+    const s=document.createElement('span');s.textContent=label;
+    s.style.left=(-14+(i%3)*38)+'%';s.style.top=(-4+Math.floor(i/3)*46+i*3)+'%';
+    wm.appendChild(s);
+  }
+  // 整頁層（lightbox 開啟時隱藏，避免透出干擾影片）
+  const pg=document.getElementById('pgwm');pg.innerHTML='';
+  for(let i=0;i<14;i++){
+    const s=document.createElement('span');s.textContent=label;
+    s.style.left=(-16+(i%4)*30)+'%';s.style.top=(-6+Math.floor(i/4)*30+i*2)+'%';
+    pg.appendChild(s);
+  }
+  document.getElementById('whoTag').textContent=who||'未標識';
+  document.getElementById('lbtWho').textContent=who||'未標識';
+}
+
+/* ============ 載入封面 ============ */
+async function loadThumbs(){
+  for(const c of document.querySelectorAll('.card')){
+    const img=c.querySelector('img');
+    const name=c.dataset.src.replace('.mp4','.jpg.enc');
+    try{
+      const res=await fetch('videos-enc/'+name,{cache:'no-store'});
+      const plain=await decryptBlob(key,await res.arrayBuffer());
+      img.src=URL.createObjectURL(new Blob([plain],{type:'image/jpeg'}));
+    }catch(e){ /* 封面失敗不影響主流程 */ }
+  }
+}
+
+/* ============ 播放影片 ============ */
+let currentUrl=null;
+async function play(card){
+  const name=card.dataset.src;
+  t.textContent=card.dataset.title;
+  document.getElementById('lbtWho').textContent=who||'未標識';
+  lb.hidden=false;
+  document.getElementById('pgwm').style.display='none';
+  toast('正在解密影片…');
+  try{
+    if(currentUrl){URL.revokeObjectURL(currentUrl);currentUrl=null}
+    const res=await fetch('videos-enc/'+name+'.enc',{cache:'no-store'});
+    if(!res.ok) throw new Error('http '+res.status);
+    const plain=await decryptBlob(key,await res.arrayBuffer());
+    currentUrl=URL.createObjectURL(new Blob([plain],{type:'video/mp4'}));
+    v.src=currentUrl;
+    toastEl.classList.remove('on');   // 解密完成，撤掉提示
+    await v.play().catch(()=>{});
+  }catch(e){
+    toast('影片解密失敗：'+e.message);
+  }
+}
+function closeLb(){
+  if(document.fullscreenElement)document.exitFullscreen();
+  v.pause();v.removeAttribute('src');v.load();
+  if(currentUrl){URL.revokeObjectURL(currentUrl);currentUrl=null}
+  lb.hidden=true;
+  document.getElementById('pgwm').style.display='';
+}
+document.querySelectorAll('.card').forEach(c=>c.addEventListener('click',()=>{if(ready)play(c)}));
+document.querySelector('.close').onclick=closeLb;
+lb.addEventListener('click',e=>{if(e.target===lb)closeLb()});
+document.addEventListener('keydown',e=>{
+  if(!lb.hidden&&e.key==='Escape'&&!document.fullscreenElement)closeLb();
+});
+
+/* ============ 失焦護盾 ============ */
+const guard=document.getElementById('guard');let guardOn=false;
+function setGuard(on){
+  if(on===guardOn)return;guardOn=on;guard.classList.toggle('on',on);
+  if(on){v.pause()}
+  else if(!lb.hidden&&v.src)v.play().catch(()=>{});
+}
+window.addEventListener('blur',()=>setGuard(true));
+window.addEventListener('focus',()=>setGuard(false));
+document.addEventListener('visibilitychange',()=>setGuard(document.hidden));
+guard.addEventListener('click',()=>setGuard(false));
+
+/* ============ 進入流程 ============ */
+const whoEl=document.getElementById('who'),pwdEl=document.getElementById('pwd');
+const goEl=document.getElementById('go'),errEl=document.getElementById('err');
+// 記住上次填寫的姓名
+whoEl.value=localStorage.getItem('qr_who')||'';
+
+async function enter(){
+  const pw=pwdEl.value.trim();
+  if(!pw){errEl.textContent='請輸入密碼';return}
+  goEl.disabled=true;errEl.textContent='';
+  try{
+    const res=await fetch('manifest-videos.json',{cache:'no-store'});
+    META=await res.json();
+    const k=await deriveKey(pw,META.salt,META.iter);
+    // 用第一支影片的封面驗證密碼
+    const vr=await fetch('videos-enc/'+META.files[0],{cache:'no-store'});
+    await decryptBlob(k,await vr.arrayBuffer());
+    key=k;
+    who=whoEl.value.trim();
+    localStorage.setItem('qr_who',who);
+    fillWatermarks();
+    gate.classList.add('off');
+    document.body.classList.remove('locked');
+    document.getElementById('topbar').classList.add('on');
+    ready=true;
+    loadThumbs();
+  }catch(e){
+    errEl.textContent='密碼不正確，請重試';
+    pwdEl.select();
+  }finally{goEl.disabled=false}
+}
+goEl.onclick=enter;
+pwdEl.addEventListener('keydown',e=>{if(e.key==='Enter')enter()});
+whoEl.focus();
+
+document.getElementById('editWho').onclick=()=>{
+  const n=prompt('請輸入你的姓名或郵箱（會嵌入浮水印）',who);
+  if(n!==null){who=n.trim();localStorage.setItem('qr_who',who);fillWatermarks()}
+};
+document.getElementById('lock').onclick=()=>{
+  ready=false;closeLb();gate.classList.remove('off');
+  document.body.classList.add('locked');
+  document.getElementById('topbar').classList.remove('on');
+  document.getElementById('pgwm').innerHTML='';
+  document.getElementById('wm').innerHTML='';
+  pwdEl.value='';pwdEl.focus();
+};
 </script>
 </body>
 </html>
