@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Q老師 Research｜受保护放映</title>
+<title>Q老師 Research｜受保護放映</title>
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="same-origin">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
@@ -101,7 +101,7 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
     <a class="back" href="../">← Q老師 Research</a>
     <div class="mark">駛</div>
     <h1>Q老師 Research</h1>
-    <p class="sub">驭AI以文 · 一线教师数字素养以及中文课堂 AI 案例实操<br>共 45 页 · 受保护放映</p>
+    <p class="sub">驭AI以文 · 一线教师数字素养以及中文课堂 AI 案例实操<br>共 45 页 · 受保護放映</p>
     <label class="lbl" for="who">你的姓名或邮箱（嵌入水印，供追踪外传）</label>
     <input id="who" type="text" placeholder="例：陈老师 / teacher@school.edu" autocomplete="off" spellcheck="false">
     <label class="lbl" for="pwd">访问密码</label>
@@ -121,7 +121,7 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
     <button class="ib" id="next" title="下一页">›</button>
     <span class="ttl">Q老師 Research · 驭AI以文</span>
     <a class="ib" href="../" title="返回 Q老師 Research">←</a>
-    <span class="who"><span id="whoTag"></span>受保护放映</span>
+    <span class="who"><span id="whoTag"></span>受保護放映</span>
   </div>
   <div id="view">
     <canvas id="canvas"></canvas>
@@ -199,7 +199,7 @@ async function decryptPage(key,buf){
 
 /* ============ 水印 ============ */
 let who='';
-function wmLabel(){ return who?`${who} · 受保护放映 · 请勿截图`:'受保护放映 · 请勿截图'; }
+function wmLabel(){ return who?`錢老師 · ${who} · 受保護放映 · 請勿截圖`:'錢老師 · 受保護放映 · 請勿截圖'; }
 function buildWatermark(label){
   const wm=document.getElementById('wm');
   wm.innerHTML='';
@@ -271,7 +271,7 @@ function updateBar(){
   document.getElementById('next').disabled=idx===pages.length-1;
   document.getElementById('last').disabled=idx===pages.length-1;
 }
-const WATERMARK='受保护放映 · 请勿截图';
+const WATERMARK='錢老師 · 受保護放映 · 請勿截圖';
 // 顶栏「已解锁」改为显示姓名，便于一眼确认是谁在看
 document.getElementById('top').addEventListener('click',e=>{
   if(e.target.closest('#whoTag')){
