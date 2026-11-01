@@ -15,14 +15,23 @@
   .back:hover{color:var(--accent)}
   h1{margin:14px 0 6px;font-size:clamp(26px,4vw,38px);letter-spacing:.02em}
   .sub{color:var(--soft);margin:0}
-  main{max-width:1200px;margin:0 auto;padding:24px 24px 64px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,520px),1fr));gap:28px}
-  article{background:rgba(255,255,255,.55);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 10px 30px -18px rgba(60,45,25,.45)}
-  video{display:block;width:100%;aspect-ratio:16/9;background:#111}
-  .meta{padding:14px 18px 18px}
-  .num{font-size:12px;color:var(--accent);font-weight:600;letter-spacing:.12em}
-  h2{margin:2px 0 4px;font-size:19px}
-  .meta p{margin:0;color:var(--muted);font-size:14px}
-  .meta a{color:var(--accent);font-size:13px;text-decoration:none}
+  main{max-width:1100px;margin:0 auto;padding:24px 24px 64px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px}
+  .card{all:unset;cursor:pointer;display:flex;flex-direction:column;background:rgba(255,255,255,.55);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 8px 22px -16px rgba(60,45,25,.5);transition:transform .15s,box-shadow .15s}
+  .card:hover,.card:focus-visible{transform:translateY(-3px);box-shadow:0 14px 28px -16px rgba(60,45,25,.6)}
+  .card:focus-visible{outline:2px solid var(--accent)}
+  .thumb{position:relative;display:block;aspect-ratio:16/9;background:#222}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .play{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(20,20,20,.62)}
+  .play::after{content:"";position:absolute;left:18px;top:14px;border-left:14px solid #fff;border-top:9px solid transparent;border-bottom:9px solid transparent}
+  .dur{position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.7);color:#fff;font-size:12px;padding:1px 6px;border-radius:4px}
+  .num{padding:10px 14px 0;font-size:11px;color:var(--accent);font-weight:600;letter-spacing:.12em}
+  .title{padding:2px 14px 14px;font-size:15px;font-weight:600;line-height:1.45}
+  .lb{position:fixed;inset:0;background:rgba(10,10,12,.88);display:flex;align-items:center;justify-content:center;z-index:10;padding:20px}
+  .lb[hidden]{display:none}
+  .lb-box{position:relative;width:min(1200px,100%)}
+  .lb video{width:100%;max-height:82vh;background:#000;border-radius:8px;display:block}
+  .lb-title{color:#eee;margin-top:10px;font-size:15px}
+  .close{all:unset;cursor:pointer;position:absolute;right:-6px;top:-44px;color:#fff;font-size:34px;line-height:1;padding:4px 10px}
   footer{text-align:center;color:var(--muted);font-size:13px;padding:0 0 40px}
 </style>
 </head>
@@ -33,23 +42,36 @@
   <p class="sub">AI 原生教師，以及用 vibe coding 做出來的教學網站介紹。</p>
 </header>
 <main>
-  <article id="ai-native-teacher">
-    <video controls preload="metadata" playsinline poster="videos/ai-native-teacher.jpg" src="videos/ai-native-teacher.mp4"></video>
-    <div class="meta"><div class="num">01</div><h2>AI 原生教師</h2><p>2:14 · <a href="videos/ai-native-teacher.mp4">直接開啟影片</a></p></div>
-  </article>
-  <article id="vocab-website">
-    <video controls preload="metadata" playsinline poster="videos/vocab-website-animated.jpg" src="videos/vocab-website-animated.mp4"></video>
-    <div class="meta"><div class="num">02</div><h2>Vibe Coding 詞彙網站（動畫版）</h2><p>2:19 · <a href="videos/vocab-website-animated.mp4">直接開啟影片</a></p></div>
-  </article>
-  <article id="literature-anlexiang">
-    <video controls preload="metadata" playsinline poster="videos/literature-anlexiang.jpg" src="videos/literature-anlexiang.mp4"></video>
-    <div class="meta"><div class="num">03</div><h2>Vibe Coding 文學作品學習網站：安樂鄉的一日（設計版）</h2><p>4:01 · <a href="videos/literature-anlexiang.mp4">直接開啟影片</a></p></div>
-  </article>
-  <article id="learning-data-dashboard">
-    <video controls preload="metadata" playsinline poster="videos/learning-data-dashboard.jpg" src="videos/learning-data-dashboard.mp4"></video>
-    <div class="meta"><div class="num">04</div><h2>Vibe Coding 學習數據看板介紹</h2><p>2:53 · <a href="videos/learning-data-dashboard.mp4">直接開啟影片</a></p></div>
-  </article>
+  <button class="card" data-src="videos/ai-native-teacher.mp4" data-title="AI 原生教師">
+    <span class="thumb"><img src="videos/ai-native-teacher.jpg" alt="" loading="lazy"><span class="play"></span><span class="dur">2:14</span></span>
+    <span class="num">01</span><span class="title">AI 原生教師</span>
+  </button>
+  <button class="card" data-src="videos/vocab-website-animated.mp4" data-title="Vibe Coding 詞彙網站（動畫版）">
+    <span class="thumb"><img src="videos/vocab-website-animated.jpg" alt="" loading="lazy"><span class="play"></span><span class="dur">2:19</span></span>
+    <span class="num">02</span><span class="title">Vibe Coding 詞彙網站（動畫版）</span>
+  </button>
+  <button class="card" data-src="videos/literature-anlexiang.mp4" data-title="Vibe Coding 文學作品學習網站：安樂鄉的一日（設計版）">
+    <span class="thumb"><img src="videos/literature-anlexiang.jpg" alt="" loading="lazy"><span class="play"></span><span class="dur">4:01</span></span>
+    <span class="num">03</span><span class="title">Vibe Coding 文學作品學習網站：安樂鄉的一日（設計版）</span>
+  </button>
+  <button class="card" data-src="videos/learning-data-dashboard.mp4" data-title="Vibe Coding 學習數據看板介紹">
+    <span class="thumb"><img src="videos/learning-data-dashboard.jpg" alt="" loading="lazy"><span class="play"></span><span class="dur">2:53</span></span>
+    <span class="num">04</span><span class="title">Vibe Coding 學習數據看板介紹</span>
+  </button>
 </main>
+<div class="lb" id="lb" hidden><div class="lb-box"><button class="close" aria-label="關閉">×</button><video id="lbv" controls playsinline></video><div class="lb-title" id="lbt"></div></div></div>
 <footer>teacherqq · teaching / research</footer>
+<script>
+const lb=document.getElementById('lb'),v=document.getElementById('lbv'),t=document.getElementById('lbt');
+function close(){if(document.fullscreenElement)document.exitFullscreen();v.pause();v.removeAttribute('src');v.load();lb.hidden=true}
+document.querySelectorAll('.card').forEach(c=>c.addEventListener('click',()=>{
+  v.src=c.dataset.src;t.textContent=c.dataset.title;lb.hidden=false;v.play().catch(()=>{});
+  const fs=v.requestFullscreen||v.webkitRequestFullscreen;
+  if(fs)fs.call(v).catch?.(()=>{});else if(v.webkitEnterFullscreen)v.webkitEnterFullscreen();
+}));
+lb.querySelector('.close').onclick=close;
+lb.addEventListener('click',e=>{if(e.target===lb)close()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!lb.hidden&&!document.fullscreenElement)close()});
+</script>
 </body>
 </html>
