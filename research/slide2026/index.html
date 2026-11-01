@@ -41,6 +41,9 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
 #gate .meta{margin-top:20px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;line-height:1.8}
 #gate .back{display:inline-block;margin-bottom:16px;color:var(--muted);text-decoration:none;font-size:13px}
 #gate .back:hover{color:var(--accent)}
+#gate .lbl{display:block;text-align:left;font-size:12.5px;color:var(--muted);margin:0 0 5px}
+#gate input[type=text]{width:100%;margin-bottom:14px}
+#gate .hint{font-size:12px;color:var(--muted);margin:-6px 0 12px;text-align:left;line-height:1.6}
 
 /* ---------- 放映区 ---------- */
 #stage{position:fixed;inset:0;display:none;flex-direction:column}
@@ -50,7 +53,8 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
 #top .ttl{font-size:14px;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #top .who{font-size:12px;color:var(--muted);margin-left:auto;white-space:nowrap}
 #whoTag{display:inline-block;padding:2px 9px;border:1px solid var(--line);border-radius:999px;color:var(--accent);
-  font-size:12px;margin-right:8px;vertical-align:middle}
+  font-size:12px;margin-right:8px;vertical-align:middle;cursor:pointer}
+#whoTag:hover{border-color:var(--accent);background:rgba(217,164,65,.1)}
 #top .ib{all:unset;cursor:pointer;width:32px;height:32px;border-radius:8px;display:inline-flex;
   align-items:center;justify-content:center;color:var(--soft);font-size:16px}
 #top .ib:hover{background:rgba(255,255,255,.08);color:var(--ink)}
@@ -98,10 +102,14 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
     <div class="mark">駛</div>
     <h1>Q老師 Research</h1>
     <p class="sub">驭AI以文 · 一线教师数字素养以及中文课堂 AI 案例实操<br>共 45 页 · 受保护放映</p>
+    <label class="lbl" for="who">你的姓名或邮箱（嵌入水印，供追踪外传）</label>
+    <input id="who" type="text" placeholder="例：陈老师 / teacher@school.edu" autocomplete="off" spellcheck="false">
+    <label class="lbl" for="pwd">访问密码</label>
     <div class="row">
       <input id="pwd" type="password" placeholder="输入访问密码" autocomplete="off" spellcheck="false">
       <button id="go">进入</button>
     </div>
+    <p class="hint">姓名将以水印形式覆盖在每一页画面上，请如实填写。</p>
     <p class="err" id="err"></p>
     <div class="meta">内容已加密存放，请勿截图或转发<br>如需访问请联系 Ms Qian</div>
   </div>
@@ -190,6 +198,8 @@ async function decryptPage(key,buf){
 }
 
 /* ============ 水印 ============ */
+let who='';
+function wmLabel(){ return who?`${who} · 受保护放映 · 请勿截图`:'受保护放映 · 请勿截图'; }
 function buildWatermark(label){
   const wm=document.getElementById('wm');
   wm.innerHTML='';
@@ -204,17 +214,24 @@ function buildWatermark(label){
   }
 }
 function stampOnCanvas(label){
-  // 在画布上再叠一层水印，截图/另存也无法去除
+  // 在画布像素上烧录水印 —— 截图/另存都无法去除
   const w=cv.width,h=cv.height;
+  const fs=Math.max(18,Math.round(h/26));
   ctx.save();
-  ctx.globalAlpha=0.13;
-  ctx.fillStyle='#fff';
-  ctx.font=`${Math.max(16,Math.round(h/28))}px ${getComputedStyle(document.body).fontFamily}`;
   ctx.translate(w/2,h/2);
   ctx.rotate(-26*Math.PI/180);
-  const step=Math.max(220,Math.round(h/4.2));
+  ctx.font=`600 ${fs}px ${getComputedStyle(document.body).fontFamily}`;
+  ctx.textAlign='center';
+  const step=Math.max(240,Math.round(h/4));
+  ctx.lineJoin='round';
   for(let y=-h;y<h;y+=step){
-    for(let x=-w;x<w;x+=step*4){
+    for(let x=-w;x<w;x+=step*5){
+      // 深色描边 + 浅色描边，保证深浅背景都可见
+      ctx.globalAlpha=0.30; ctx.strokeStyle='rgba(0,0,0,.45)'; ctx.lineWidth=Math.max(2,fs/9);
+      ctx.strokeText(label,x,y);
+      ctx.globalAlpha=0.34; ctx.strokeStyle='rgba(255,255,255,.85)'; ctx.lineWidth=Math.max(2,fs/10);
+      ctx.strokeText(label,x,y);
+      ctx.globalAlpha=0.16; ctx.fillStyle='#fff';
       ctx.fillText(label,x,y);
     }
   }
@@ -239,7 +256,7 @@ async function show(i){
     ctx.clearRect(0,0,cv.width,cv.height);
     ctx.drawImage(bmp,0,0,cv.width,cv.height);
     bmp.close&&bmp.close();
-    stampOnCanvas(WATERMARK);
+    stampOnCanvas(wmLabel());
     cv.classList.add('ready');
     updateBar();
   }catch(e){
@@ -255,6 +272,17 @@ function updateBar(){
   document.getElementById('last').disabled=idx===pages.length-1;
 }
 const WATERMARK='受保护放映 · 请勿截图';
+// 顶栏「已解锁」改为显示姓名，便于一眼确认是谁在看
+document.getElementById('top').addEventListener('click',e=>{
+  if(e.target.closest('#whoTag')){
+    const n=prompt('请输入你的姓名或邮箱（会嵌入水印）',who);
+    if(n!==null&&n.trim()){who=n.trim();localStorage.setItem('qr_who',who);
+      document.getElementById('whoTag').textContent=who;
+      buildWatermark(wmLabel());
+      if(key) show(idx);
+    }
+  }
+});
 
 document.getElementById('prev').onclick=()=>show(idx-1);
 document.getElementById('next').onclick=()=>show(idx+1);
@@ -302,6 +330,8 @@ guard.addEventListener('click',()=>setGuard(false));
 
 /* ============ 进入流程 ============ */
 const pwdEl=document.getElementById('pwd'), goEl=document.getElementById('go'), errEl=document.getElementById('err');
+const whoEl=document.getElementById('who');
+whoEl.value=localStorage.getItem('qr_who')||'';
 async function enter(){
   const p=pwdEl.value.trim();
   if(!p){errEl.textContent='请输入密码';return}
@@ -314,9 +344,10 @@ async function enter(){
     const r=await fetch('assets/'+META.pages[0],{cache:'no-store'});
     await decryptPage(k,await r.arrayBuffer());
     key=k;pages=META.pages;
-    // 记住本次会话已解锁（刷新仍需密码，仅免去重复输入本次会话）
-    buildWatermark(WATERMARK);
-    document.getElementById('whoTag').textContent='已解锁';
+    who=whoEl.value.trim();
+    localStorage.setItem('qr_who',who);
+    buildWatermark(wmLabel());
+    document.getElementById('whoTag').textContent=who||'已解锁';
     gate.style.display='none';
     stage.classList.add('on');
     await show(0);
