@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BSL 主題重點詞句｜25–27</title>
+<meta name="description" content="依五大主題整理的 BSL 重點詞語、成語俗語與重點句，支援繁簡切換、搜尋、朗讀與收藏。">
+<link rel="stylesheet" href="style.css">
+<script src="opencc-full.js"></script>
+<script src="data.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="bar-inner">
+    <a class="brand" href="#" id="homeBtn" aria-label="回到首頁">
+      <span class="logo">語</span>
+      <span class="brand-text"><b data-zh>BSL 主題重點詞句</b><small data-zh>25–27 · 重點字詞句</small></span>
+    </a>
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input id="search" type="search" autocomplete="off" data-ph-hant="搜尋詞語、拼音、英文、例句…" data-ph-hans="搜索词语、拼音、英文、例句…" placeholder="搜尋詞語、拼音、英文、例句…">
+      <button id="clearSearch" class="clear-search" aria-label="清空">×</button>
+    </div>
+    <div class="top-actions">
+      <div class="seg" id="langSeg" role="group" aria-label="繁簡切換">
+        <button class="active" data-lang="hant">繁體</button>
+        <button data-lang="hans">简体</button>
+      </div>
+      <button class="fav-trigger" id="favBtn"><span class="star">☆</span><span data-zh>我的詞表</span><span class="fav-count" id="favCount">0</span></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <div class="eyebrow" data-zh>BSL · 25–27 · THEME VOCABULARY</div>
+        <h1 data-zh>主題重點詞句</h1>
+        <p data-zh>把五大主題的重點詞語、成語俗語和翻譯重點句整理在一起。搜尋、朗讀、收藏，繁簡一鍵切換。</p>
+        <div class="hero-stats" id="heroStats"></div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="art-card c1">認同</div><div class="art-card c2">科技</div>
+        <div class="art-card c3">環保</div><div class="art-card c4">詞句</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="theme-section">
+    <div class="section-head">
+      <h2 data-zh>選擇主題</h2>
+      <span class="section-hint" data-zh>點一下就能進入該主題的全部重點</span>
+    </div>
+    <div class="theme-grid" id="themeGrid"></div>
+  </section>
+
+  <section class="workspace" id="workspace">
+    <div class="section-head workspace-head">
+      <div>
+        <h2 id="workspaceTitle" data-zh>全部重點</h2>
+        <p class="section-hint" id="workspaceHint" data-zh>選擇上方主題，或用搜尋列直接找詞。</p>
+      </div>
+      <div class="view-actions">
+        <button id="flashBtn" class="tool-btn"><span class="bi">🃏</span><span class="btxt"><span data-zh>詞卡測試</span><small>Flashcards</small></span></button>
+        <button id="maskBtn" class="tool-btn"><span class="bi">🙈</span><span class="btxt"><span data-zh>自測遮罩</span><small>Quiz Mask</small></span></button>
+        <button id="revealBtn" class="tool-btn"><span class="bi">👁</span><span class="btxt"><span data-zh class="lbl-reveal">顯示全部答案</span><span data-zh class="lbl-hide" hidden>收起全部答案</span><small class="en-reveal">Show All</small><small class="en-hide" hidden>Hide All</small></span></button>
+        <button id="shuffleBtn" class="tool-btn"><span class="bi">⤨</span><span class="btxt"><span data-zh>隨機排序</span><small>Shuffle</small></span></button>
+        <button id="printBtn" class="tool-btn"><span class="bi">⎙</span><span class="btxt"><span data-zh>列印</span><small>Print</small></span></button>
+        <button id="editBtn" class="tool-btn admin-btn" title="管理員功能（需密碼）"><span class="bi">🔒</span><span class="btxt"><span data-zh>管理員</span><small>Admin · Password</small></span></button>
+      </div>
+    </div>
+    <div class="edit-bar" id="editBar" hidden>
+      <span class="edit-bar-title">✎ <span data-zh>編輯模式</span></span>
+      <button id="addBtn" class="edit-action primary"><span>＋</span><span data-zh>新增</span></button>
+      <button id="exportDataBtn" class="edit-action"><span>⬇</span><span data-zh>匯出新資料</span></button>
+      <button id="importDataBtn" class="edit-action"><span>⬆</span><span data-zh>匯入資料</span></button>
+      <input type="file" id="importFile" accept=".js,.json" hidden>
+      <button id="resetEditBtn" class="edit-action danger"><span>↺</span><span data-zh>還原官方資料</span></button>
+      <button id="exitEditBtn" class="edit-action"><span>✕</span><span data-zh>離開</span></button>
+      <span class="edit-bar-hint" data-zh>改完點「匯出新資料」，把檔案傳給管理員部署</span>
+    </div>
+    <div class="mask-bar" id="maskBar" hidden>
+      <span class="mask-bar-title">🙈 <span data-zh>自測遮罩</span></span>
+      <button class="mask-toggle" data-mask="py" data-zh>隱藏拼音</button>
+      <button class="mask-toggle" data-mask="en" data-zh>隱藏英文</button>
+      <button class="mask-toggle" data-mask="term" data-zh>隱藏中文詞語</button>
+      <button class="mask-toggle" data-mask="all" data-zh>全部遮住</button>
+      <button class="mask-toggle" data-mask="none" data-zh>全部顯示</button>
+      <span class="mask-bar-hint" data-zh>點卡片上被遮住的地方可單獨顯示</span>
+    </div>
+    <div class="topic-tabs" id="topicTabs"></div>
+    <div class="content-meta" id="contentMeta"></div>
+    <div class="cards" id="cards"></div>
+    <div class="empty" id="empty" hidden>
+      <div class="empty-icon">⌕</div>
+      <p data-zh>找不到符合的內容，試試別的關鍵詞。</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span data-zh>資料來源：25-27 BSL 主題重點詞句 繁體.docx</span>
+  <span data-zh>繁簡切換由 OpenCC 自動完成 · 發音使用瀏覽器語音</span>
+</footer>
+
+<div class="drawer-mask" id="drawerMask" hidden></div>
+<aside class="drawer" id="drawer" aria-label="我的詞表">
+  <div class="drawer-head">
+    <h2><span class="star">★</span><span data-zh>我的詞表</span><span class="fav-count" id="drawerCount">0</span></h2>
+    <button id="closeDrawer" aria-label="關閉">×</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-foot">
+    <button id="exportFav" data-zh>匯出 CSV</button>
+    <button id="printFav" data-zh>列印詞表</button>
+    <button id="clearFav" class="danger" data-zh>清空</button>
+  </div>
+</aside>
+
+<!-- 編輯密碼 -->
+<div class="modal-mask" id="pwdMask" hidden>
+  <div class="modal pwd-modal">
+    <h3>🔒 <span data-zh>輸入編輯密碼</span></h3>
+    <input type="password" id="pwdInput" placeholder="密碼" autocomplete="off">
+    <div class="modal-actions">
+      <button id="pwdCancel" data-zh>取消</button>
+      <button id="pwdOk" class="primary" data-zh>確定</button>
+    </div>
+  </div>
+</div>
+
+<!-- 新增／編輯表單 -->
+<div class="modal-mask" id="formMask" hidden>
+  <div class="modal form-modal">
+    <h3 id="formTitle" data-zh>新增內容</h3>
+    <div class="form-grid">
+      <label><span data-zh>類型</span>
+        <select id="fKind">
+          <option value="word" data-zh>詞語</option>
+          <option value="note" data-zh>知識點</option>
+          <option value="sentence" data-zh>重點句</option>
+        </select></label>
+      <label><span data-zh>所屬主題</span><select id="fTheme"></select></label>
+      <label><span data-zh>所屬話題</span><select id="fTopic"></select></label>
+      <label id="fWordRow"><span data-zh>詞語</span><input id="fTerm" type="text"></label>
+      <label id="fPyRow"><span data-zh>拼音</span><input id="fPy" type="text"></label>
+      <label id="fEnRow"><span data-zh>英文</span><input id="fEn" type="text"></label>
+      <label id="fMeanRow"><span data-zh>釋義／內容</span><input id="fMean" type="text"></label>
+      <label id="fExRow"><span data-zh>例句</span><input id="fEx" type="text"></label>
+      <label id="fKwRow"><span data-zh>關鍵詞（頓號分隔）</span><input id="fKw" type="text"></label>
+      <label id="fAnsRow"><span data-zh>中文參考答案</span><input id="fAns" type="text"></label>
+      <label id="fCatRow"><span data-zh>分類（選填）</span><input id="fCat" type="text"></label>
+    </div>
+    <div class="modal-actions">
+      <button id="formCancel" data-zh>取消</button>
+      <button id="formSave" class="primary" data-zh>儲存</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
