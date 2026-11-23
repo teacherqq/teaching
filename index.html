@@ -4,825 +4,276 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>教學工具集｜Teaching Tools</title>
-<meta name="description" content="課堂互動、分組比賽與教學用的網頁工具統一入口，扇形封面流瀏覽。">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2312161c'/%3E%3Cpath d='M50 24 c-9 0 -18 3 -24 8 v38 c6 -4 15 -6 24 -6 c9 0 18 2 24 6 v-38 c-6 -5 -15 -8 -24 -8 Z' fill='%231d2732' stroke='%239cc3de' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M50 24 v40 M26 70 c6 4 15 6 24 6 c9 0 18 -2 24 -6' stroke='%23d9a65c' stroke-width='5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23f4f6f8'/%3E%3Cpath d='M50 24 c-9 0 -18 3 -24 8 v38 c6 -4 15 -6 24 -6 c9 0 18 2 24 6 v-38 c-6 -5 -15 -8 -24 -8 Z' fill='%23eaf2f7' stroke='%23315d7c' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M50 24 v40 M26 70 c6 4 15 6 24 6 c9 0 18 -2 24 -6' stroke='%23b88745' stroke-width='5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
 <style>
   :root{
-    --bg:#e9e3d7;--bg2:#d9cfbe;--panel:#2a2f36;--ink:#1f232a;--soft:#4b4f56;--muted:#857d70;--line:rgba(60,45,25,.14);--wash:rgba(60,45,25,.05);
-    --accent:#a8672a;--blue:#2f5f80;--glow:217,166,92;
-    --sans:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Helvetica Neue",Arial,sans-serif;
-    --kai:"KaiTi","楷体","STKaiti","BiauKai","DFKai-SB",serif;
-    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-    color-scheme:light;
+    --bg:#f4f6f8;--panel:#fff;--ink:#17212b;--muted:#74808d;--line:#e3e8ee;
+    --blue:#315d7c;--blue-soft:#eaf2f7;--gold:#b88745;--shadow:0 16px 40px rgba(27,47,64,.07);
   }
   *{box-sizing:border-box}
-  html{-webkit-text-size-adjust:100%}
-  body{margin:0;background:linear-gradient(180deg,#f1ece3 0%,var(--bg) 45%,var(--bg2) 100%) var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.7;overflow-x:hidden}
-  a{color:inherit}
-  button{font:inherit;color:inherit}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:"KaiTi","楷体","STKaiti",serif;font-size:17px;line-height:1.8;
+  }
+  .ui,.eyebrow,.header-note,.tag,.count,.search,.card-en,.card-meta,.footer-note,.empty{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",Arial,sans-serif;
+  }
+  .shell{max-width:1240px;margin:auto;padding:34px 24px 72px}
 
-  /* ---------- 背景光暈：跟著中心卡片換顏色 ---------- */
-  .ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-  .ambient::before{content:"";position:absolute;left:50%;top:38%;width:1100px;height:700px;transform:translate(-50%,-50%);
-    background:radial-gradient(closest-side,rgba(var(--glow),.38),rgba(var(--glow),0));filter:blur(40px);transition:background .8s ease}
-  .ambient::after{content:"";position:absolute;inset:0;background:
-    radial-gradient(ellipse at 50% 115%,rgba(90,70,40,.18),transparent 60%),
-    repeating-linear-gradient(0deg,rgba(60,45,25,.018) 0 1px,transparent 1px 4px)}
-  .ambient .streak{position:absolute;left:-10%;right:-10%;height:2px;border-radius:2px;filter:blur(6px);opacity:.5}
-  .ambient .s1{top:58%;background:linear-gradient(90deg,transparent,rgba(var(--glow),.7),transparent 70%)}
-  .ambient .s2{top:63%;background:linear-gradient(90deg,transparent 30%,rgba(47,95,128,.3),transparent)}
+  /* ---------- header ---------- */
+  header{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:30px 0 28px;border-bottom:1px solid var(--line)}
+  .eyebrow{color:var(--blue);font:700 11px/1.2 Arial;letter-spacing:.2em}
+  .title{margin:10px 0 8px;font-size:clamp(38px,5vw,68px);font-weight:500;letter-spacing:.02em;line-height:1.1}
+  .subtitle{margin:0;color:var(--muted);font-size:18px}
+  .header-note{max-width:280px;color:var(--muted);font-size:13px;line-height:1.7;text-align:right}
+  .header-note b{color:var(--blue);font-weight:700}
+  .header-note i{font-style:normal;color:var(--gold);font-weight:700}
 
-  .wrap{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 24px}
+  /* ---------- toolbar ---------- */
+  .toolbar{position:sticky;top:0;z-index:5;display:flex;gap:10px;align-items:center;padding:16px 0;background:rgba(244,246,248,.92);backdrop-filter:blur(12px)}
+  .search{flex:1;min-width:160px;border:1px solid var(--line);border-radius:10px;padding:12px 15px;background:#fff;color:var(--ink);font-size:14px;outline:none}
+  .search:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
+  .count{color:var(--muted);font-size:12px;white-space:nowrap}
 
-  /* ---------- 頂欄 ---------- */
-  .top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 0}
-  .brand{display:flex;align-items:center;gap:10px;font:700 13px/1 var(--sans);letter-spacing:.22em;text-decoration:none}
-  .brand i{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px rgba(var(--glow),.8)}
-  .nav{display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.45);backdrop-filter:blur(10px);overflow-x:auto;scrollbar-width:none;max-width:100%}
-  .nav::-webkit-scrollbar{display:none}
-  .nav button{border:0;background:none;border-radius:999px;padding:7px 14px;font-size:12.5px;color:var(--soft);cursor:pointer;white-space:nowrap;transition:background .2s,color .2s}
-  .nav button:hover{color:var(--ink);background:var(--wash)}
-  .nav button.on{background:var(--ink);color:#f4efe6;font-weight:600}
-  .top-r{display:flex;align-items:center;gap:14px;font:12px var(--mono);color:var(--muted);white-space:nowrap}
-  .snd{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:rgba(255,255,255,.5);color:var(--ink);border-radius:999px;padding:6px 12px 6px 10px;font:600 12px var(--sans);cursor:pointer;transition:background .2s,transform .2s}
-  .snd:hover{background:#fff;transform:translateY(-1px)}
-  .snd:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-  .snd svg{width:15px;height:15px}
+  /* ---------- sections ---------- */
+  .section{margin-top:34px}
+  .section-head{display:flex;align-items:baseline;gap:14px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+  .section-head h2{margin:0;font:500 25px Georgia,"Noto Serif TC",serif;color:var(--ink)}
+  .section-head .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);display:inline-block;margin-right:8px;vertical-align:middle}
+  .section-head span{color:var(--muted);font-size:12px}
 
-  /* ---------- 標題區 ---------- */
-  .hero{text-align:center;padding:28px 0 6px}
-  .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:rgba(255,255,255,.5);border-radius:999px;padding:5px 6px 5px 14px;font-size:12px;color:var(--soft)}
-  .pill b{font-weight:600;color:var(--ink)}
-  .pill span{border-radius:999px;background:rgba(var(--glow),.22);color:var(--ink);padding:2px 10px;font-weight:600;transition:color .6s,background .6s}
-  .title{margin:18px 0 0;font:500 clamp(40px,6.4vw,76px)/1.08 var(--kai);letter-spacing:.04em}
-  .title em{font-style:normal;color:transparent;background:linear-gradient(180deg,#1f232a 30%,#6b5a44);-webkit-background-clip:text;background-clip:text}
-  .sub{margin:8px 0 0;font:300 clamp(18px,2.4vw,26px)/1.3 var(--sans);color:#8a8074;letter-spacing:.02em}
-  .lede{max-width:560px;margin:14px auto 0;color:var(--muted);font-size:13px}
-  .searchbar{display:flex;justify-content:center;margin-top:20px}
-  .search{width:min(420px,100%);border:1px solid var(--line);border-radius:999px;padding:11px 20px;background:rgba(255,255,255,.6);color:var(--ink);font-size:14px;outline:none;transition:border-color .2s,background .2s}
-  .search::placeholder{color:#9a9184}
-  .search:focus{border-color:rgba(var(--glow),.7);background:#fff}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
 
-  /* ---------- 封面流 ---------- */
-  .stage{--w:250px;--h:340px;position:relative;height:calc(var(--h) + 70px);margin-top:26px;perspective:1300px;perspective-origin:50% 45%;
-    touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;overflow:hidden;outline:none}
-  .stage.dragging{cursor:grabbing}
-  .track{position:absolute;left:50%;top:22px;width:0;height:var(--h);transform-style:preserve-3d}
-  .card{position:absolute;left:calc(var(--w) / -2);top:0;width:var(--w);height:var(--h);border-radius:18px;overflow:hidden;text-decoration:none;color:#fff;
-    background:var(--panel);box-shadow:0 28px 50px rgba(50,35,15,.35),0 8px 16px rgba(50,35,15,.18),0 0 0 1px rgba(255,255,255,.1) inset;
-    transform-origin:50% 60%;will-change:transform,filter;backface-visibility:hidden;-webkit-tap-highlight-color:transparent}
-  .card .ph{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:flex-end;padding:18px 18px 0 0;font:500 150px/1 var(--kai);color:rgba(255,255,255,.12);overflow:hidden}
-  .card .ph::after{content:"";position:absolute;inset:0;background:
-    radial-gradient(circle at 20% 15%,rgba(255,255,255,.18),transparent 45%),
-    repeating-linear-gradient(115deg,rgba(255,255,255,.035) 0 2px,transparent 2px 14px)}
-  .card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
-  .card .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,transparent 26%,transparent 46%,rgba(0,0,0,.82) 100%)}
-  .card .tl{position:absolute;left:16px;top:14px;right:16px;display:flex;justify-content:space-between;align-items:center;font:600 10px/1.3 var(--mono);letter-spacing:.12em;color:rgba(255,255,255,.85);text-transform:uppercase}
-  .card .tl .ring{width:12px;height:12px;border:1.5px solid rgba(255,255,255,.8);border-radius:50%;display:inline-block;vertical-align:-2px;margin-right:7px}
-  .card .bl{position:absolute;left:16px;right:16px;bottom:14px}
-  .card .c-cat{font:600 9.5px/1.4 var(--mono);letter-spacing:.16em;color:rgba(255,255,255,.62)}
-  .card .c-zh{margin:4px 0 0;font:500 23px/1.3 var(--kai);text-shadow:0 2px 12px rgba(0,0,0,.5)}
-  .card .c-en{margin:3px 0 0;font:500 9.5px/1.4 var(--mono);letter-spacing:.06em;color:rgba(255,255,255,.6);text-transform:uppercase;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-  .card .c-foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,.18);font:500 10px/1.3 var(--mono);color:rgba(255,255,255,.7)}
-  .card .c-foot small{display:block;font-size:8px;letter-spacing:.14em;color:rgba(255,255,255,.45)}
-  .card .go{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:12px;transition:background .25s,transform .25s}
-  .card.center .go{background:#fff;color:#111}
-  .card.center:hover .go{transform:translateX(3px)}
-  .card:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
-  .card.picked{box-shadow:0 0 0 3px #e0614f,0 30px 60px rgba(0,0,0,.55)}
-  .card.picked::after{content:"✓";position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:8px;background:#e0614f;color:#fff;font:700 16px/26px Arial;text-align:center}
-  body.picking .card{cursor:pointer}
+  /* ---------- card ---------- */
+  .card{
+    position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:18px;
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px 24px 20px;
+    box-shadow:var(--shadow);text-decoration:none;color:inherit;overflow:hidden;
+    transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+  }
+  .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--blue-soft);transition:background .22s ease}
+  .card:hover{transform:translateY(-4px);border-color:#c9d8e3;box-shadow:0 22px 48px rgba(27,47,64,.13)}
+  .card:hover::before{background:var(--gold)}
+  .card:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
 
-  .reflect{position:absolute;left:50%;bottom:6px;width:min(720px,90%);height:30px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(50,35,15,.28),transparent);filter:blur(12px);pointer-events:none}
+  .card-zh{margin:0;font-size:23px;font-weight:500;line-height:1.45}
+  .card-en{margin:6px 0 0;color:var(--muted);font-size:12px;letter-spacing:.03em;text-transform:uppercase}
+  .card-desc{margin:14px 0 0;color:#3d4a57;font-size:15px;line-height:1.85}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+  .tag{border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:999px;padding:3px 10px;font-size:11.5px;letter-spacing:.02em}
+  .card-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px dashed var(--line);padding-top:14px}
+  .card-meta{color:var(--muted);font-size:12px}
+  .card-go{color:var(--blue);font-size:14px;font-weight:700;white-space:nowrap}
+  .card-go .arrow{display:inline-block;transition:transform .22s ease}
+  .card-ext{border-style:dashed;background:var(--bg)}
+  .card-ext .card-go{color:var(--muted);font-weight:500}
+  .card:hover .card-go .arrow{transform:translateX(4px)}
 
-  /* ---------- 進度刻度 ---------- */
-  .meter{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;margin:2px auto 0;max-width:760px;font:500 11px/1 var(--mono);letter-spacing:.14em;color:var(--muted)}
-  .meter .m-cat{text-align:right;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .ticks{display:flex;align-items:flex-end;gap:7px;height:16px}
-  .ticks button{width:2px;height:8px;padding:0;border:0;border-radius:1px;background:rgba(60,45,25,.25);cursor:pointer;transition:height .3s,background .3s}
-  .ticks button::before{content:"";display:block;margin:-6px -6px;height:20px;width:14px}
-  .ticks button.on{height:16px;background:var(--ink)}
-  .meter .m-n b{color:var(--ink);font-weight:600}
-  .arrows{display:flex;justify-content:center;gap:10px;margin-top:16px}
-  .arrows button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.5);cursor:pointer;font-size:16px;color:var(--ink);transition:background .2s,border-color .2s}
-  .arrows button:hover{background:#fff;border-color:rgba(60,45,25,.3)}
+  .empty{margin:60px 0;text-align:center;color:var(--muted);font-size:15px}
 
-  /* ---------- 中心卡片說明 ---------- */
-  .info{max-width:720px;margin:26px auto 0;text-align:center;min-height:180px}
-  .info h2{margin:0;font:500 clamp(24px,3.2vw,32px)/1.35 var(--kai)}
-  .info .i-en{margin:4px 0 0;font:500 11.5px var(--mono);letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
-  .info p.i-desc{margin:14px auto 0;color:var(--soft);font-size:14.5px;line-height:1.9;max-width:640px}
-  .tags{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:14px}
-  .tag{border:1px solid var(--line);background:rgba(255,255,255,.5);color:var(--soft);border-radius:999px;padding:2px 11px;font-size:11.5px}
-  .cta{display:inline-flex;align-items:center;gap:10px;margin-top:20px;background:var(--ink);color:#f4efe6;border-radius:999px;padding:7px 8px 7px 20px;font-weight:600;font-size:14px;text-decoration:none;transition:transform .2s,box-shadow .2s}
-  .cta:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(var(--glow),.35)}
-  .cta i{font-style:normal;width:26px;height:26px;border-radius:50%;background:#f4efe6;color:var(--ink);display:grid;place-items:center;font-size:13px}
-  .info-fade{animation:fadeUp .45s ease both}
-  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-  .empty{margin:90px 0;text-align:center;color:var(--muted)}
-
-  /* ---------- 全部工具索引 ---------- */
-  .index{margin-top:70px;border-top:1px solid var(--line);padding-top:30px}
-  .index-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px}
-  .index-head h3{margin:0;font:500 20px var(--kai)}
-  .index-head span{font:11px var(--mono);letter-spacing:.12em;color:var(--muted)}
-  .idx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:4px 26px}
-  .idx-cat{grid-column:1/-1;margin:18px 0 4px;font:600 10.5px var(--mono);letter-spacing:.18em;color:var(--accent)}
-  .idx{display:flex;align-items:center;gap:12px;padding:9px 10px;margin:0 -10px;border-radius:10px;border:0;background:none;text-align:left;cursor:pointer;transition:background .2s}
-  .idx:hover{background:rgba(255,255,255,.45)}
-  .idx.on{background:rgba(255,255,255,.75)}
-  .idx .n{font:11px var(--mono);color:var(--muted);width:22px;flex:none}
-  .idx .sw{width:30px;height:40px;border-radius:5px;flex:none;background-size:cover;background-position:center;box-shadow:0 2px 6px rgba(50,35,15,.25)}
-  .idx .t{flex:1;min-width:0;font:500 15.5px/1.4 var(--kai);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .idx.picked{background:rgba(224,97,79,.18);box-shadow:0 0 0 1px #e0614f inset}
-
-  /* ---------- 頁尾 ---------- */
-  footer{margin-top:60px;padding:22px 0 40px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px 26px;justify-content:space-between;font-size:12px;color:var(--muted)}
-  footer code{font-family:var(--mono);background:rgba(255,255,255,.55);border-radius:5px;padding:1px 6px;color:var(--blue)}
-  .admin-link{background:none;border:0;padding:0;color:#a39a8c;font-size:12px;cursor:pointer;text-decoration:underline dotted}
-  .admin-link:hover{color:var(--blue)}
+  /* ---------- footer ---------- */
+  footer{margin-top:64px;border-top:1px solid var(--line);padding-top:22px;display:flex;flex-wrap:wrap;gap:10px 26px;justify-content:space-between}
+  .footer-note{color:var(--muted);font-size:12.5px;line-height:1.9}
+  .footer-note code{font-family:ui-monospace,Menlo,monospace;background:#fff;border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--blue);font-size:12px}
 
   @media (max-width:760px){
-    .wrap{padding:0 16px}
-    .top{flex-wrap:wrap;padding:14px 0}
-    .top-r .site{display:none}
-    .nav{order:3;width:100%}
-    .hero{padding-top:18px}
-    .stage{--w:min(210px,56vw);--h:calc(var(--w) * 1.36);margin-top:18px}
-    .card .c-zh{font-size:19px}
-    .card .ph{font-size:110px}
-    .meter{grid-template-columns:1fr;gap:10px;text-align:center}
-    .meter .m-cat{text-align:center}
-    .ticks{justify-content:center}
-    .idx-grid{grid-template-columns:1fr}
+    .shell{padding:22px 16px 56px}
+    header{flex-direction:column;align-items:flex-start;gap:16px}
+    .header-note{text-align:left;max-width:none}
+    .grid{grid-template-columns:1fr}
+    .card{padding:20px 18px 18px}
+    .card-zh{font-size:20px}
   }
-  @media (prefers-reduced-motion:reduce){.info-fade{animation:none}}
-
-  /* ---------- 管理（加入 / 刪除頁面） ---------- */
-  .btn{border:1px solid #d6dde4;background:#fff;color:#17212b;border-radius:9px;padding:9px 14px;font-size:14px;cursor:pointer;white-space:nowrap}
-  .btn:hover{border-color:#315d7c}
-  .btn:disabled{opacity:.5;cursor:default}
-  .btn-primary{background:#315d7c;border-color:#315d7c;color:#fff}
-  .btn-danger{background:#b4473a;border-color:#b4473a;color:#fff}
-  .admin-bar{position:sticky;top:10px;z-index:6;display:none;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 14px;margin-top:6px;border:1px solid #5a2b25;background:#2a1714;border-radius:12px;font-size:14px;color:#f3c7bf}
-  .admin-bar.on{display:flex}
-  .admin-bar .grow{flex:1;min-width:140px}
-  .admin-bar .btn{background:transparent;color:#f3c7bf;border-color:#6b3a33}
-  .admin-bar .btn-danger{background:#b4473a;border-color:#b4473a;color:#fff}
-
-  .modal{position:fixed;inset:0;z-index:20;display:none;align-items:flex-start;justify-content:center;background:rgba(0,0,0,.6);padding:40px 16px;overflow:auto}
-  .modal.on{display:flex}
-  .panel{width:100%;max-width:620px;background:#fff;color:#17212b;border-radius:16px;box-shadow:0 30px 70px rgba(0,0,0,.4);padding:24px 26px 26px;font-size:14px;line-height:1.6;color-scheme:light}
-  .panel h3{margin:0 0 4px;font:600 20px var(--sans)}
-  .panel h4{margin:22px 0 10px;font-size:15px;color:#315d7c}
-  .panel .hint{color:#74808d;font-size:12.5px;margin:4px 0 0}
-  .panel label{display:block;margin-top:12px;font-weight:600;font-size:13px}
-  .panel input,.panel select,.panel textarea{width:100%;margin-top:5px;border:1px solid #e3e8ee;border-radius:9px;padding:9px 12px;font:14px var(--sans);color:#17212b;background:#fff}
-  .panel textarea{min-height:70px;resize:vertical}
-  .panel .row{display:flex;gap:8px;align-items:center;margin-top:14px;flex-wrap:wrap}
-  .panel .check{display:flex;gap:6px;align-items:center;font-weight:400;margin-top:10px}
-  .panel .check input{width:auto;margin:0}
-  .panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
-  .x{background:none;border:0;font-size:24px;line-height:1;color:#74808d;cursor:pointer}
-  .msg{margin-top:12px;padding:9px 12px;border-radius:9px;font-size:13px;display:none}
-  .msg.ok{display:block;background:#eaf5ee;color:#24613a}
-  .msg.err{display:block;background:#fdf0ee;color:#9b3a2e}
-  .msg.info{display:block;background:#eaf2f7;color:#315d7c}
-  .token-state{font-size:13px;color:#74808d}
-  .token-state b{color:#24613a}
 </style>
 </head>
 <body>
-<div class="ambient" aria-hidden="true"><div class="streak s1"></div><div class="streak s2"></div></div>
+<div class="shell">
 
-<div class="wrap">
-  <div class="top">
-    <a class="brand" href="./"><i></i>TEACHING</a>
-    <nav class="nav" id="nav" aria-label="分類"></nav>
-    <div class="top-r"><span class="site">teacherqq.github.io/teaching</span><button class="snd" id="snd" type="button" aria-pressed="true" aria-label="卡片音效"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path id="sndw" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg><span id="sndt">音效</span></button></div>
+  <header>
+    <div>
+      <div class="eyebrow">TEACHING · 教學工具集</div>
+      <h1 class="title">教學工具集</h1>
+      <p class="subtitle">課堂互動、分組比賽與教學用的網頁工具統一入口<br><span style="font-size:14px">A hub for classroom tools and teaching apps</span></p>
+    </div>
+    <div class="header-note">
+      每個工具各自一個網址：<br>
+      <b>teacherqq.github.io/teaching/</b><i>&lt;工具名&gt;</i>
+    </div>
+  </header>
+
+  <div class="toolbar ui">
+    <input id="q" class="search" type="search" placeholder="搜尋工具標題、簡介或關鍵詞…" autocomplete="off">
+    <span id="count" class="count"></span>
   </div>
 
-  <section class="hero">
-    <div class="pill" id="pill"><b>教學工具集</b> 點卡片或左右滑動 <span id="count">—</span></div>
-    <h1 class="title"><em>教學工具集</em></h1>
-    <p class="sub">Teaching Tools · 一頁一個課堂</p>
-    <p class="lede">課堂互動、分組比賽、互動課文與文學分析的網頁工具統一入口。每個工具各自一個網址：teacherqq.github.io/teaching/&lt;工具名&gt;</p>
-    <div class="searchbar"><input id="q" class="search" type="search" placeholder="搜尋工具標題、簡介或關鍵詞…" autocomplete="off"></div>
-  </section>
-
-  <div id="adminBar" class="admin-bar">
-    <span class="grow">刪除模式：點卡片或下方清單勾選要從首頁移除的頁面（頁面檔案仍保留在倉庫）。已選 <b id="pickCount">0</b> 個</span>
-    <button class="btn btn-danger" id="delGo" disabled>刪除所選</button>
-    <button class="btn" id="delCancel">取消</button>
-  </div>
-
-  <main id="sections">
-    <div class="stage" id="stage" tabindex="0" aria-roledescription="carousel" aria-label="工具封面流，左右方向鍵切換">
-      <div class="track" id="track"></div>
-      <div class="reflect"></div>
-    </div>
-    <div class="meter" id="meter">
-      <div class="m-cat" id="mCat"></div>
-      <div class="ticks" id="ticks"></div>
-      <div class="m-n" id="mN"></div>
-    </div>
-    <div class="arrows"><button id="prev" aria-label="上一個">←</button><button id="next" aria-label="下一個">→</button></div>
-    <div class="info" id="info" aria-live="polite"></div>
-
-    <section class="index">
-      <div class="index-head"><h3>全部工具</h3><span id="idxCount"></span></div>
-      <div class="idx-grid" id="idx"></div>
-    </section>
-  </main>
+  <main id="sections"></main>
 
   <footer>
-    <div>新增工具：把 HTML 放到 <code>/&lt;工具名&gt;/index.html</code>，再到 <code>docs.json</code> 登記；封面放 <code>covers/&lt;工具名&gt;.webp</code>（直立 3:4）。</div>
-    <div>© <span id="year"></span> teacherqq · GitHub Pages　<button class="admin-link" id="adminOpen">管理</button></div>
+    <div class="footer-note">
+      新增工具：把 HTML 放到 <code>/&lt;工具名&gt;/index.html</code>，再到本頁 <code>DOCS</code> 陣列登記一筆即可。
+    </div>
+    <div class="footer-note">
+      © <span id="year"></span> teacherqq · GitHub Pages
+    </div>
   </footer>
-</div>
 
-<div id="adminModal" class="modal ui" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
-  <div class="panel">
-    <div class="panel-head">
-      <h3 id="adminTitle">管理首頁</h3>
-      <button class="x" id="adminClose" aria-label="關閉">×</button>
-    </div>
-    <p class="hint">只有老師使用。改動會直接寫回 GitHub 倉庫，約 1 分鐘後所有人都能看到。</p>
-
-    <div id="tokenBox">
-      <h4>① GitHub 密鑰</h4>
-      <div id="tokenState" class="token-state"></div>
-      <div id="tokenForm">
-        <label for="tokenIn">貼上密鑰（github_pat_ 開頭）</label>
-        <input id="tokenIn" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…">
-        <label class="check"><input type="checkbox" id="tokenRemember" checked> 記住在這台電腦（公用電腦請取消勾選，關掉瀏覽器就會忘記）</label>
-        <div class="row"><button class="btn btn-primary" id="tokenSave">驗證並保存</button></div>
-      </div>
-      <div id="tokenMsg" class="msg"></div>
-    </div>
-
-    <div id="manageBox">
-      <h4>② 加入新頁面</h4>
-      <label for="fUrl">頁面連結</label>
-      <input id="fUrl" type="url" placeholder="https://teacherqq.github.io/teaching/…">
-      <p class="hint">貼上連結後會自動讀取標題和簡介，可再修改。</p>
-      <label for="fZh">標題</label>
-      <input id="fZh" placeholder="例如：金大奶奶｜作品分析">
-      <label for="fCat">分類</label>
-      <select id="fCat"></select>
-      <input id="fCatNew" placeholder="新分類名稱" style="display:none">
-      <label for="fEn">英文副標題（可不填）</label>
-      <input id="fEn">
-      <label for="fDesc">簡介（可不填）</label>
-      <textarea id="fDesc"></textarea>
-      <label for="fTags">標籤（可不填，用逗號或頓號分開）</label>
-      <input id="fTags" placeholder="白先勇、章節分析">
-      <div class="row"><button class="btn btn-primary" id="addGo">加入首頁</button></div>
-      <div id="addMsg" class="msg"></div>
-
-      <h4>③ 刪除頁面</h4>
-      <p class="hint" style="margin-top:0">進入刪除模式後，在首頁點選要移除的卡片，再按「刪除所選」。</p>
-      <div class="row"><button class="btn" id="delStart">進入刪除模式</button></div>
-    </div>
-  </div>
 </div>
 
 <script>
 /* =========================================================
-   工具清單存在 docs.json（cats = 分類順序，docs = 卡片）。
-   可在首頁底部「管理」直接加入 / 刪除，也可手動編輯 docs.json。
-   slug = 子資料夾名稱（也是網址末端）；abs = 站外完整網址
-   封面：cover 欄位，或預設 covers/<slug，斜線換成 - >.webp；沒有圖就顯示漸層佔位
+   工具清單 —— 新增工具只需在這裡加一筆
+   slug  = 子資料夾名稱（也是網址末端）
+   cat   = 所屬分類（分類順序由 CATS 決定）
 ========================================================= */
-const REPO = 'teacherqq/teaching', BRANCH = 'main', DATA = 'docs.json';
-const SITE = 'https://teacherqq.github.io/teaching/';
-const EMBED = null;
-let CATS = [], DOCS = [], LIST = [], curCat = '';
+const CATS = ['課堂互動 · 分組比賽', '語文學習', '評估與練習', '文學分析 · 口試'];
 
-/* 每個分類一組顏色：卡片佔位漸層 + 背景光暈 */
-const TONES = [
-  {h: 28,  glow: '217,166,92'},
-  {h: 205, glow: '110,170,220'},
-  {h: 152, glow: '110,200,160'},
-  {h: 350, glow: '225,110,125'},
-  {h: 265, glow: '170,140,230'},
-  {h: 48,  glow: '220,200,110'}
+const DOCS = [
+  {
+    slug: 'Chinesebvocabulary',
+    cat:  '語文學習',
+    zh:   'BSL 主題重點詞句',
+    en:   'BSL Theme Vocabulary · 25–27',
+    desc: '依五大 IB 主題整理的學生自學網站：重點詞語、拼音、英文釋義、成語俗語與中英翻譯重點句。支援關鍵詞搜尋、繁簡自動切換、朗讀、背誦模式與個人詞表收藏。',
+    tags: ['BSL', '五大主題', '繁簡切換', '詞語搜尋', '朗讀', '我的詞表'],
+    date: '2026-11'
+  },
+  {
+    slug: 'bhl/anlexiangyiri',
+    cat:  '文學分析 · 口試',
+    zh:   '安樂鄉一日｜作品分析',
+    en:   'One Day in Annex Hill · Close Reading',
+    desc: '白先勇《安樂鄉》深度閱讀引導：四個章節分層解讀，涵蓋小說表面秩序與精神牢籠、聚焦式人物描寫、原生概念對照（故鄉／祖居／家／安樂鄉）、中美文化價值衝突，以及原文朗讀與人物關係圖。',
+    tags: ['白先勇', '安樂鄉', '章節分析', '人物描寫', '文化衝突', '原文朗讀'],
+    date: '2026-10'
+  },
+  {
+    slug: 'classroom-challenge',
+    cat:  '課堂互動 · 分組比賽',
+    zh:   '課堂挑戰賽',
+    en:   'Classroom Challenge',
+    desc: '分組搶答計分板：按課文難度自訂 100 / 200 / 300 分題板，全屏楷體題卡點一下翻面看答案，加分減分有真人語音鼓勵，支援半分計分、多套題板存檔，題目可從 Excel 直接貼上導入。',
+    tags: ['分組搶答', '計分板', '題卡翻面', '音效語音', '題庫存檔'],
+    date: '2026-09'
+  },
+  {
+    slug: 'y9b3u2-choice-communication',
+    cat:  '語文學習',
+    zh:   'Y9B3 Unit 2 選擇與溝通',
+    en:   'Y9 Band 3 Unit 2 · Choice & Communication',
+    desc: '四課：《給媽媽的一封信》《日記一篇》《抉擇》《給表哥的電子郵件》。拓展詞＋重點詞（田字格筆畫動畫）＋成語／句式知識，另有選詞填空、成語選詞填空、詞義選擇、句式練習與詞卡，繁簡切換＋植物積分系統。',
+    tags: ['Unit 2', '繁簡切換', '田字格筆畫', '成語句式', '積分系統', '詞卡'],
+    date: '2026-10'
+  },
+  {
+    slug: 'y9-chinese-unit3',
+    cat:  '語文學習',
+    zh:   'Y9 Unit 3 詞語學習網站',
+    en:   'Y9 Unit 3 · Chinese Vocabulary',
+    desc: 'Y9 中文詞語學習：田字格筆畫動畫配神經語音朗讀，選詞填空與重點詞練習，適合課堂與課後自修複習。',
+    tags: ['Unit 3', '田字格筆畫', '神經語音', '選詞填空'],
+    date: '2026-10'
+  },
+  {
+    slug: 'y9gcsb3',
+    cat:  '評估與練習',
+    zh:   'Y9 GCS Band 3 備課資源',
+    en:   'Y9 GCS Band 3 · Teaching Materials',
+    desc: 'Y9 GCS Band 3 課程備課頁面與 lesson1 教學資源，供課堂講解與學生練習使用。',
+    tags: ['GCS', 'Band 3', '備課', 'Lesson 1'],
+    date: '2026-08'
+  },
+  {
+    slug: 'ibdp-bhl-resources',
+    cat:  '文學分析 · 口試',
+    zh:   'IBDP / BHL 教材資源',
+    en:   'IBDP / BHL Resources',
+    desc: 'IBDP 與 BHL 課程教材資源：主題探討、寫作框架與課堂可用材料，配合 BHL 文學分析與口試工作站使用。',
+    tags: ['IBDP', 'BHL', '教材', '主題探討'],
+    date: '2026-07'
+  },
+  {
+    slug: 'y9gcs',
+    cat:  '評估與練習',
+    zh:   'Y9 GCS 課程專區',
+    en:   'Y9 GCS · Course Hub',
+    desc: 'Y9 GCS 課程專區（待建），預留作為 Y9 GCS 各單元課程資源的匯集入口。',
+    tags: ['Y9 GCS', '課程', '待建'],
+    date: '2026-08'
+  },
+  {
+    slug: '',
+    abs:   'https://teacherqq.github.io/working/bhl-literature/',
+    cat:  '文學分析 · 口試',
+    zh:   'BHL 文學分析與口試工作站',
+    en:   'BHL Literary Analysis & Individual Oral Hub',
+    desc: '文學分析基本思路、常用寫作手法與人物描寫術語、五大主題分析框架、常用分析句型，以及「3–4 分鐘完整分析」的範例拆解與口試注意事項。',
+    tags: ['文學分析', '個人口試', '術語工具箱', '分析句型', '五大主題'],
+    date: '2026-09'
+  }
 ];
 
-const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const keyOf = d => d.abs || d.slug;
-const pad = n => String(n).padStart(2, '0');
-/* 在正式網站用相對連結；在預覽等其他地方打開時改成完整網址並開新分頁 */
-const ON_SITE = location.href.startsWith(SITE);
-const hrefOf = d => d.abs || (ON_SITE ? `${d.slug}/` : new URL(`${d.slug}/`, SITE).href);
-const newTab = d => d.abs || !ON_SITE;
-
-function absMeta(u){
-  if (u.includes('teacherqq.github.io/working/')) return '工作文檔集';
-  try { return new URL(u).hostname; } catch(e) { return '外部連結'; }
-}
-function coverOf(d){
-  if (d.cover) return d.cover;
-  if (d.slug) return `covers/${d.slug.replace(/\//g, '-')}.webp`;
-  const seg = (d.abs || '').replace(/\/+$/, '').split('/').pop();
-  return seg ? `covers/${seg}.webp` : '';
-}
-function allCats(list){
-  return CATS.concat(list.map(d => d.cat).filter((c, i, a) => !CATS.includes(c) && a.indexOf(c) === i));
-}
-function toneOf(d){ const i = allCats(DOCS).indexOf(d.cat); return TONES[(i < 0 ? 0 : i) % TONES.length]; }
-function phBg(d){ const h = toneOf(d).h; return `linear-gradient(160deg,hsl(${h} 42% 36%),hsl(${h} 48% 16%) 55%,hsl(${h} 40% 8%))`; }
-
 /* =========================================================
-   封面流
+   渲染
 ========================================================= */
-const $ = id => document.getElementById(id);
-const stage = $('stage'), track = $('track');
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-let cards = [], pos = 0, target = 0, raf = 0, shown = -1, passed = 0;
-let onPass = () => {};  /* 每轉過一張卡呼叫一次，音效在下面接上 */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-function cardHTML(d, i){
-  const href = hrefOf(d);
-  const glyph = (d.zh.replace(/^Y9\S*\s*/, '').match(/[一-鿿]/) || [d.zh[0]])[0];
-  const foot = d.abs ? absMeta(d.abs) : `/${d.slug}/`;
-  const cv = coverOf(d);
+function card(d){
+  const tags = (d.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join('');
+  const href   = d.abs || `${d.slug}/`;
+  const meta   = d.abs ? `${esc(d.date)} · 工作文檔集` : `${esc(d.date)} · /${esc(d.slug)}/`;
+  const extCls = d.abs ? ' card-ext' : '';
   return `
-    <a class="card${picks.has(keyOf(d)) ? ' picked' : ''}" data-i="${i}" data-key="${esc(keyOf(d))}" href="${esc(href)}"${newTab(d) ? ' target="_blank" rel="noopener"' : ''} draggable="false">
-      <div class="ph" style="background:${phBg(d)}">${esc(glyph)}</div>
-      ${cv ? `<img src="${esc(cv)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : ''}
-      <div class="shade"></div>
-      <div class="tl"><span><span class="ring"></span>No.${pad(i + 1)}</span><span>${esc(d.date || '')}</span></div>
-      <div class="bl">
-        <div class="c-cat">${esc(d.cat)}</div>
-        <h3 class="c-zh">${esc(d.zh)}</h3>
-        ${d.en ? `<div class="c-en">${esc(d.en)}</div>` : ''}
-        <div class="c-foot"><span><small>LINK</small>${esc(foot)}</span><span class="go">→</span></div>
+    <a class="card${extCls}" href="${esc(href)}"${d.abs ? ' target="_blank" rel="noopener"' : ''}>
+      <div>
+        <h3 class="card-zh">${esc(d.zh)}</h3>
+        <p class="card-en">${esc(d.en)}</p>
+        <p class="card-desc">${esc(d.desc)}</p>
+        <div class="tags">${tags}</div>
+      </div>
+      <div class="card-foot">
+        <span class="card-meta">${meta}</span>
+        <span class="card-go">進入 <span class="arrow">→</span></span>
       </div>
     </a>`;
 }
 
-function build(keepKey){
-  track.innerHTML = LIST.map(cardHTML).join('');
-  cards = [...track.children];
-  /* 第一次打開停在最新的工具（docs.json 第一筆），兩側都有卡片 */
-  const k = LIST.findIndex(d => keyOf(d) === (keepKey || (DOCS[0] && keyOf(DOCS[0]))));
-  target = pos = passed = Math.max(0, k);
-  shown = -1;
-  $('ticks').innerHTML = LIST.map((d, i) => `<button data-i="${i}" aria-label="${esc(d.zh)}"></button>`).join('');
-  $('stage').style.display = $('meter').style.display = LIST.length ? '' : 'none';
-  document.querySelector('.arrows').style.display = LIST.length ? '' : 'none';
-  if (!LIST.length) $('info').innerHTML = '<p class="empty">找不到符合的工具，換個關鍵詞試試。</p>';
-  place(); sync();
-}
+function render(list){
+  const box = document.getElementById('sections');
+  const cats = CATS.concat(
+    list.map(d => d.cat).filter(c => !CATS.includes(c))
+  );
 
-function place(){
-  const now = Math.round(pos);
-  if (now !== passed) { onPass(Math.abs(target - pos)); passed = now; }
-  const W = cards[0] ? cards[0].offsetWidth : 250;
-  cards.forEach((c, i) => {
-    const o = i - pos, a = Math.abs(o), s = Math.sign(o);
-    if (a > 5.5) { c.style.visibility = 'hidden'; return; }
-    c.style.visibility = '';
-    const near = Math.min(a, 1), far = Math.max(a - 1, 0);
-    const x = s * (near * W * 0.68 + far * W * 0.40);
-    const ry = -s * (near * 42 + far * 3);
-    const z = -a * 95;
-    const y = Math.min(a, 4) * Math.min(a, 4) * 3.2;
-    const rz = o * 1.4;
-    const sc = 1 - Math.min(a, 4.5) * 0.085;
-    c.style.transform = `translate3d(${x}px,${y}px,${z}px) rotateY(${ry}deg) rotateZ(${rz}deg) scale(${sc})`;
-    c.style.filter = a < .02 ? 'none' : `brightness(${Math.max(.45, 1 - a * .16)}) saturate(${Math.max(.5, 1 - a * .12)})`;
-    c.style.opacity = a > 4.5 ? Math.max(0, 5.5 - a) : 1;
-    c.style.zIndex = 1000 - Math.round(a * 10);
-    c.classList.toggle('center', a < .5);
-  });
-}
-
-function loop(){
-  const d = target - pos;
-  if (reduce || Math.abs(d) < .001) pos = target; else pos += d * .14;
-  place();
-  raf = pos === target ? 0 : requestAnimationFrame(loop);
-}
-function kick(){ if (!raf) raf = requestAnimationFrame(loop); }
-function go(i){
-  if (!LIST.length) return;
-  target = Math.max(0, Math.min(LIST.length - 1, i));
-  sync(); kick();
-}
-
-/* 中心卡片的說明、刻度、背景光暈 */
-function sync(){
-  const i = Math.round(target), d = LIST[i];
-  if (!d) return;
-  $('mN').innerHTML = `<b>${pad(i + 1)}</b> / ${pad(LIST.length)}`;
-  $('mCat').textContent = d.cat;
-  [...$('ticks').children].forEach((t, j) => t.classList.toggle('on', j === i));
-  document.querySelectorAll('.idx').forEach(el => el.classList.toggle('on', el.dataset.key === keyOf(d)));
-  document.documentElement.style.setProperty('--glow', toneOf(d).glow);
-  if (shown === i) return;
-  shown = i;
-  const tags = (d.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join('');
-  const href = hrefOf(d);
-  $('info').innerHTML = `
-    <div class="info-fade">
-      <h2>${esc(d.zh)}</h2>
-      ${d.en ? `<p class="i-en">${esc(d.en)}</p>` : ''}
-      ${d.desc ? `<p class="i-desc">${esc(d.desc)}</p>` : ''}
-      <div class="tags">${tags}</div>
-      <a class="cta" href="${esc(href)}"${newTab(d) ? ' target="_blank" rel="noopener"' : ''}>進入${newTab(d) ? '（新分頁）' : ''} <i>→</i></a>
-    </div>`;
-}
-
-/* ---------- 拖曳 / 滑動 ---------- */
-let drag = null, moved = false;
-stage.addEventListener('pointerdown', e => {
-  if (e.button !== 0 || !LIST.length) return;
-  drag = {x: e.clientX, y: e.clientY, p: pos, t: performance.now(), lastX: e.clientX, v: 0, axis: ''};
-  moved = false;
-});
-window.addEventListener('pointermove', e => {
-  if (!drag) return;
-  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
-  if (!drag.axis && Math.hypot(dx, dy) > 6) drag.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
-  if (drag.axis !== 'x') return;
-  moved = true;
-  stage.classList.add('dragging');
-  const W = cards[0].offsetWidth * 0.68;
-  const now = performance.now();
-  drag.v = (e.clientX - drag.lastX) / Math.max(1, now - drag.t);
-  drag.lastX = e.clientX; drag.t = now;
-  pos = target = Math.max(-.4, Math.min(LIST.length - .6, drag.p - dx / W));
-  if (raf) { cancelAnimationFrame(raf); raf = 0; }
-  place();
-});
-window.addEventListener('pointerup', () => {
-  if (!drag) return;
-  if (drag.axis === 'x') go(Math.round(pos - drag.v * 2.2));
-  stage.classList.remove('dragging');
-  drag = null;
-});
-
-/* 觸控板 / 滑鼠橫向滾動 */
-let wheelAcc = 0, wheelT = 0;
-stage.addEventListener('wheel', e => {
-  const dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : (e.shiftKey ? e.deltaY : 0);
-  if (!dx) return;
-  e.preventDefault();
-  wheelAcc += dx;
-  const now = performance.now();
-  if (Math.abs(wheelAcc) > 40 && now - wheelT > 160) { go(Math.round(target) + Math.sign(wheelAcc)); wheelAcc = 0; wheelT = now; }
-}, {passive: false});
-
-/* 點卡片：旁邊的轉到中間，中間的才進入 */
-track.addEventListener('click', e => {
-  const c = e.target.closest('.card');
-  if (!c) return;
-  if (moved) { e.preventDefault(); moved = false; return; }
-  const i = +c.dataset.i;
-  if (document.body.classList.contains('picking')) { e.preventDefault(); togglePick(c.dataset.key); return; }
-  if (i !== Math.round(target)) { e.preventDefault(); go(i); }
-});
-track.addEventListener('dragstart', e => e.preventDefault());
-
-$('ticks').addEventListener('click', e => { const b = e.target.closest('button'); if (b) go(+b.dataset.i); });
-$('prev').onclick = () => go(Math.round(target) - 1);
-$('next').onclick = () => go(Math.round(target) + 1);
-
-document.addEventListener('keydown', e => {
-  if (e.target.closest('input,textarea,select') || $('adminModal').classList.contains('on')) return;
-  if (e.key === 'ArrowLeft') { e.preventDefault(); go(Math.round(target) - 1); }
-  else if (e.key === 'ArrowRight') { e.preventDefault(); go(Math.round(target) + 1); }
-  else if (e.key === 'Enter' && e.target === stage && cards[Math.round(target)]) cards[Math.round(target)].click();
-});
-addEventListener('resize', place);
-
-/* =========================================================
-   分類、搜尋、索引
-========================================================= */
-function renderNav(){
-  const cats = allCats(DOCS);
-  $('nav').innerHTML = [''].concat(cats).map(c =>
-    `<button data-cat="${esc(c)}" class="${c === curCat ? 'on' : ''}">${c ? esc(c) : '全部'}</button>`).join('');
-}
-$('nav').addEventListener('click', e => {
-  const b = e.target.closest('button');
-  if (!b) return;
-  curCat = b.dataset.cat;
-  renderNav(); filter();
-});
-
-function renderIndex(){
-  const cats = allCats(LIST);
   let html = '';
   cats.forEach(cat => {
-    const rows = LIST.map((d, i) => [d, i]).filter(([d]) => d.cat === cat);
+    const rows = list.filter(d => d.cat === cat);
     if (!rows.length) return;
-    html += `<div class="idx-cat">${esc(cat)} · ${rows.length}</div>`;
-    html += rows.map(([d, i]) => `
-      <button class="idx${picks.has(keyOf(d)) ? ' picked' : ''}" data-i="${i}" data-key="${esc(keyOf(d))}">
-        <span class="n">${pad(i + 1)}</span>
-        <span class="sw" style="background-image:url('${esc(coverOf(d))}'),${phBg(d)}"></span>
-        <span class="t">${esc(d.zh)}</span>
-      </button>`).join('');
+    html += `
+      <section class="section">
+        <div class="section-head">
+          <h2><span class="dot"></span>${esc(cat)}</h2>
+          <span>${rows.length} 個工具</span>
+        </div>
+        <div class="grid">${rows.map(card).join('')}</div>
+      </section>`;
   });
-  $('idx').innerHTML = html;
-  $('idxCount').textContent = `${LIST.length} 個工具 · ${cats.filter(c => LIST.some(d => d.cat === c)).length} 個分類`;
-  $('count').textContent = `${LIST.length} 個`;
-}
-$('idx').addEventListener('click', e => {
-  const b = e.target.closest('.idx');
-  if (!b) return;
-  if (document.body.classList.contains('picking')) return togglePick(b.dataset.key);
-  go(+b.dataset.i);
-  stage.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'center'});
-});
 
-function render(list){
-  const keep = LIST[Math.round(target)] ? keyOf(LIST[Math.round(target)]) : null;
-  const cats = allCats(list);
-  LIST = cats.flatMap(c => list.filter(d => d.cat === c));
-  build(keep);
-  renderIndex();
+  box.innerHTML = html || '<p class="empty">找不到符合的工具，換個關鍵詞試試。</p>';
+
+  document.getElementById('count').textContent =
+    list.length ? `共 ${list.length} 個工具 · ${cats.filter(c => list.some(d => d.cat === c)).length} 個分類` : '';
 }
 
 function filter(){
-  const q = $('q').value.trim().toLowerCase();
-  render(DOCS.filter(d => (!curCat || d.cat === curCat) && (!q ||
-    [d.zh, d.en, d.desc, d.cat, (d.tags || []).join(' ')].join(' ').toLowerCase().includes(q))));
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  if (!q) return render(DOCS);
+  render(DOCS.filter(d =>
+    [d.zh, d.en, d.desc, d.cat, (d.tags || []).join(' ')].join(' ').toLowerCase().includes(q)
+  ));
 }
 
-function useData(data){
-  CATS = data.cats || [];
-  DOCS = data.docs || [];
-  if (curCat && !allCats(DOCS).includes(curCat)) curCat = '';
-  renderNav();
-  filter();
-}
-
-async function load(){
-  try {
-    const r = await fetch(`${DATA}?t=${Date.now()}`, {cache: 'no-store'});
-    if (!r.ok) throw new Error(r.status);
-    useData(await r.json());
-  } catch(e) {
-    if (EMBED) return useData(EMBED);
-    $('info').innerHTML = '<p class="empty">工具清單載入失敗，請重新整理頁面。</p>';
-  }
-}
-
-function togglePick(k){
-  picks.has(k) ? picks.delete(k) : picks.add(k);
-  document.querySelectorAll(`[data-key="${CSS.escape(k)}"]`).forEach(el => el.classList.toggle('picked', picks.has(k)));
-  updatePicks();
-}
-
-/* =========================================================
-   管理：GitHub 密鑰只存在老師自己的瀏覽器
-========================================================= */
-const TOKEN_KEY = 'teaching-admin-token';
-const picks = new Set();
-
-function store(fn){ try { return fn(); } catch(e) { return null; } }
-function getToken(){ return store(() => localStorage.getItem(TOKEN_KEY)) || store(() => sessionStorage.getItem(TOKEN_KEY)) || ''; }
-function setToken(t, remember){
-  store(() => localStorage.removeItem(TOKEN_KEY));
-  store(() => sessionStorage.removeItem(TOKEN_KEY));
-  if (t) store(() => (remember ? localStorage : sessionStorage).setItem(TOKEN_KEY, t));
-}
-
-function say(id, text, kind){ const m = $(id); m.className = 'msg ' + (kind || ''); m.textContent = text || ''; }
-
-async function gh(path, opts = {}){
-  const r = await fetch(`https://api.github.com/repos/${REPO}${path}`, {
-    ...opts,
-    headers: {
-      'Accept': 'application/vnd.github+json',
-      'Authorization': `Bearer ${getToken()}`,
-      ...(opts.body ? {'Content-Type': 'application/json'} : {})
-    }
-  });
-  if (!r.ok) {
-    const err = new Error(r.status === 401 ? '密鑰無效或已過期，請重新貼上。'
-      : r.status === 403 || r.status === 404 ? '密鑰沒有寫入 teaching 倉庫的權限。'
-      : `GitHub 回應錯誤（${r.status}）。`);
-    err.status = r.status;
-    throw err;
-  }
-  return r.json();
-}
-
-const b64decode = s => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g, '')), c => c.charCodeAt(0)));
-const b64encode = s => { let b = ''; new TextEncoder().encode(s).forEach(x => b += String.fromCharCode(x)); return btoa(b); };
-
-/* 讀取倉庫裡最新的 docs.json → 修改 → 寫回；別人剛好也改過就重試一次 */
-async function commit(mutate, message, retry = true){
-  const file = await gh(`/contents/${DATA}?ref=${BRANCH}&t=${Date.now()}`);
-  const data = JSON.parse(b64decode(file.content));
-  mutate(data);
-  try {
-    await gh(`/contents/${DATA}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        message, branch: BRANCH, sha: file.sha,
-        content: b64encode(JSON.stringify(data, null, 2) + '\n')
-      })
-    });
-  } catch(e) {
-    if (retry && (e.status === 409 || e.status === 422)) return commit(mutate, message, false);
-    throw e;
-  }
-  useData(data);
-  return data;
-}
-
-function refreshAdmin(){
-  const has = !!getToken();
-  $('tokenState').innerHTML = has
-    ? '<b>✓ 已保存密鑰</b>　<button class="btn" id="tokenClear" style="padding:4px 10px;font-size:12px">清除密鑰</button>'
-    : '還沒有密鑰。第一次使用請貼上 GitHub 密鑰。';
-  $('tokenForm').style.display = has ? 'none' : '';
-  $('manageBox').style.display = has ? '' : 'none';
-  if (has) $('tokenClear').onclick = () => { setToken(''); say('tokenMsg', '已清除。', 'info'); refreshAdmin(); };
-
-  const cats = allCats(DOCS);
-  $('fCat').innerHTML = cats.map(c => `<option>${esc(c)}</option>`).join('') + '<option value="__new">＋ 新分類…</option>';
-  $('fCatNew').style.display = 'none';
-}
-
-function openAdmin(){ refreshAdmin(); $('adminModal').classList.add('on'); }
-function closeAdmin(){ $('adminModal').classList.remove('on'); if (location.hash === '#admin') history.replaceState(null, '', location.pathname + location.search); }
-
-$('adminOpen').onclick = openAdmin;
-$('adminClose').onclick = closeAdmin;
-$('adminModal').addEventListener('click', e => { if (e.target.id === 'adminModal') closeAdmin(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAdmin(); });
-
-$('tokenSave').onclick = async () => {
-  const t = $('tokenIn').value.trim();
-  if (!t) return say('tokenMsg', '請先貼上密鑰。', 'err');
-  setToken(t, $('tokenRemember').checked);
-  say('tokenMsg', '驗證中…', 'info');
-  try {
-    const repo = await gh('');
-    if (!repo.permissions || !repo.permissions.push) throw new Error('密鑰沒有寫入 teaching 倉庫的權限。');
-    $('tokenIn').value = '';
-    say('tokenMsg', '密鑰有效，已保存。', 'ok');
-    refreshAdmin();
-  } catch(e) {
-    setToken('');
-    say('tokenMsg', e.message, 'err');
-  }
-};
-
-/* ---------- 加入 ---------- */
-function parseLink(raw){
-  let u;
-  try { u = new URL(raw.trim()); } catch(e) { return null; }
-  const base = new URL(SITE);
-  if (u.host === base.host && u.pathname.startsWith(base.pathname)) {
-    const slug = decodeURIComponent(u.pathname.slice(base.pathname.length))
-      .replace(/index\.html?$/, '').replace(/\/+$/, '');
-    if (slug) return {slug};
-  }
-  return {abs: u.href};
-}
-
-$('fCat').onchange = () => { $('fCatNew').style.display = $('fCat').value === '__new' ? '' : 'none'; };
-
-$('fUrl').addEventListener('change', async () => {
-  const link = parseLink($('fUrl').value);
-  if (!link) return say('addMsg', '這不是有效的網址。', 'err');
-  if (DOCS.some(d => keyOf(d) === keyOf(link))) return say('addMsg', '首頁上已經有這個頁面了。', 'err');
-  say('addMsg', '');
-  try {
-    const r = await fetch(link.abs || new URL(link.slug + '/', SITE).href);
-    const doc = new DOMParser().parseFromString(await r.text(), 'text/html');
-    const title = (doc.title || '').trim();
-    const desc = doc.querySelector('meta[name="description"]');
-    if (title && !$('fZh').value) $('fZh').value = title;
-    if (desc && !$('fDesc').value) $('fDesc').value = desc.content.trim();
-  } catch(e) { /* 站外網頁通常讀不到標題，手動填寫即可 */ }
-});
-
-$('addGo').onclick = async () => {
-  const link = parseLink($('fUrl').value);
-  const zh = $('fZh').value.trim();
-  const cat = $('fCat').value === '__new' ? $('fCatNew').value.trim() : $('fCat').value;
-  if (!link) return say('addMsg', '請貼上頁面連結。', 'err');
-  if (!zh) return say('addMsg', '請填寫標題。', 'err');
-  if (!cat) return say('addMsg', '請填寫新分類名稱。', 'err');
-
-  const now = new Date();
-  const entry = {
-    slug: link.slug || '',
-    ...(link.abs ? {abs: link.abs} : {}),
-    cat, zh,
-    en: $('fEn').value.trim(),
-    desc: $('fDesc').value.trim(),
-    tags: $('fTags').value.split(/[,，、]/).map(s => s.trim()).filter(Boolean),
-    date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
-  };
-
-  $('addGo').disabled = true;
-  say('addMsg', '保存中…', 'info');
-  try {
-    await commit(data => {
-      if (data.docs.some(d => keyOf(d) === keyOf(entry))) throw new Error('首頁上已經有這個頁面了。');
-      data.docs.unshift(entry);
-      if (!data.cats.includes(cat)) data.cats.push(cat);
-    }, `首頁加入：${zh}`);
-    ['fUrl', 'fZh', 'fEn', 'fDesc', 'fTags', 'fCatNew'].forEach(id => $(id).value = '');
-    refreshAdmin();
-    say('addMsg', `已加入「${zh}」。約 1 分鐘後所有人都能看到。`, 'ok');
-  } catch(e) {
-    say('addMsg', e.message, 'err');
-  } finally {
-    $('addGo').disabled = false;
-  }
-};
-
-/* ---------- 刪除 ---------- */
-function setPicking(on){
-  picks.clear();
-  document.body.classList.toggle('picking', on);
-  $('adminBar').classList.toggle('on', on);
-  updatePicks();
-  filter();
-}
-function updatePicks(){
-  $('pickCount').textContent = picks.size;
-  $('delGo').disabled = !picks.size;
-}
-
-$('delStart').onclick = () => { closeAdmin(); setPicking(true); window.scrollTo({top: 0, behavior: 'smooth'}); };
-$('delCancel').onclick = () => setPicking(false);
-
-$('delGo').onclick = async () => {
-  const names = DOCS.filter(d => picks.has(keyOf(d))).map(d => '・' + d.zh).join('\n');
-  if (!confirm(`從首頁移除以下 ${picks.size} 個頁面？\n\n${names}\n\n（頁面檔案仍保留在倉庫，之後可以再加回來。）`)) return;
-  $('delGo').disabled = true;
-  try {
-    const gone = new Set(picks);
-    await commit(data => { data.docs = data.docs.filter(d => !gone.has(keyOf(d))); }, `首頁移除 ${gone.size} 個頁面`);
-    setPicking(false);
-    alert('已移除。約 1 分鐘後所有人都能看到。');
-  } catch(e) {
-    alert(e.message);
-    updatePicks();
-  }
-};
-
-
-/* =========================================================
-   轉動音效：和第二單元合輯同一個木棘輪咔聲（ElevenLabs 生成），
-   封面流每轉過一張卡響一下（方向鍵、拖曳、橫滑、點卡片都算），
-   最少隔 50ms，轉得快略高略響；滑鼠只是移過去不會響。
-   瀏覽器要先點一下或按鍵才准發聲，所以第一次點擊後才有聲音。
-========================================================= */
-const SFX = "SUQzBAAAAAAtTVRTU0UAAAAPAAADTGF2ZjYwLjE2LjEwMABHRU9CAAAtKgAAA2FwcGxpY2F0aW9uL2MycGEAYzJwYQBjMnBhIG1hbmlmZXN0IHN0b3JlAAAAFn9qdW1iAAAAHmp1bWRjMnBhABEAEIAAAKoAOJtxA2MycGEAAAAWWWp1bWIAAABHanVtZGMybWEAEQAQgAAAqgA4m3EDdXJuOmMycGE6NzAxNDkyYmYtMDU0Ni00NjcwLWE5NzEtMzIzMDk3Mjg5MGRiAAAAA5RqdW1iAAAAKWp1bWRjMmFzABEAEIAAAKoAOJtxA2MycGEuYXNzZXJ0aW9ucwAAAAC5anVtYgAAAERqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmluZ3JlZGllbnQudjMAAAAAGGMyc2jt4bM/V6XtjNlrw79iJ6s/AAAAbWNib3KjaWRjOmZvcm1hdGphdWRpby9tcGVnamluc3RhbmNlSUR4LHhtcDppaWQ6MGYzNDFlZTQtN2JiYS00OWU3LWI3ZWEtZTE0NDc4OWYxNjI3bHJlbGF0aW9uc2hpcGhwYXJlbnRPZgAAAeJqdW1iAAAAQWp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuYWN0aW9ucy52MgAAAAAYYzJzaMvseCG0RXY/8G+Hsj98LBUAAAGZY2JvcqJnYWN0aW9uc4KiZmFjdGlvbmtjMnBhLm9wZW5lZGpwYXJhbWV0ZXJzoWtpbmdyZWRpZW50c4GiY3VybHgtc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5pbmdyZWRpZW50LnYzZGhhc2hYIDCuaIV0VKYsT/vtZWk5HGXoqYTZjVyBgTExkWQV5PFFpGZhY3Rpb254HWNvbS5hbnRocm9waWMuY2xhdWRlLnByb3ZpZGVkanBhcmFtZXRlcnOheB9jb20uYW50aHJvcGljLm9yaWdpbi1jb25maWRlbmNlZ3Vua25vd25rZGVzY3JpcHRpb254ZkNsYXVkZSBwcm92aWRlZCB0aGlzIGZpbGUgYXQgdGhlIHJlcXVlc3Qgb2YgYSB1c2VyIGFuZCBtYXkgaGF2ZSBjcmVhdGVkIG9yIG1vZGlmaWVkIHRoZSBmaWxlIGNvbnRlbnRzLm1zb2Z0d2FyZUFnZW50oWRuYW1lZkNsYXVkZXJhbGxBY3Rpb25zSW5jbHVkZWT1AAAAyGp1bWIAAABAanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5oYXNoLmRhdGEAAAAAGGMyc2ja0bJ6ktTalF1acrnEV+XoAAAAgGNib3KlY2FsZ2ZzaGEyNTZjcGFkTQAAAAAAAAAAAAAAAABkaGFzaFgg8G8jxyo6HYBTO0Jr/jzPpY25I8ZMAFUpZ+8wCQEN/5BkbmFtZW5qdW1iZiBtYW5pZmVzdGpleGNsdXNpb25zgaJlc3RhcnQYWGZsZW5ndGgZFn8AAAI+anVtYgAAACdqdW1kYzJjbAARABCAAACqADibcQNjMnBhLmNsYWltLnYyAAAAAg9jYm9ypWNhbGdmc2hhMjU2aXNpZ25hdHVyZXhNc2VsZiNqdW1iZj0vYzJwYS91cm46YzJwYTo3MDE0OTJiZi0wNTQ2LTQ2NzAtYTk3MS0zMjMwOTcyODkwZGIvYzJwYS5zaWduYXR1cmVqaW5zdGFuY2VJRHgseG1wOmlpZDo0NTBkMmY2NS1kOTI0LTQyZWUtYmIxNy1kY2IwM2RiYTA1NmZyY3JlYXRlZF9hc3NlcnRpb25zg6JjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggMK5ohXRUpixP++1laTkcZeiphNmNXIGBMTGRZBXk8UWiY3VybHgqc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5hY3Rpb25zLnYyZGhhc2hYIDf2KsyR1iNQobe1R9CNoHYRaulM963GnntarBYfUJFdomN1cmx4KXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaGFzaC5kYXRhZGhhc2hYIEGiKMoPpA7ZcrioYB2jD7wBK/D1yjODmdn671Xj35RYdGNsYWltX2dlbmVyYXRvcl9pbmZvo2RuYW1lb0FudGhyb3BpYyBGaWxlc2d2ZXJzaW9uZTEuMC4wa3NwZWNWZXJzaW9uZTIuNC4wAAAQOGp1bWIAAAAoanVtZGMyY3MAEQAQgAAAqgA4m3EDYzJwYS5zaWduYXR1cmUAAAAQCGNib3LShFkCEqIBJhghWQIKMIICBjCCAY2gAwIBAgIUQOWgCu7COdC+uIP6BkIFPWdVEwAwCgYIKoZIzj0EAwMwSTEXMBUGA1UEChMOQW50aHJvcGljLCBQQkMxLjAsBgNVBAMTJUFudGhyb3BpYyBDb250ZW50IENyZWRlbnRpYWxzIFJvb3QgQ0EwHhcNMjYwODA3MTg0MzU2WhcNMjgwODA2MTk0MzU2WjBEMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEpMCcGA1UEAxMgQW50aHJvcGljIENsYXVkZSBDb250ZW50IFNpZ25pbmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASYegpry1AYBRTVNL1CpTlbROnY3dey+UrsF9C3phYrATN3ZHf93Mo8RQN0KOUuOn19P4oWNFWe5n2/She9N7eTo1gwVjAOBgNVHQ8BAf8EBAMCB4AwFQYDVR0lBA4wDAYKKwYBBAGD6F4CATAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFM5R4gSBTmRbI/jjxM+aPpzB11zCMAoGCCqGSM49BAMDA2cAMGQCMDFzHRSeAXrSy1WOzkbhPZ6Km2wGTmZ/2gK18k8BQGXyqz88Rdrz6CTX9flAnYNVxgIwcF9c3fVhqmJKpi+UhasNUMko69cyX6STPfta3Q8EjyzDjzoyrol46FP6VFHhvUcJoWNwYWRZDZ4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2WEDwaZi0TqaHm1I1vnybAjFG6WboFbiJMIdLX87REyLNymsD2swQsNz4oElD9tylbyjkjEKs4YZ6raYCTlOKS6d3//tQwAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAEAAAEEwBmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmaZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzP////////////////////////////////8AAAAATGF2YzYwLjMxAAAAAAAAAAAAAAAAJAYbAAAAAAAABBNIn6QyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/7UMQAAAl1FUEUEoABkCAxdxKwArUFeAAYx4AKACzG6ne/kI2c7oc/ndDvIRuc7//5w4KMpxMXOgfPIRv/kO8lTnQPi7oRvyCACAAKKAAEFJzncgfF3ECz4Pv8T/l38P//8f/bezbRwtxtEAiMORECJrXGgst+SIFhV4IEzOwsbgPAcImBOrzQh2Gg3E55yF1TsEgmH+azZ3BtX/v2U5Jrq/c40PHHy5jphKmo8f//FdPP//+j//+cr0hr/ppeILanwkDSaJiYiEQ5G0mJfCH/+1LEBYAL3LVr/PQAEVqgqnzBnqglJcb5KEco0DCQ7wU4dZ0qZRRRAsIJNlSz0Yx8ECwyBaEGszU60g40LCENFzE7eVhkmbmZZO/25uvmzZYuwHS4AD0+yZPPrFRcHf6bf99QDllaGdD3e5m87MoEUBQ66WFakKh2ArlUXvITKQ6ErFy4yMnoR17TlQ81WMpZNkt/9gIdWNmq//GqllAzf0KXZwGJgr4Z7N61NNN//ocaNRFAGACCZTv79ERfLIoFJtukIBMVWt21t7s7dkAUkP/7UsQIgsvxCTFjJfkBWyEjlAM9uBduFf5RKs5pBRy5Zr/hf7bAmPay0KfZ4qk1KLyxVcMH52MB0kXlKOrCGYMiYhdV7kUV4rKr8tlT0Pr1471UaNeJtXLCmQKKFwM1zsu8QWD/X1/2o1Gq2Z7ydBLexyU0UlSRsyUFMSJHhJS57Ei1Rk6wHUzMM0rxXX1CZpJ1bSVWxdZ9t18KNLX11muLfP/w+jQoydck6yqU6XHAnwAqJgAnIJdIVmoEAiIy/////////5fyMtayiVLFSwiE//tSxAsDxYUUpkAFOSAAADSAAAAEIiB0DhsQCMQFF1AcDxr///WKijeLC1VMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVU=";
-(() => {
-  const AC = window.AudioContext || window.webkitAudioContext, btn = $('snd'), txt = $('sndt'), wave = $('sndw');
-  if (!AC) { btn.hidden = true; return; }
-  let ctx = null, buf = null, on = true;
-  try { on = localStorage.getItem('home-snd') !== 'off'; } catch(e) {}
-  const show = () => { btn.setAttribute('aria-pressed', on); txt.textContent = on ? '音效' : '靜音'; wave.style.display = on ? '' : 'none'; };
-  show();
-  const bytes = b64 => { const s = atob(b64), u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u.buffer; };
-  function unlock(){
-    if (!ctx) { ctx = new AC(); ctx.decodeAudioData(bytes(SFX), b => buf = b, () => {}); }
-    if (ctx.state === 'suspended') ctx.resume();
-  }
-  addEventListener('pointerdown', unlock, {capture: true});
-  addEventListener('keydown', unlock, {capture: true});
-  function tick(speed){
-    if (!on || !ctx || ctx.state !== 'running' || !buf) return;
-    const src = ctx.createBufferSource(), g = ctx.createGain();
-    src.buffer = buf;
-    src.playbackRate.value = (.95 + Math.random() * .1) * (1 + Math.min(speed, 2) * .05);
-    g.gain.value = .24 + Math.min(speed, 2) * .05;
-    src.connect(g).connect(ctx.destination);
-    src.start();
-  }
-  btn.addEventListener('click', () => {
-    on = !on; show();
-    try { localStorage.setItem('home-snd', on ? 'on' : 'off'); } catch(e) {}
-    if (on) setTimeout(() => tick(0), 60);
-  });
-  let last = 0;
-  onPass = speed => {
-    const now = performance.now();
-    if (now - last < 50) return;
-    last = now; tick(speed);
-  };
-})();
-
-$('q').addEventListener('input', filter);
-$('year').textContent = new Date().getFullYear();
-if (location.hash === '#admin') openAdmin();
-load();
+document.getElementById('q').addEventListener('input', filter);
+document.getElementById('year').textContent = new Date().getFullYear();
+render(DOCS);
 </script>
-
 </body>
 </html>
