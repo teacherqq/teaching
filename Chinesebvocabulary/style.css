@@ -178,6 +178,19 @@ footer{max-width:1240px;margin:0 auto;padding:0 24px 34px;display:flex;justify-c
  .cards{grid-template-columns:1fr}
  footer{padding:16px 14px 28px}
 }
+/* ===== 全屏模式（去掉兩側留白，內容鋪滿） ===== */
+.fullscreen-toggle{padding:8px 11px;gap:6px}
+.fullscreen-toggle .fs-icon{font-size:16px;line-height:1}
+body.fullscreen .bar-inner,
+body.fullscreen .hero-inner,
+body.fullscreen main,
+body.fullscreen footer{max-width:none;padding-left:20px;padding-right:20px}
+body.fullscreen .hero-inner{padding-top:38px;padding-bottom:34px}
+body.fullscreen .theme-grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+body.fullscreen .cards{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+body.fullscreen .fullscreen-toggle{background:var(--accent);border-color:var(--accent);color:#fff}
+body.fullscreen .fullscreen-toggle:hover{background:#276b5d;color:#fff}
+
 @media print{
  .topbar,.hero-art,.theme-section,.view-actions,.topic-tabs,.card-tools,.drawer,.drawer-mask,.toast,footer{display:none!important}
  body{background:#fff}
