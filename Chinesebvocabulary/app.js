@@ -571,6 +571,25 @@ $('#resetEditBtn').addEventListener('click',()=>{
   toast(T('已還原官方資料'));
 });
 
+/* ---------- 全屏模式 ---------- */
+const FS_KEY='bsl-theme-words-fullscreen';
+function applyFullscreen(on){
+  document.body.classList.toggle('fullscreen',on);
+  const btn=$('#fullscreenBtn');
+  if(btn){
+    const icon=btn.querySelector('.fs-icon'), label=btn.querySelector('.fs-label');
+    if(icon) icon.textContent=on?'⛶':'⛶';
+    if(label){ label.dataset.hant=on?'退出全屏':'全屏'; label.textContent=T(on?'退出全屏':'全屏'); }
+    btn.title=on?'退出全屏 / Exit Fullscreen':'全屏模式 / Fullscreen';
+  }
+}
+$('#fullscreenBtn').addEventListener('click',()=>{
+  const on=!document.body.classList.contains('fullscreen');
+  localStorage.setItem(FS_KEY,on?'1':'0');
+  applyFullscreen(on);
+});
+
 /* ---------- init ---------- */
+try{ const fs=localStorage.getItem(FS_KEY); if(fs!=='0') applyFullscreen(true); }catch(e){}
 setLang(lang);
 })();
