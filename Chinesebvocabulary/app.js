@@ -362,7 +362,7 @@ $('#exportFav').addEventListener('click',()=>{
     rows.push([e.theme.name,e.topic.title,kindLabel(e),primaryText(e),it.py||'',it.en||'',it.meaning||it.keywords||it.text||'',it.ex||it.answer||'']);});
   const csv='\ufeff'+rows.map(r=>r.map(c=>'"'+String(c).replaceAll('"','""')+'"').join(',')).join('\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
-  a.download='BSL_我的詞表.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  a.download='ChineseB_我的詞表.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   toast(T('詞表已匯出'));
 });
 document.addEventListener('click',e=>{
